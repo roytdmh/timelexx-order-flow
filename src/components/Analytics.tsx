@@ -1,31 +1,20 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { TrendingUp, DollarSign, ShoppingBag, Mail } from 'lucide-react';
+import { TrendingUp, DollarSign, ShoppingBag } from 'lucide-react';
 import { DailySummary } from '@/types';
-import { toast } from '@/hooks/use-toast';
 
 interface AnalyticsProps {
   summary: DailySummary;
-  onSendReport: () => void;
 }
 
-const Analytics: React.FC<AnalyticsProps> = ({ summary, onSendReport }) => {
+const Analytics: React.FC<AnalyticsProps> = ({ summary }) => {
   const chartData = Object.entries(summary.ordersByMeal).map(([meal, count]) => ({
     name: meal.replace(' & ', ' &\n'),
     orders: count,
     revenue: summary.revenueByMeal[meal] || 0
   }));
-
-  const handleSendReport = () => {
-    onSendReport();
-    toast({
-      title: "Report Sent",
-      description: "Daily summary report has been sent to roy@ayadata.ai",
-    });
-  };
 
   return (
     <div className="space-y-6">
@@ -136,25 +125,6 @@ const Analytics: React.FC<AnalyticsProps> = ({ summary, onSendReport }) => {
           </CardContent>
         </Card>
       )}
-
-      {/* Send Report */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Mail className="w-5 h-5" />
-            Daily Report
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground mb-4">
-            Send today's summary report to roy@ayadata.ai
-          </p>
-          <Button onClick={handleSendReport} className="bg-timelexx-red hover:bg-timelexx-red/90">
-            <Mail className="w-4 h-4 mr-2" />
-            Send Daily Report
-          </Button>
-        </CardContent>
-      </Card>
     </div>
   );
 };

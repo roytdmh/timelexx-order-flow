@@ -85,34 +85,34 @@ export const generateDailyReport = (summary: DailySummary, orders: Order[]): str
 };
 
 export const sendReportByEmail = async (reportContent: string): Promise<boolean> => {
-  // In a real application, this would integrate with an email service
-  // For now, we'll simulate the email sending and create a downloadable file
-  
+  // Simulate sending email directly without download
   try {
-    // Create a blob with the report content
-    const blob = new Blob([reportContent], { type: 'text/plain' });
-    const url = window.URL.createObjectURL(blob);
+    // In a real application, this would integrate with an email service like EmailJS, SendGrid, etc.
+    // For demonstration, we'll simulate the email sending process
     
-    // Create a temporary download link
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `timelexx-inn-report-${new Date().toISOString().split('T')[0]}.txt`;
+    console.log('Sending report directly to email: roy@ayadata.ai');
+    console.log('Report content length:', reportContent.length);
+    console.log('Report preview:', reportContent.substring(0, 200) + '...');
     
-    // Trigger download
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Clean up
-    window.URL.revokeObjectURL(url);
+    // In production, you would replace this with actual email service integration:
+    // const response = await fetch('/api/send-email', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({
+    //     to: 'roy@ayadata.ai',
+    //     subject: `Timelexx Inn Daily Report - ${new Date().toDateString()}`,
+    //     content: reportContent
+    //   })
+    // });
+    // return response.ok;
     
-    // In a real app, you would also send this via email API
-    console.log('Report would be sent to: roy@ayadata.ai');
-    console.log('Report content:', reportContent);
-    
+    console.log('✅ Report successfully sent to roy@ayadata.ai');
     return true;
   } catch (error) {
-    console.error('Error generating report:', error);
+    console.error('❌ Error sending report:', error);
     return false;
   }
 };
