@@ -1,0 +1,46 @@
+
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Menu, Clock, BarChart3, ShoppingBag } from 'lucide-react';
+
+interface NavigationProps {
+  activeTab: string;
+  onTabChange: (tab: string) => void;
+}
+
+const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
+  const tabs = [
+    { id: 'menu', label: 'Menu & Orders', icon: Menu },
+    { id: 'tracker', label: 'Order Tracker', icon: Clock },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+  ];
+
+  return (
+    <nav className="bg-white border-b-2 border-timelexx-yellow p-4">
+      <div className="container mx-auto">
+        <div className="flex flex-wrap gap-2 justify-center">
+          {tabs.map(tab => {
+            const Icon = tab.icon;
+            return (
+              <Button
+                key={tab.id}
+                variant={activeTab === tab.id ? "default" : "outline"}
+                onClick={() => onTabChange(tab.id)}
+                className={
+                  activeTab === tab.id 
+                    ? "bg-timelexx-red hover:bg-timelexx-red/90 text-white" 
+                    : "border-timelexx-yellow hover:bg-timelexx-yellow hover:text-timelexx-dark"
+                }
+              >
+                <Icon className="w-4 h-4 mr-2" />
+                {tab.label}
+              </Button>
+            );
+          })}
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+export default Navigation;
