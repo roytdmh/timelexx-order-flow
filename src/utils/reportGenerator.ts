@@ -87,10 +87,10 @@ export const generateDailyReport = (summary: DailySummary, orders: Order[]): str
 
 export const sendReportByEmail = async (reportContent: string): Promise<boolean> => {
   try {
-    console.log('Sending daily report via EmailJS...');
+    console.log('Initializing EmailJS and sending daily report...');
     
-    // Initialize EmailJS with public key
-    emailjs.init('YOUR_PUBLIC_KEY'); // Replace with your actual public key
+    // Initialize EmailJS with your public key
+    emailjs.init('j7ZS7vWDPSzQKCKdW');
     
     const templateParams = {
       to_email: 'roy@ayadata.ai',
@@ -98,13 +98,18 @@ export const sendReportByEmail = async (reportContent: string): Promise<boolean>
       report_content: reportContent,
       restaurant_name: 'Timelexx Inn',
       date: new Date().toLocaleDateString(),
+      from_name: 'Timelexx Inn Order System',
     };
 
+    console.log('Sending email with template params:', templateParams);
+
     const response = await emailjs.send(
-      'YOUR_SERVICE_ID', // Replace with your EmailJS service ID
-      'YOUR_TEMPLATE_ID', // Replace with your EmailJS template ID
+      'service_4k66mqf', // Your EmailJS service ID
+      'template_v0xdl2p', // Your EmailJS template ID
       templateParams
     );
+
+    console.log('EmailJS response:', response);
 
     if (response.status === 200) {
       console.log('✅ Report successfully sent to roy@ayadata.ai');

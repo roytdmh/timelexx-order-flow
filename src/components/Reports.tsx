@@ -185,14 +185,9 @@ const Reports: React.FC<ReportsProps> = ({ summary, onSendReport }) => {
             <p className="text-muted-foreground">
               Send today's detailed business report directly to: <span className="font-medium">roy@ayadata.ai</span>
             </p>
-            <div className="bg-blue-50 p-3 rounded-lg">
-              <p className="text-sm text-blue-800">
-                📧 Report will be sent via EmailJS service for secure delivery.
-              </p>
-            </div>
-            <div className="bg-amber-50 p-3 rounded-lg">
-              <p className="text-sm text-amber-800">
-                ⚠️ Please configure EmailJS credentials in the report generator to enable email functionality.
+            <div className="bg-green-50 p-3 rounded-lg">
+              <p className="text-sm text-green-800">
+                ✅ EmailJS is configured and ready to send reports securely.
               </p>
             </div>
             <Button 
