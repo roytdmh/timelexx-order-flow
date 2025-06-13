@@ -71,11 +71,15 @@ const Index = () => {
     setCurrentOrder([]);
   };
 
-  const handleSendReport = async () => {
+  const handleSendReport = async (): Promise<void> => {
     const summary = getDailySummary();
     const todaysOrders = getTodaysOrders();
     const reportContent = generateDailyReport(summary, todaysOrders);
-    await sendReportByEmail(reportContent);
+    
+    const success = await sendReportByEmail(reportContent);
+    if (!success) {
+      throw new Error('Failed to send report');
+    }
   };
 
   const summary = getDailySummary();

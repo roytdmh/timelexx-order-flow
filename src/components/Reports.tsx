@@ -1,23 +1,36 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Mail, FileText, TrendingUp, DollarSign, ShoppingBag } from 'lucide-react';
+import { Mail, FileText, TrendingUp, DollarSign, ShoppingBag, Loader2 } from 'lucide-react';
 import { DailySummary } from '@/types';
 import { toast } from '@/hooks/use-toast';
 
 interface ReportsProps {
   summary: DailySummary;
-  onSendReport: () => void;
+  onSendReport: () => Promise<void>;
 }
 
 const Reports: React.FC<ReportsProps> = ({ summary, onSendReport }) => {
-  const handleSendReport = () => {
-    onSendReport();
-    toast({
-      title: "Report Sent",
-      description: "Daily summary report has been sent to roy@ayadata.ai",
-    });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSendReport = async () => {
+    setIsLoading(true);
+    try {
+      await onSendReport();
+      toast({
+        title: "Report Sent Successfully",
+        description: "Daily summary report has been sent to roy@ayadata.ai",
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to Send Report",
+        description: "There was an error sending the report. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const today = new Date().toLocaleDateString();
@@ -174,16 +187,31 @@ const Reports: React.FC<ReportsProps> = ({ summary, onSendReport }) => {
             </p>
             <div className="bg-blue-50 p-3 rounded-lg">
               <p className="text-sm text-blue-800">
-                📧 Report will be sent directly to email without local download to ensure data security and prevent manipulation.
+                📧 Report will be sent via EmailJS service for secure delivery.
+              </p>
+            </div>
+            <div className="bg-amber-50 p-3 rounded-lg">
+              <p className="text-sm text-amber-800">
+                ⚠️ Please configure EmailJS credentials in the report generator to enable email functionality.
               </p>
             </div>
             <Button 
               onClick={handleSendReport} 
+              disabled={isLoading}
               className="w-full bg-timelexx-red hover:bg-timelexx-red/90"
               size="lg"
             >
-              <Mail className="w-4 h-4 mr-2" />
-              Send Daily Report to Email
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Sending Report...
+                </>
+              ) : (
+                <>
+                  <Mail className="w-4 h-4 mr-2" />
+                  Send Daily Report to Email
+                </>
+              )}
             </Button>
           </div>
         </CardContent>

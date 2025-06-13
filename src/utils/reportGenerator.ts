@@ -1,5 +1,6 @@
 
 import { Order, DailySummary } from '@/types';
+import emailjs from '@emailjs/browser';
 
 export const generateDailyReport = (summary: DailySummary, orders: Order[]): string => {
   const today = new Date().toLocaleDateString();
@@ -85,34 +86,35 @@ export const generateDailyReport = (summary: DailySummary, orders: Order[]): str
 };
 
 export const sendReportByEmail = async (reportContent: string): Promise<boolean> => {
-  // Simulate sending email directly without download
   try {
-    // In a real application, this would integrate with an email service like EmailJS, SendGrid, etc.
-    // For demonstration, we'll simulate the email sending process
+    console.log('Sending daily report via EmailJS...');
     
-    console.log('Sending report directly to email: roy@ayadata.ai');
-    console.log('Report content length:', reportContent.length);
-    console.log('Report preview:', reportContent.substring(0, 200) + '...');
+    // Initialize EmailJS with public key
+    emailjs.init('YOUR_PUBLIC_KEY'); // Replace with your actual public key
     
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // In production, you would replace this with actual email service integration:
-    // const response = await fetch('/api/send-email', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({
-    //     to: 'roy@ayadata.ai',
-    //     subject: `Timelexx Inn Daily Report - ${new Date().toDateString()}`,
-    //     content: reportContent
-    //   })
-    // });
-    // return response.ok;
-    
-    console.log('✅ Report successfully sent to roy@ayadata.ai');
-    return true;
+    const templateParams = {
+      to_email: 'roy@ayadata.ai',
+      subject: `Timelexx Inn Daily Report - ${new Date().toDateString()}`,
+      report_content: reportContent,
+      restaurant_name: 'Timelexx Inn',
+      date: new Date().toLocaleDateString(),
+    };
+
+    const response = await emailjs.send(
+      'YOUR_SERVICE_ID', // Replace with your EmailJS service ID
+      'YOUR_TEMPLATE_ID', // Replace with your EmailJS template ID
+      templateParams
+    );
+
+    if (response.status === 200) {
+      console.log('✅ Report successfully sent to roy@ayadata.ai');
+      return true;
+    } else {
+      console.error('❌ EmailJS response error:', response);
+      return false;
+    }
   } catch (error) {
-    console.error('❌ Error sending report:', error);
+    console.error('❌ Error sending report via EmailJS:', error);
     return false;
   }
 };
