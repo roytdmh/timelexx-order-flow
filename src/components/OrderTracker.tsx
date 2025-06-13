@@ -1,17 +1,20 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Clock, CheckCircle, XCircle, Truck, MapPin } from 'lucide-react';
+import { Clock, CheckCircle, XCircle, Truck, MapPin, Trash2 } from 'lucide-react';
 import { Order } from '@/types';
 
 interface OrderTrackerProps {
   orders: Order[];
   onUpdateStatus: (orderId: string, status: Order['status']) => void;
+  onResetOrders: () => void;
 }
 
-const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus }) => {
+const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onResetOrders }) => {
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+
   const getTimePending = (order: Order) => {
     const now = Date.now();
     const timeDiff = now - order.timestamp.getTime();
@@ -46,11 +49,21 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus }) =
     }
   };
 
+  const handleResetOrders = () => {
+    if (showResetConfirm) {
+      onResetOrders();
+      setShowResetConfirm(false);
+    } else {
+      setShowResetConfirm(true);
+      setTimeout(() => setShowResetConfirm(false), 3000); // Auto-hide after 3 seconds
+    }
+  };
+
   const pendingOrders = orders.filter(order => order.status === 'pending');
   const recentOrders = orders.slice(0, 10);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
       {/* Pending Orders - Priority Section */}
       <Card className="border-2 border-timelexx-red">
         <CardHeader>
@@ -144,7 +157,7 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus }) =
                           <p className="text-sm text-muted-foreground">{order.customerName}</p>
                         )}
                         <p className="text-sm text-muted-foreground">
-                          {order.timestamp.toLocaleTimeString()} - ₵{order.total}
+                          {order.timestamp.toLocaleDateString()} at {order.timestamp.toLocaleTimeString()} - ₵{order.total}
                         </p>
                       </div>
                       {getStatusBadge(order)}
@@ -156,6 +169,19 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus }) =
           )}
         </CardContent>
       </Card>
+
+      {/* Reset Button - Fixed position at bottom right */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <Button
+          onClick={handleResetOrders}
+          variant={showResetConfirm ? "destructive" : "outline"}
+          size="lg"
+          className={`shadow-lg ${showResetConfirm ? 'animate-pulse' : ''}`}
+        >
+          <Trash2 className="w-4 h-4 mr-2" />
+          {showResetConfirm ? 'Confirm Reset?' : 'Reset All Orders'}
+        </Button>
+      </div>
     </div>
   );
 };

@@ -9,7 +9,7 @@ const Header = () => {
           🍽️ Timelexx Inn
         </h1>
         <p className="text-center mt-2 text-white/90">
-          Fast Food Order Management System
+          Eat Good, Feel Good
         </p>
       </div>
     </header>

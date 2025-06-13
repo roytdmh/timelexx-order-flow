@@ -91,6 +91,16 @@ export const useOrders = () => {
     });
   };
 
+  const resetAllOrders = () => {
+    setOrders([]);
+    setLastAlertTime({});
+    localStorage.removeItem(STORAGE_KEY);
+    toast({
+      title: "Orders Reset",
+      description: "All orders have been cleared for a new day",
+    });
+  };
+
   const getTodaysOrders = (): Order[] => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -147,6 +157,7 @@ export const useOrders = () => {
     orders,
     addOrder,
     updateOrderStatus,
+    resetAllOrders,
     getTodaysOrders,
     getDailySummary
   };

@@ -19,6 +19,7 @@ const Index = () => {
     orders, 
     addOrder, 
     updateOrderStatus, 
+    resetAllOrders,
     getTodaysOrders, 
     getDailySummary 
   } = useOrders();
@@ -111,6 +112,7 @@ const Index = () => {
           <OrderTracker
             orders={orders}
             onUpdateStatus={updateOrderStatus}
+            onResetOrders={resetAllOrders}
           />
         )}
 

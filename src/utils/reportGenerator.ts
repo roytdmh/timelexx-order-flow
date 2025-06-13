@@ -62,7 +62,7 @@ export const generateDailyReport = (summary: DailySummary, orders: Order[]): str
     report += `DELIVERED ORDERS LIST\n`;
     report += `${'-'.repeat(30)}\n`;
     deliveredOrders.forEach(order => {
-      report += `Order #${order.id.slice(-6)} - ${order.timestamp.toLocaleTimeString()}\n`;
+      report += `Order #${order.id.slice(-6)} - ${order.timestamp.toLocaleDateString()} at ${order.timestamp.toLocaleTimeString()}\n`;
       if (order.customerName) {
         report += `  Customer: ${order.customerName}\n`;
       }
@@ -79,7 +79,7 @@ export const generateDailyReport = (summary: DailySummary, orders: Order[]): str
   }
 
   report += `${'='.repeat(50)}\n`;
-  report += `Report Generated: ${new Date().toLocaleString()}\n`;
+  report += `Report Generated: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}\n`;
   report += `Timelexx Inn Order Management System\n`;
 
   return report;
