@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
@@ -8,7 +9,7 @@ import Analytics from '@/components/Analytics';
 import Reports from '@/components/Reports';
 import { useOrders } from '@/hooks/useOrders';
 import { MenuItem, OrderItem } from '@/types';
-import { generateDailyReport, sendReportByEmail } from '@/utils/reportGenerator';
+import { downloadReportAsPDF } from '@/utils/reportGenerator';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('menu');
@@ -79,15 +80,10 @@ const Index = () => {
     setCurrentOrder([]);
   };
 
-  const handleSendReport = async (): Promise<void> => {
+  const handleDownloadReport = async (): Promise<void> => {
     const summary = getDailySummary();
     const todaysOrders = getTodaysOrders();
-    const reportContent = generateDailyReport(summary, todaysOrders);
-    
-    const success = await sendReportByEmail(reportContent);
-    if (!success) {
-      throw new Error('Failed to send report');
-    }
+    downloadReportAsPDF(summary, todaysOrders);
   };
 
   const summary = getDailySummary();
@@ -130,7 +126,7 @@ const Index = () => {
         {activeTab === 'reports' && (
           <Reports
             summary={summary}
-            onSendReport={handleSendReport}
+            onDownloadReport={handleDownloadReport}
           />
         )}
       </main>

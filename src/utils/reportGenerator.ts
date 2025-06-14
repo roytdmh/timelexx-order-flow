@@ -1,6 +1,6 @@
 
 import { Order, DailySummary } from '@/types';
-import emailjs from '@emailjs/browser';
+import jsPDF from 'jspdf';
 
 export const generateDailyReport = (summary: DailySummary, orders: Order[]): string => {
   const today = new Date().toLocaleDateString();
@@ -92,41 +92,39 @@ export const generateDailyReport = (summary: DailySummary, orders: Order[]): str
   return report;
 };
 
-export const sendReportByEmail = async (reportContent: string): Promise<boolean> => {
-  try {
-    console.log('Initializing EmailJS and sending daily report...');
-    
-    // Initialize EmailJS with your public key
-    emailjs.init('j7ZS7vWDPSzQKCKdW');
-    
-    const templateParams = {
-      to_email: 'roy@ayadata.ai',
-      subject: `Timelexx Inn Daily Report - ${new Date().toDateString()}`,
-      report_content: reportContent,
-      restaurant_name: 'Timelexx Inn',
-      date: new Date().toLocaleDateString(),
-      from_name: 'Timelexx Inn Order System',
-    };
-
-    console.log('Sending email with template params:', templateParams);
-
-    const response = await emailjs.send(
-      'service_4k66mqf', // Your EmailJS service ID
-      'template_v0xdl2p', // Your EmailJS template ID
-      templateParams
-    );
-
-    console.log('EmailJS response:', response);
-
-    if (response.status === 200) {
-      console.log('✅ Report successfully sent to roy@ayadata.ai');
-      return true;
-    } else {
-      console.error('❌ EmailJS response error:', response);
-      return false;
+export const downloadReportAsPDF = (summary: DailySummary, orders: Order[]): void => {
+  console.log('Generating PDF report...');
+  
+  const reportContent = generateDailyReport(summary, orders);
+  const doc = new jsPDF();
+  
+  // Set font
+  doc.setFont('courier');
+  doc.setFontSize(10);
+  
+  // Split content into lines and add to PDF
+  const lines = reportContent.split('\n');
+  let yPosition = 20;
+  const lineHeight = 5;
+  const pageHeight = doc.internal.pageSize.height;
+  
+  lines.forEach((line) => {
+    // Check if we need a new page
+    if (yPosition > pageHeight - 20) {
+      doc.addPage();
+      yPosition = 20;
     }
-  } catch (error) {
-    console.error('❌ Error sending report via EmailJS:', error);
-    return false;
-  }
+    
+    doc.text(line, 10, yPosition);
+    yPosition += lineHeight;
+  });
+  
+  // Generate filename with current date
+  const today = new Date();
+  const dateString = today.toISOString().split('T')[0]; // YYYY-MM-DD format
+  const filename = `Timelexx_Inn_Daily_Report_${dateString}.pdf`;
+  
+  // Download the PDF
+  doc.save(filename);
+  console.log(`✅ Report downloaded as ${filename}`);
 };

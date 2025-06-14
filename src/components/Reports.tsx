@@ -2,30 +2,30 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Mail, FileText, TrendingUp, DollarSign, ShoppingBag, Loader2 } from 'lucide-react';
+import { Download, FileText, TrendingUp, DollarSign, ShoppingBag, Loader2 } from 'lucide-react';
 import { DailySummary } from '@/types';
 import { toast } from '@/hooks/use-toast';
 
 interface ReportsProps {
   summary: DailySummary;
-  onSendReport: () => Promise<void>;
+  onDownloadReport: () => Promise<void>;
 }
 
-const Reports: React.FC<ReportsProps> = ({ summary, onSendReport }) => {
+const Reports: React.FC<ReportsProps> = ({ summary, onDownloadReport }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSendReport = async () => {
+  const handleDownloadReport = async () => {
     setIsLoading(true);
     try {
-      await onSendReport();
+      await onDownloadReport();
       toast({
-        title: "Report Sent Successfully",
-        description: "Daily summary report has been sent to roy@ayadata.ai",
+        title: "Report Downloaded Successfully",
+        description: "Daily summary report has been downloaded as a PDF file",
       });
     } catch (error) {
       toast({
-        title: "Failed to Send Report",
-        description: "There was an error sending the report. Please try again.",
+        title: "Failed to Download Report",
+        description: "There was an error generating the PDF report. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -172,26 +172,26 @@ const Reports: React.FC<ReportsProps> = ({ summary, onSendReport }) => {
         </Card>
       )}
 
-      {/* Send Report Action */}
+      {/* Download Report Action */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Mail className="w-5 h-5" />
-            Email Report
+            <Download className="w-5 h-5" />
+            Download Report
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <p className="text-muted-foreground">
-              Send today's detailed business report directly to: <span className="font-medium">roy@ayadata.ai</span>
+              Download today's detailed business report as a read-only PDF file for your records.
             </p>
-            <div className="bg-green-50 p-3 rounded-lg">
-              <p className="text-sm text-green-800">
-                ✅ EmailJS is configured and ready to send reports securely.
+            <div className="bg-blue-50 p-3 rounded-lg">
+              <p className="text-sm text-blue-800">
+                📄 The PDF will include all order details, performance metrics, and customer information.
               </p>
             </div>
             <Button 
-              onClick={handleSendReport} 
+              onClick={handleDownloadReport} 
               disabled={isLoading}
               className="w-full bg-timelexx-red hover:bg-timelexx-red/90"
               size="lg"
@@ -199,12 +199,12 @@ const Reports: React.FC<ReportsProps> = ({ summary, onSendReport }) => {
               {isLoading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Sending Report...
+                  Generating PDF...
                 </>
               ) : (
                 <>
-                  <Mail className="w-4 h-4 mr-2" />
-                  Send Daily Report to Email
+                  <Download className="w-4 h-4 mr-2" />
+                  Download Daily Report as PDF
                 </>
               )}
             </Button>
