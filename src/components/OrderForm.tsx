@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -35,12 +34,17 @@ const OrderForm: React.FC<OrderFormProps> = ({
   const [riderNumber, setRiderNumber] = useState('');
   const [customerName, setCustomerName] = useState('');
   const [customerNumber, setCustomerNumber] = useState('');
-  const [customerLocation, setCustomerLocation] = useState<{ address: string; coordinates: [number, number] } | undefined>();
+  const [customerLocationText, setCustomerLocationText] = useState('');
 
   const total = currentOrder.reduce((sum, item) => sum + (item.menuItem.price * item.quantity), 0);
 
   const handleSubmit = () => {
     if (currentOrder.length === 0) return;
+    
+    // Convert text location to the expected format
+    const customerLocation = customerLocationText.trim() 
+      ? { address: customerLocationText.trim(), coordinates: [0, 0] as [number, number] }
+      : undefined;
     
     onSubmitOrder(
       orderType, 
@@ -55,7 +59,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
     setRiderNumber('');
     setCustomerName('');
     setCustomerNumber('');
-    setCustomerLocation(undefined);
+    setCustomerLocationText('');
   };
 
   const riders = ['Rider 001', 'Rider 002', 'Rider 003', 'Rider 004', 'Rider 005'];
@@ -141,9 +145,10 @@ const OrderForm: React.FC<OrderFormProps> = ({
 
               <div className="space-y-3">
                 <Label>Customer Location (Optional)</Label>
-                <LocationPicker
-                  onLocationSelect={setCustomerLocation}
-                  selectedLocation={customerLocation}
+                <Input
+                  value={customerLocationText}
+                  onChange={(e) => setCustomerLocationText(e.target.value)}
+                  placeholder="Enter customer address or location"
                 />
               </div>
 
