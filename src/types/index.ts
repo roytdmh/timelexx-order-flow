@@ -20,6 +20,11 @@ export interface Order {
   status: 'pending' | 'delivered' | 'cancelled';
   timestamp: Date;
   customerName?: string;
+  customerNumber?: string;
+  customerLocation?: {
+    address: string;
+    coordinates: [number, number];
+  };
 }
 
 export interface DailySummary {

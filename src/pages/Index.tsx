@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
@@ -52,7 +51,13 @@ const Index = () => {
     setCurrentOrder(prev => prev.filter(item => item.menuItem.id !== itemId));
   };
 
-  const handleSubmitOrder = (orderType: 'pickup' | 'delivery', riderNumber?: string, customerName?: string) => {
+  const handleSubmitOrder = (
+    orderType: 'pickup' | 'delivery', 
+    riderNumber?: string, 
+    customerName?: string,
+    customerNumber?: string,
+    customerLocation?: { address: string; coordinates: [number, number] }
+  ) => {
     const total = currentOrder.reduce((sum, item) => sum + (item.menuItem.price * item.quantity), 0);
     
     addOrder({
@@ -61,6 +66,8 @@ const Index = () => {
       orderType,
       riderNumber,
       customerName,
+      customerNumber,
+      customerLocation,
       status: 'pending'
     });
 

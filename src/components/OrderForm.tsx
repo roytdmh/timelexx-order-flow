@@ -8,12 +8,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Trash, Plus, Clock } from 'lucide-react';
 import { MenuItem, OrderItem } from '@/types';
+import LocationPicker from './LocationPicker';
 
 interface OrderFormProps {
   currentOrder: OrderItem[];
   onUpdateQuantity: (itemId: string, quantity: number) => void;
   onRemoveItem: (itemId: string) => void;
-  onSubmitOrder: (orderType: 'pickup' | 'delivery', riderNumber?: string, customerName?: string) => void;
+  onSubmitOrder: (
+    orderType: 'pickup' | 'delivery', 
+    riderNumber?: string, 
+    customerName?: string,
+    customerNumber?: string,
+    customerLocation?: { address: string; coordinates: [number, number] }
+  ) => void;
   onClearOrder: () => void;
 }
 
@@ -27,6 +34,8 @@ const OrderForm: React.FC<OrderFormProps> = ({
   const [orderType, setOrderType] = useState<'pickup' | 'delivery'>('pickup');
   const [riderNumber, setRiderNumber] = useState('');
   const [customerName, setCustomerName] = useState('');
+  const [customerNumber, setCustomerNumber] = useState('');
+  const [customerLocation, setCustomerLocation] = useState<{ address: string; coordinates: [number, number] } | undefined>();
 
   const total = currentOrder.reduce((sum, item) => sum + (item.menuItem.price * item.quantity), 0);
 
@@ -36,13 +45,17 @@ const OrderForm: React.FC<OrderFormProps> = ({
     onSubmitOrder(
       orderType, 
       orderType === 'delivery' ? riderNumber : undefined,
-      customerName || undefined
+      customerName || undefined,
+      customerNumber || undefined,
+      customerLocation
     );
     
     // Reset form
     setOrderType('pickup');
     setRiderNumber('');
     setCustomerName('');
+    setCustomerNumber('');
+    setCustomerLocation(undefined);
   };
 
   const riders = ['Rider 001', 'Rider 002', 'Rider 003', 'Rider 004', 'Rider 005'];
@@ -113,6 +126,24 @@ const OrderForm: React.FC<OrderFormProps> = ({
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
                   placeholder="Enter customer name"
+                />
+              </div>
+
+              <div className="space-y-3">
+                <Label>Customer Number (Optional)</Label>
+                <Input
+                  value={customerNumber}
+                  onChange={(e) => setCustomerNumber(e.target.value)}
+                  placeholder="Enter customer phone number"
+                  type="tel"
+                />
+              </div>
+
+              <div className="space-y-3">
+                <Label>Customer Location (Optional)</Label>
+                <LocationPicker
+                  onLocationSelect={setCustomerLocation}
+                  selectedLocation={customerLocation}
                 />
               </div>
 

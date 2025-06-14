@@ -66,6 +66,13 @@ export const generateDailyReport = (summary: DailySummary, orders: Order[]): str
       if (order.customerName) {
         report += `  Customer: ${order.customerName}\n`;
       }
+      if (order.customerNumber) {
+        report += `  Phone: ${order.customerNumber}\n`;
+      }
+      if (order.customerLocation) {
+        report += `  Location: ${order.customerLocation.address}\n`;
+        report += `  Coordinates: ${order.customerLocation.coordinates[0]}, ${order.customerLocation.coordinates[1]}\n`;
+      }
       report += `  Type: ${order.orderType.toUpperCase()}`;
       if (order.riderNumber) {
         report += ` (${order.riderNumber})`;
