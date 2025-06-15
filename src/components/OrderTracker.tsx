@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -50,8 +51,8 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onR
 
   const getOrderSummary = (order: Order) => {
     return order.items
-      .map(item => `${item.menuItem.icon} x${item.quantity}`)
-      .join(' ');
+      .map(item => `${item.menuItem.name} x${item.quantity}`)
+      .join(', ');
   };
 
   const handleResetOrders = () => {
