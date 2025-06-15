@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -47,6 +46,12 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onR
       default:
         return null;
     }
+  };
+
+  const getOrderSummary = (order: Order) => {
+    return order.items
+      .map(item => `${item.menuItem.icon} x${item.quantity}`)
+      .join(' ');
   };
 
   const handleResetOrders = () => {
@@ -166,6 +171,7 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onR
                           {order.customerNumber && (<p>{order.customerNumber}</p>)}
                           {order.orderType === 'delivery' && order.customerLocation?.address && (<p>{order.customerLocation.address}</p>)}
                         </div>
+                        <p className="text-lg mt-2">{getOrderSummary(order)}</p>
                         <p className="text-sm text-muted-foreground mt-1">
                           {order.timestamp.toLocaleDateString()} at {order.timestamp.toLocaleTimeString()} - ₵{order.total}
                         </p>
