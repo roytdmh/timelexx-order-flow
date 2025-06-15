@@ -10,7 +10,7 @@ const Header = () => {
           alt="Timelexx Inn Logo"
           className="h-40 object-contain mix-blend-lighten"
         />
-        <p className="text-xl italic mt-2 tracking-wide font-serif">
+        <p className="text-xl italic -mt-4 tracking-wide font-serif">
           Eat good, Feel good
         </p>
       </div>
