@@ -85,6 +85,33 @@ export const generateDailyReport = (summary: DailySummary, orders: Order[]): str
     });
   }
 
+  if (cancelledOrders.length > 0) {
+    report += `CANCELLED ORDERS LIST\n`;
+    report += `${'-'.repeat(30)}\n`;
+    cancelledOrders.forEach(order => {
+      report += `Order #${order.id.slice(-6)} - ${order.timestamp.toLocaleDateString()} at ${order.timestamp.toLocaleTimeString()}\n`;
+      if (order.customerName) {
+        report += `  Customer: ${order.customerName}\n`;
+      }
+      if (order.customerNumber) {
+        report += `  Phone: ${order.customerNumber}\n`;
+      }
+      if (order.customerLocation) {
+        report += `  Location: ${order.customerLocation.address}\n`;
+        report += `  Coordinates: ${order.customerLocation.coordinates[0]}, ${order.customerLocation.coordinates[1]}\n`;
+      }
+      report += `  Type: ${order.orderType.toUpperCase()}`;
+      if (order.riderNumber) {
+        report += ` (${order.riderNumber})`;
+      }
+      report += `\n`;
+      order.items.forEach(item => {
+        report += `  - ${item.menuItem.name} x${item.quantity} = ₵${item.menuItem.price * item.quantity}\n`;
+      });
+      report += `  Total: ₵${order.total}\n\n`;
+    });
+  }
+
   report += `${'='.repeat(50)}\n`;
   report += `Report Generated: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}\n`;
   report += `Timelexx Inn Order Management System\n`;
@@ -99,7 +126,7 @@ export const downloadReportAsPDF = (summary: DailySummary, orders: Order[]): voi
   const doc = new jsPDF();
   
   // Set font
-  doc.setFont('courier');
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(10);
   
   // Split content into lines and add to PDF
