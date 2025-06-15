@@ -83,10 +83,18 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onR
                     <div className="flex justify-between items-start mb-3">
                       <div>
                         <p className="font-semibold">Order #{order.id.slice(-6)}</p>
-                        {order.customerName && (
-                          <p className="text-sm text-muted-foreground">Customer: {order.customerName}</p>
-                        )}
-                        <p className="text-sm text-muted-foreground">
+                        <div className="text-sm text-muted-foreground mt-2 space-y-1">
+                          {order.customerName && (
+                            <p><strong>Customer:</strong> {order.customerName}</p>
+                          )}
+                          {order.customerNumber && (
+                            <p><strong>Phone:</strong> {order.customerNumber}</p>
+                          )}
+                          {order.orderType === 'delivery' && order.customerLocation?.address && (
+                            <p><strong>Location:</strong> {order.customerLocation.address}</p>
+                          )}
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-2">
                           {order.timestamp.toLocaleDateString()} at {order.timestamp.toLocaleTimeString()}
                         </p>
                       </div>
@@ -153,10 +161,12 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onR
                     <div className="flex justify-between items-center">
                       <div>
                         <p className="font-medium">Order #{order.id.slice(-6)}</p>
-                        {order.customerName && (
-                          <p className="text-sm text-muted-foreground">{order.customerName}</p>
-                        )}
-                        <p className="text-sm text-muted-foreground">
+                        <div className="text-sm text-muted-foreground mt-1 space-y-0.5">
+                          {order.customerName && (<p>{order.customerName}</p>)}
+                          {order.customerNumber && (<p>{order.customerNumber}</p>)}
+                          {order.orderType === 'delivery' && order.customerLocation?.address && (<p>{order.customerLocation.address}</p>)}
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-1">
                           {order.timestamp.toLocaleDateString()} at {order.timestamp.toLocaleTimeString()} - ₵{order.total}
                         </p>
                       </div>
