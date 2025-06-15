@@ -8,7 +8,7 @@ const Header = () => {
         <img
           src="/lovable-uploads/3b434d95-7b2c-4d7d-a0c2-8458f1f0999c.png"
           alt="Timelexx Inn Logo"
-          className="h-20 object-contain mix-blend-lighten"
+          className="h-40 object-contain mix-blend-lighten"
         />
       </div>
     </header>
