@@ -4,6 +4,8 @@ export interface MenuItem {
   name: string;
   price: number;
   icon: string;
+  category: 'Mains' | 'Drinks';
+  description?: string;
 }
 
 export interface OrderItem {
