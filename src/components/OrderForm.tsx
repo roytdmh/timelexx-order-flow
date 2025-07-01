@@ -1,15 +1,13 @@
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Trash, Plus, Clock } from 'lucide-react';
-import { MenuItem, OrderItem } from '@/types';
-import { RIDERS, getRiderDisplayName } from '@/data/riders';
-import LocationPicker from './LocationPicker';
+import { Card, CardContent } from '@/components/ui/card';
+import { OrderItem } from '@/types';
+import OrderFormHeader from './OrderForm/OrderFormHeader';
+import OrderItemsList from './OrderForm/OrderItemsList';
+import CustomerDetailsForm from './OrderForm/CustomerDetailsForm';
+import OrderTypeSelector from './OrderForm/OrderTypeSelector';
+import RiderSelector from './OrderForm/RiderSelector';
+import OrderFormActions from './OrderForm/OrderFormActions';
 
 interface OrderFormProps {
   currentOrder: OrderItem[];
@@ -66,12 +64,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
 
   return (
     <Card className="border-2 border-timelexx-yellow">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-timelexx-dark">
-          <Clock className="w-5 h-5" />
-          Current Order
-        </CardTitle>
-      </CardHeader>
+      <OrderFormHeader />
       <CardContent className="space-y-4">
         {currentOrder.length === 0 ? (
           <p className="text-muted-foreground text-center py-8">
@@ -79,43 +72,11 @@ const OrderForm: React.FC<OrderFormProps> = ({
           </p>
         ) : (
           <>
-            <div className="space-y-3">
-              {currentOrder.map(item => (
-                <div key={item.menuItem.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl">{item.menuItem.icon}</span>
-                    <div>
-                      <p className="font-medium">{item.menuItem.name}</p>
-                      <p className="text-sm text-muted-foreground">₵{item.menuItem.price} each</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onUpdateQuantity(item.menuItem.id, Math.max(1, item.quantity - 1))}
-                    >
-                      -
-                    </Button>
-                    <span className="w-8 text-center">{item.quantity}</span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onUpdateQuantity(item.menuItem.id, item.quantity + 1)}
-                    >
-                      <Plus className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => onRemoveItem(item.menuItem.id)}
-                    >
-                      <Trash className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <OrderItemsList
+              currentOrder={currentOrder}
+              onUpdateQuantity={onUpdateQuantity}
+              onRemoveItem={onRemoveItem}
+            />
 
             <div className="border-t pt-4 space-y-4">
               <div className="text-right">
@@ -124,82 +85,33 @@ const OrderForm: React.FC<OrderFormProps> = ({
                 </p>
               </div>
 
-              <div className="space-y-3">
-                <Label>Customer Name (Optional)</Label>
-                <Input
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
-                  placeholder="Enter customer name"
-                />
-              </div>
+              <CustomerDetailsForm
+                customerName={customerName}
+                customerNumber={customerNumber}
+                customerLocationText={customerLocationText}
+                onCustomerNameChange={setCustomerName}
+                onCustomerNumberChange={setCustomerNumber}
+                onCustomerLocationChange={setCustomerLocationText}
+              />
 
-              <div className="space-y-3">
-                <Label>Customer Number (Optional)</Label>
-                <Input
-                  value={customerNumber}
-                  onChange={(e) => setCustomerNumber(e.target.value)}
-                  placeholder="Enter customer phone number"
-                  type="tel"
-                />
-              </div>
-
-              <div className="space-y-3">
-                <Label>Customer Location (Optional)</Label>
-                <Input
-                  value={customerLocationText}
-                  onChange={(e) => setCustomerLocationText(e.target.value)}
-                  placeholder="Enter customer address or location"
-                />
-              </div>
-
-              <div className="space-y-3">
-                <Label>Order Type</Label>
-                <RadioGroup value={orderType} onValueChange={(value: 'pickup' | 'delivery') => setOrderType(value)}>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="pickup" id="pickup" />
-                    <Label htmlFor="pickup">Pickup</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="delivery" id="delivery" />
-                    <Label htmlFor="delivery">Delivery</Label>
-                  </div>
-                </RadioGroup>
-              </div>
+              <OrderTypeSelector
+                orderType={orderType}
+                onOrderTypeChange={setOrderType}
+              />
 
               {orderType === 'delivery' && (
-                <div className="space-y-2">
-                  <Label>Select Rider</Label>
-                  <Select value={riderNumber} onValueChange={setRiderNumber}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Choose a rider" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {RIDERS.map(rider => (
-                        <SelectItem key={rider.id} value={rider.id}>
-                          {rider.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                <RiderSelector
+                  riderNumber={riderNumber}
+                  onRiderChange={setRiderNumber}
+                />
               )}
 
-              <div className="flex gap-2">
-                <Button
-                  onClick={handleSubmit}
-                  className="flex-1 bg-timelexx-red hover:bg-timelexx-red/90"
-                  disabled={orderType === 'delivery' && !riderNumber}
-                >
-                  Place Order
-                </Button>
-                <Button
-                  onClick={onClearOrder}
-                  variant="outline"
-                  className="border-timelexx-red text-timelexx-red hover:bg-timelexx-red hover:text-white"
-                >
-                  Clear
-                </Button>
-              </div>
+              <OrderFormActions
+                onSubmit={handleSubmit}
+                onClear={onClearOrder}
+                isDelivery={orderType === 'delivery'}
+                hasRider={!!riderNumber}
+              />
             </div>
           </>
         )}
