@@ -3,17 +3,20 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Clock, CheckCircle, XCircle, Truck, MapPin, Trash2 } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
+import { Clock, CheckCircle, XCircle, Truck, MapPin, Trash2, CreditCard } from 'lucide-react';
 import { Order } from '@/types';
 
 interface OrderTrackerProps {
   orders: Order[];
-  onUpdateStatus: (orderId: string, status: Order['status']) => void;
+  onUpdateStatus: (orderId: string, status: Order['status'], paymentMethod?: 'Cash' | 'MoMo') => void;
   onResetOrders: () => void;
 }
 
 const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onResetOrders }) => {
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [selectedPaymentMethods, setSelectedPaymentMethods] = useState<Record<string, 'Cash' | 'MoMo'>>({});
 
   const getTimePending = (order: Order) => {
     const now = Date.now();
@@ -55,13 +58,44 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onR
       .join(', ');
   };
 
+  const getPaymentMethodBadge = (paymentMethod?: string) => {
+    if (!paymentMethod) return null;
+    
+    return (
+      <Badge variant="outline" className="flex items-center gap-1">
+        <CreditCard className="w-3 h-3" />
+        {paymentMethod}
+      </Badge>
+    );
+  };
+
+  const handlePaymentMethodChange = (orderId: string, paymentMethod: 'Cash' | 'MoMo') => {
+    setSelectedPaymentMethods(prev => ({
+      ...prev,
+      [orderId]: paymentMethod
+    }));
+  };
+
+  const handleMarkAsDelivered = (orderId: string) => {
+    const paymentMethod = selectedPaymentMethods[orderId];
+    if (paymentMethod) {
+      onUpdateStatus(orderId, 'delivered', paymentMethod);
+      // Clear the selected payment method after marking as delivered
+      setSelectedPaymentMethods(prev => {
+        const newState = { ...prev };
+        delete newState[orderId];
+        return newState;
+      });
+    }
+  };
+
   const handleResetOrders = () => {
     if (showResetConfirm) {
       onResetOrders();
       setShowResetConfirm(false);
     } else {
       setShowResetConfirm(true);
-      setTimeout(() => setShowResetConfirm(false), 3000); // Auto-hide after 3 seconds
+      setTimeout(() => setShowResetConfirm(false), 3000);
     }
   };
 
@@ -126,12 +160,32 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onR
                       </div>
                       <span className="font-bold">Total: ₵{order.total}</span>
                     </div>
+
+                    {/* Payment Method Selection */}
+                    <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                      <Label className="text-sm font-medium mb-2 block">Select Payment Method:</Label>
+                      <RadioGroup
+                        value={selectedPaymentMethods[order.id] || ''}
+                        onValueChange={(value) => handlePaymentMethodChange(order.id, value as 'Cash' | 'MoMo')}
+                        className="flex gap-4"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="Cash" id={`cash-${order.id}`} />
+                          <Label htmlFor={`cash-${order.id}`}>Cash</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="MoMo" id={`momo-${order.id}`} />
+                          <Label htmlFor={`momo-${order.id}`}>MoMo</Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
                     
                     <div className="flex gap-2">
                       <Button
-                        onClick={() => onUpdateStatus(order.id, 'delivered')}
+                        onClick={() => handleMarkAsDelivered(order.id)}
                         className="bg-green-500 hover:bg-green-600 text-white"
                         size="sm"
+                        disabled={!selectedPaymentMethods[order.id]}
                       >
                         Mark Delivered
                       </Button>
@@ -173,11 +227,16 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onR
                           {order.orderType === 'delivery' && order.customerLocation?.address && (<p>{order.customerLocation.address}</p>)}
                         </div>
                         <p className="text-lg mt-2">{getOrderSummary(order)}</p>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {order.timestamp.toLocaleDateString()} at {order.timestamp.toLocaleTimeString()} - ₵{order.total}
-                        </p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <p className="text-sm text-muted-foreground">
+                            {order.timestamp.toLocaleDateString()} at {order.timestamp.toLocaleTimeString()} - ₵{order.total}
+                          </p>
+                          {order.paymentMethod && getPaymentMethodBadge(order.paymentMethod)}
+                        </div>
                       </div>
-                      {getStatusBadge(order)}
+                      <div className="flex flex-col items-end gap-1">
+                        {getStatusBadge(order)}
+                      </div>
                     </div>
                   </CardContent>
                 </Card>

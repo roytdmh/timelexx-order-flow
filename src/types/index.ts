@@ -27,6 +27,7 @@ export interface Order {
     address: string;
     coordinates: [number, number];
   };
+  paymentMethod?: 'Cash' | 'MoMo';
 }
 
 export interface DailySummary {

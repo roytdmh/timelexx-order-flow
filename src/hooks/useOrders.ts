@@ -72,15 +72,15 @@ export const useOrders = () => {
     });
   };
 
-  const updateOrderStatus = (orderId: string, status: Order['status']) => {
+  const updateOrderStatus = (orderId: string, status: Order['status'], paymentMethod?: 'Cash' | 'MoMo') => {
     setOrders(prev => prev.map(order => 
       order.id === orderId 
-        ? { ...order, status }
+        ? { ...order, status, ...(paymentMethod && { paymentMethod }) }
         : order
     ));
     
     const statusMessages = {
-      delivered: "Order marked as delivered",
+      delivered: paymentMethod ? `Order marked as delivered (Payment: ${paymentMethod})` : "Order marked as delivered",
       cancelled: "Order has been cancelled",
       pending: "Order marked as pending"
     };

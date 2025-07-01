@@ -2,6 +2,18 @@
 import { Order, DailySummary } from '@/types';
 import jsPDF from 'jspdf';
 
+// Map rider numbers to names
+const getRiderName = (riderNumber?: string): string => {
+  switch (riderNumber) {
+    case 'Rider 001':
+      return 'Asante';
+    case 'Rider 002':
+      return 'Savior';
+    default:
+      return riderNumber || '';
+  }
+};
+
 export const generateDailyReport = (summary: DailySummary, orders: Order[]): string => {
   const today = new Date().toLocaleDateString();
   const todaysOrders = orders.filter(order => {
@@ -20,6 +32,18 @@ export const generateDailyReport = (summary: DailySummary, orders: Order[]): str
   report += `Total Orders: ${summary.totalOrders}\n`;
   report += `Total Revenue: ₵${summary.totalRevenue}\n`;
   report += `Average Order Value: ₵${summary.totalOrders > 0 ? Math.round(summary.totalRevenue / summary.totalOrders) : 0}\n\n`;
+
+  // Payment Method Summary
+  const deliveredOrders = todaysOrders.filter(order => order.status === 'delivered');
+  const cashOrders = deliveredOrders.filter(order => order.paymentMethod === 'Cash');
+  const momoOrders = deliveredOrders.filter(order => order.paymentMethod === 'MoMo');
+  const cashRevenue = cashOrders.reduce((sum, order) => sum + order.total, 0);
+  const momoRevenue = momoOrders.reduce((sum, order) => sum + order.total, 0);
+
+  report += `PAYMENT METHOD BREAKDOWN\n`;
+  report += `${'-'.repeat(30)}\n`;
+  report += `Cash Payments: ${cashOrders.length} orders - ₵${cashRevenue}\n`;
+  report += `MoMo Payments: ${momoOrders.length} orders - ₵${momoRevenue}\n\n`;
 
   // Best and Worst Performing Items
   report += `PERFORMANCE ANALYSIS\n`;
@@ -49,7 +73,6 @@ export const generateDailyReport = (summary: DailySummary, orders: Order[]): str
   // Order Details
   report += `ORDER DETAILS\n`;
   report += `${'-'.repeat(20)}\n`;
-  const deliveredOrders = todaysOrders.filter(order => order.status === 'delivered');
   const cancelledOrders = todaysOrders.filter(order => order.status === 'cancelled');
   const pendingOrders = todaysOrders.filter(order => order.status === 'pending');
 
@@ -75,9 +98,12 @@ export const generateDailyReport = (summary: DailySummary, orders: Order[]): str
       }
       report += `  Type: ${order.orderType.toUpperCase()}`;
       if (order.riderNumber) {
-        report += ` (${order.riderNumber})`;
+        report += ` (${getRiderName(order.riderNumber)})`;
       }
       report += `\n`;
+      if (order.paymentMethod) {
+        report += `  Payment Method: ${order.paymentMethod}\n`;
+      }
       order.items.forEach(item => {
         report += `  - ${item.menuItem.name} x${item.quantity} = ₵${item.menuItem.price * item.quantity}\n`;
       });
@@ -102,9 +128,12 @@ export const generateDailyReport = (summary: DailySummary, orders: Order[]): str
       }
       report += `  Type: ${order.orderType.toUpperCase()}`;
       if (order.riderNumber) {
-        report += ` (${order.riderNumber})`;
+        report += ` (${getRiderName(order.riderNumber)})`;
       }
       report += `\n`;
+      if (order.paymentMethod) {
+        report += `  Payment Method: ${order.paymentMethod}\n`;
+      }
       order.items.forEach(item => {
         report += `  - ${item.menuItem.name} x${item.quantity} = ₵${item.menuItem.price * item.quantity}\n`;
       });
