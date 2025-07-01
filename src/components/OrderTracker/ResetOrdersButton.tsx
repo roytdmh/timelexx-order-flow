@@ -26,15 +26,9 @@ const ResetOrdersButton: React.FC<ResetOrdersButtonProps> = ({ onResetOrders }) 
         onClick={handleResetOrders}
         variant={showResetConfirm ? "destructive" : "outline"}
         size="lg"
-        className={`
-          button-modern shadow-2xl backdrop-blur-sm border-0 font-medium px-6 py-4 rounded-2xl smooth-transition
-          ${showResetConfirm 
-            ? 'bg-gradient-to-r from-red-500 to-red-600 text-white animate-pulse shadow-red-200' 
-            : 'glass-effect text-gray-700 hover:shadow-xl hover:scale-105'
-          }
-        `}
+        className={`shadow-lg ${showResetConfirm ? 'animate-pulse' : ''}`}
       >
-        <Trash2 className="w-5 h-5 mr-2" />
+        <Trash2 className="w-4 h-4 mr-2" />
         {showResetConfirm ? 'Confirm Reset?' : 'Reset All Orders'}
       </Button>
     </div>
