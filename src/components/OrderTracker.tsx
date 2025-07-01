@@ -40,29 +40,39 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onR
   const recentOrders = orders.slice(0, 10);
 
   return (
-    <div className="space-y-6 relative">
+    <div className="space-y-8 relative animate-fade-slide-in">
       {/* Pending Orders - Priority Section */}
-      <Card className="border-2 border-timelexx-red">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-timelexx-red">
-            <Clock className="w-5 h-5" />
+      <Card className="modern-card border-2 border-gradient-to-r from-timelexx-red/20 to-timelexx-yellow/20 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-red-50/50 to-yellow-50/50 pointer-events-none"></div>
+        <CardHeader className="relative z-10 pb-4">
+          <CardTitle className="flex items-center gap-3 text-timelexx-red text-2xl font-bold">
+            <div className="p-2 bg-gradient-to-r from-timelexx-red to-timelexx-yellow rounded-xl text-white shadow-lg">
+              <Clock className="w-6 h-6" />
+            </div>
             Pending Orders ({pendingOrders.length})
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="relative z-10 pt-0">
           {pendingOrders.length === 0 ? (
-            <p className="text-center text-muted-foreground py-4">No pending orders</p>
+            <div className="text-center py-12">
+              <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
+                <Clock className="w-8 h-8 text-gray-400" />
+              </div>
+              <p className="text-muted-foreground text-lg">No pending orders</p>
+              <p className="text-muted-foreground/70 text-sm mt-1">All caught up! 🎉</p>
+            </div>
           ) : (
-            <div className="space-y-3">
-              {pendingOrders.map(order => (
-                <PendingOrderCard
-                  key={order.id}
-                  order={order}
-                  selectedPaymentMethod={selectedPaymentMethods[order.id]}
-                  onPaymentMethodChange={handlePaymentMethodChange}
-                  onMarkAsDelivered={handleMarkAsDelivered}
-                  onUpdateStatus={onUpdateStatus}
-                />
+            <div className="space-y-4">
+              {pendingOrders.map((order, index) => (
+                <div key={order.id} className="animate-fade-slide-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <PendingOrderCard
+                    order={order}
+                    selectedPaymentMethod={selectedPaymentMethods[order.id]}
+                    onPaymentMethodChange={handlePaymentMethodChange}
+                    onMarkAsDelivered={handleMarkAsDelivered}
+                    onUpdateStatus={onUpdateStatus}
+                  />
+                </div>
               ))}
             </div>
           )}
@@ -70,17 +80,30 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onR
       </Card>
 
       {/* Recent Orders */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-timelexx-dark">Recent Orders</CardTitle>
+      <Card className="modern-card overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-gray-50 to-white border-b border-gray-100/50">
+          <CardTitle className="text-timelexx-dark text-2xl font-bold flex items-center gap-3">
+            <div className="p-2 bg-gradient-to-r from-gray-600 to-gray-700 rounded-xl text-white shadow-lg">
+              <Clock className="w-6 h-6" />
+            </div>
+            Recent Orders
+          </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           {recentOrders.length === 0 ? (
-            <p className="text-center text-muted-foreground py-4">No orders yet</p>
+            <div className="text-center py-12">
+              <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
+                <FileText className="w-8 h-8 text-gray-400" />
+              </div>
+              <p className="text-muted-foreground text-lg">No orders yet</p>
+              <p className="text-muted-foreground/70 text-sm mt-1">Start by creating your first order</p>
+            </div>
           ) : (
-            <div className="space-y-3">
-              {recentOrders.map(order => (
-                <RecentOrderCard key={order.id} order={order} />
+            <div className="space-y-4">
+              {recentOrders.map((order, index) => (
+                <div key={order.id} className="animate-fade-slide-in" style={{ animationDelay: `${index * 0.05}s` }}>
+                  <RecentOrderCard order={order} />
+                </div>
               ))}
             </div>
           )}
