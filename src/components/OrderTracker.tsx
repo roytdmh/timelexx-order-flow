@@ -1,13 +1,11 @@
 
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
-import { Clock, CheckCircle, XCircle, Truck, MapPin, Trash2, CreditCard } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import { Order } from '@/types';
-import { getRiderDisplayName } from '@/data/riders';
+import PendingOrderCard from './OrderTracker/PendingOrderCard';
+import RecentOrderCard from './OrderTracker/RecentOrderCard';
+import ResetOrdersButton from './OrderTracker/ResetOrdersButton';
 
 interface OrderTrackerProps {
   orders: Order[];
@@ -16,59 +14,7 @@ interface OrderTrackerProps {
 }
 
 const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onResetOrders }) => {
-  const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [selectedPaymentMethods, setSelectedPaymentMethods] = useState<Record<string, 'Cash' | 'MoMo'>>({});
-
-  const getTimePending = (order: Order) => {
-    const now = Date.now();
-    const timeDiff = now - order.timestamp.getTime();
-    return Math.floor(timeDiff / (1000 * 60)); // minutes
-  };
-
-  const getStatusColor = (order: Order) => {
-    if (order.status !== 'pending') return '';
-    
-    const minutes = getTimePending(order);
-    if (minutes >= 90) return 'order-card-pending-90';
-    if (minutes >= 60) return 'order-card-pending-60';
-    if (minutes >= 30) return 'order-card-pending-30';
-    return '';
-  };
-
-  const getStatusBadge = (order: Order) => {
-    const minutes = getTimePending(order);
-    
-    switch (order.status) {
-      case 'delivered':
-        return <Badge className="bg-green-500"><CheckCircle className="w-4 h-4 mr-1" />Delivered</Badge>;
-      case 'cancelled':
-        return <Badge variant="destructive"><XCircle className="w-4 h-4 mr-1" />Cancelled</Badge>;
-      case 'pending':
-        if (minutes >= 90) return <Badge variant="destructive"><Clock className="w-4 h-4 mr-1" />Urgent ({minutes}m)</Badge>;
-        if (minutes >= 60) return <Badge className="bg-yellow-500"><Clock className="w-4 h-4 mr-1" />Delayed ({minutes}m)</Badge>;
-        if (minutes >= 30) return <Badge className="bg-orange-500"><Clock className="w-4 h-4 mr-1" />Pending ({minutes}m)</Badge>;
-        return <Badge className="bg-green-500"><Clock className="w-4 h-4 mr-1" />Fresh ({minutes}m)</Badge>;
-      default:
-        return null;
-    }
-  };
-
-  const getOrderSummary = (order: Order) => {
-    return order.items
-      .map(item => `${item.menuItem.name} x${item.quantity}`)
-      .join(', ');
-  };
-
-  const getPaymentMethodBadge = (paymentMethod?: string) => {
-    if (!paymentMethod) return null;
-    
-    return (
-      <Badge variant="outline" className="flex items-center gap-1">
-        <CreditCard className="w-3 h-3" />
-        {paymentMethod}
-      </Badge>
-    );
-  };
 
   const handlePaymentMethodChange = (orderId: string, paymentMethod: 'Cash' | 'MoMo') => {
     setSelectedPaymentMethods(prev => ({
@@ -87,16 +33,6 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onR
         delete newState[orderId];
         return newState;
       });
-    }
-  };
-
-  const handleResetOrders = () => {
-    if (showResetConfirm) {
-      onResetOrders();
-      setShowResetConfirm(false);
-    } else {
-      setShowResetConfirm(true);
-      setTimeout(() => setShowResetConfirm(false), 3000);
     }
   };
 
@@ -119,87 +55,14 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onR
           ) : (
             <div className="space-y-3">
               {pendingOrders.map(order => (
-                <Card key={order.id} className={`${getStatusColor(order)} transition-all duration-200`}>
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-start mb-3">
-                      <div>
-                        <p className="font-semibold">Order #{order.id.slice(-6)}</p>
-                        <div className="text-sm text-muted-foreground mt-2 space-y-1">
-                          {order.customerName && (
-                            <p><strong>Customer:</strong> {order.customerName}</p>
-                          )}
-                          {order.customerNumber && (
-                            <p><strong>Phone:</strong> {order.customerNumber}</p>
-                          )}
-                          {order.orderType === 'delivery' && order.customerLocation?.address && (
-                            <p><strong>Location:</strong> {order.customerLocation.address}</p>
-                          )}
-                        </div>
-                        <p className="text-sm text-muted-foreground mt-2">
-                          {order.timestamp.toLocaleDateString()} at {order.timestamp.toLocaleTimeString()}
-                        </p>
-                      </div>
-                      {getStatusBadge(order)}
-                    </div>
-                    
-                    <div className="mb-3">
-                      {order.items.map(item => (
-                        <div key={item.menuItem.id} className="flex justify-between items-center">
-                          <span>{item.menuItem.icon} {item.menuItem.name} x{item.quantity}</span>
-                          <span>₵{item.menuItem.price * item.quantity}</span>
-                        </div>
-                      ))}
-                    </div>
-                    
-                    <div className="flex justify-between items-center mb-3">
-                      <div className="flex items-center gap-2">
-                        {order.orderType === 'delivery' ? (
-                          <><Truck className="w-4 h-4" /> Delivery - {getRiderDisplayName(order.riderNumber || '')}</>
-                        ) : (
-                          <><MapPin className="w-4 h-4" /> Pickup</>
-                        )}
-                      </div>
-                      <span className="font-bold">Total: ₵{order.total}</span>
-                    </div>
-
-                    {/* Payment Method Selection */}
-                    <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                      <Label className="text-sm font-medium mb-2 block">Select Payment Method:</Label>
-                      <RadioGroup
-                        value={selectedPaymentMethods[order.id] || ''}
-                        onValueChange={(value) => handlePaymentMethodChange(order.id, value as 'Cash' | 'MoMo')}
-                        className="flex gap-4"
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="Cash" id={`cash-${order.id}`} />
-                          <Label htmlFor={`cash-${order.id}`}>Cash</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="MoMo" id={`momo-${order.id}`} />
-                          <Label htmlFor={`momo-${order.id}`}>MoMo</Label>
-                        </div>
-                      </RadioGroup>
-                    </div>
-                    
-                    <div className="flex gap-2">
-                      <Button
-                        onClick={() => handleMarkAsDelivered(order.id)}
-                        className="bg-green-500 hover:bg-green-600 text-white"
-                        size="sm"
-                        disabled={!selectedPaymentMethods[order.id]}
-                      >
-                        Mark Delivered
-                      </Button>
-                      <Button
-                        onClick={() => onUpdateStatus(order.id, 'cancelled')}
-                        variant="destructive"
-                        size="sm"
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                <PendingOrderCard
+                  key={order.id}
+                  order={order}
+                  selectedPaymentMethod={selectedPaymentMethods[order.id]}
+                  onPaymentMethodChange={handlePaymentMethodChange}
+                  onMarkAsDelivered={handleMarkAsDelivered}
+                  onUpdateStatus={onUpdateStatus}
+                />
               ))}
             </div>
           )}
@@ -217,51 +80,14 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onR
           ) : (
             <div className="space-y-3">
               {recentOrders.map(order => (
-                <Card key={order.id} className="border">
-                  <CardContent className="p-3">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <p className="font-medium">Order #{order.id.slice(-6)}</p>
-                        <div className="text-sm text-muted-foreground mt-1 space-y-0.5">
-                          {order.customerName && (<p>{order.customerName}</p>)}
-                          {order.customerNumber && (<p>{order.customerNumber}</p>)}
-                          {order.orderType === 'delivery' && order.customerLocation?.address && (<p>{order.customerLocation.address}</p>)}
-                          {order.orderType === 'delivery' && order.riderNumber && (
-                            <p><strong>Rider:</strong> {getRiderDisplayName(order.riderNumber)}</p>
-                          )}
-                        </div>
-                        <p className="text-lg mt-2">{getOrderSummary(order)}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <p className="text-sm text-muted-foreground">
-                            {order.timestamp.toLocaleDateString()} at {order.timestamp.toLocaleTimeString()} - ₵{order.total}
-                          </p>
-                          {order.paymentMethod && getPaymentMethodBadge(order.paymentMethod)}
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-end gap-1">
-                        {getStatusBadge(order)}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <RecentOrderCard key={order.id} order={order} />
               ))}
             </div>
           )}
         </CardContent>
       </Card>
 
-      {/* Reset Button - Fixed position at bottom right */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <Button
-          onClick={handleResetOrders}
-          variant={showResetConfirm ? "destructive" : "outline"}
-          size="lg"
-          className={`shadow-lg ${showResetConfirm ? 'animate-pulse' : ''}`}
-        >
-          <Trash2 className="w-4 h-4 mr-2" />
-          {showResetConfirm ? 'Confirm Reset?' : 'Reset All Orders'}
-        </Button>
-      </div>
+      <ResetOrdersButton onResetOrders={onResetOrders} />
     </div>
   );
 };
