@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Trash, Plus, Clock } from 'lucide-react';
 import { MenuItem, OrderItem } from '@/types';
+import { RIDERS, getRiderDisplayName } from '@/data/riders';
 import LocationPicker from './LocationPicker';
 
 interface OrderFormProps {
@@ -61,8 +63,6 @@ const OrderForm: React.FC<OrderFormProps> = ({
     setCustomerNumber('');
     setCustomerLocationText('');
   };
-
-  const riders = ['Rider 001', 'Rider 002', 'Rider 003', 'Rider 004', 'Rider 005'];
 
   return (
     <Card className="border-2 border-timelexx-yellow">
@@ -174,9 +174,9 @@ const OrderForm: React.FC<OrderFormProps> = ({
                       <SelectValue placeholder="Choose a rider" />
                     </SelectTrigger>
                     <SelectContent>
-                      {riders.map(rider => (
-                        <SelectItem key={rider} value={rider}>
-                          {rider}
+                      {RIDERS.map(rider => (
+                        <SelectItem key={rider.id} value={rider.id}>
+                          {rider.name}
                         </SelectItem>
                       ))}
                     </SelectContent>

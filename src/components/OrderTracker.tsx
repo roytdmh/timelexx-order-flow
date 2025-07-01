@@ -7,6 +7,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Clock, CheckCircle, XCircle, Truck, MapPin, Trash2, CreditCard } from 'lucide-react';
 import { Order } from '@/types';
+import { getRiderDisplayName } from '@/data/riders';
 
 interface OrderTrackerProps {
   orders: Order[];
@@ -153,7 +154,7 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onR
                     <div className="flex justify-between items-center mb-3">
                       <div className="flex items-center gap-2">
                         {order.orderType === 'delivery' ? (
-                          <><Truck className="w-4 h-4" /> Delivery - {order.riderNumber}</>
+                          <><Truck className="w-4 h-4" /> Delivery - {getRiderDisplayName(order.riderNumber || '')}</>
                         ) : (
                           <><MapPin className="w-4 h-4" /> Pickup</>
                         )}
@@ -225,6 +226,9 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onR
                           {order.customerName && (<p>{order.customerName}</p>)}
                           {order.customerNumber && (<p>{order.customerNumber}</p>)}
                           {order.orderType === 'delivery' && order.customerLocation?.address && (<p>{order.customerLocation.address}</p>)}
+                          {order.orderType === 'delivery' && order.riderNumber && (
+                            <p><strong>Rider:</strong> {getRiderDisplayName(order.riderNumber)}</p>
+                          )}
                         </div>
                         <p className="text-lg mt-2">{getOrderSummary(order)}</p>
                         <div className="flex items-center gap-2 mt-1">
