@@ -44,7 +44,7 @@ const PendingOrderCard: React.FC<PendingOrderCardProps> = ({
     
     switch (order.status) {
       case 'delivered':
-        return <Badge className="bg-green-500"><CheckCircle className="w-4 h-4 mr-1" />Delivered</Badge>;
+        return <Badge className="bg-gray-500"><CheckCircle className="w-4 h-4 mr-1" />Delivered</Badge>;
       case 'cancelled':
         return <Badge variant="destructive"><XCircle className="w-4 h-4 mr-1" />Cancelled</Badge>;
       case 'pending':

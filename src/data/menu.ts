@@ -152,4 +152,11 @@ export const menuItems: MenuItem[] = [
     icon: '🥟',
     category: 'Sides',
   },
+  {
+    id: '22',
+    name: 'Feel Good Coconut',
+    price: 10,
+    icon: '🥥',
+    category: 'Drinks',
+  },
 ];
