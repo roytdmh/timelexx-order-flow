@@ -19,7 +19,7 @@ const MenuDisplay: React.FC<MenuDisplayProps> = ({ onAddToOrder }) => {
     return acc;
   }, {} as Record<string, MenuItem[]>);
 
-  const categoryOrder: (keyof typeof menuByCategory)[] = ['Mains', 'Drinks'];
+  const categoryOrder: (keyof typeof menuByCategory)[] = ['Mains', 'Sides', 'Drinks'];
 
   return (
     <div className="space-y-8">

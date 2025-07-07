@@ -4,7 +4,7 @@ export interface MenuItem {
   name: string;
   price: number;
   icon: string;
-  category: 'Mains' | 'Drinks';
+  category: 'Mains' | 'Drinks' | 'Sides';
   description?: string;
 }
 
