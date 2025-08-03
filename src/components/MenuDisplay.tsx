@@ -4,13 +4,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { MenuItem } from '@/types';
-import { menuItems } from '@/data/menu';
+import { useSupabaseMenu } from '@/hooks/useSupabaseMenu';
 
 interface MenuDisplayProps {
   onAddToOrder: (item: MenuItem) => void;
 }
 
 const MenuDisplay: React.FC<MenuDisplayProps> = ({ onAddToOrder }) => {
+  const { menuItems, loading } = useSupabaseMenu();
+  
   const menuByCategory = menuItems.reduce((acc, item) => {
     if (!acc[item.category]) {
       acc[item.category] = [];
@@ -19,7 +21,15 @@ const MenuDisplay: React.FC<MenuDisplayProps> = ({ onAddToOrder }) => {
     return acc;
   }, {} as Record<string, MenuItem[]>);
 
-  const categoryOrder: (keyof typeof menuByCategory)[] = ['Mains', 'Sides', 'Drinks'];
+  const categoryOrder: ('Mains' | 'Sides' | 'Drinks')[] = ['Mains', 'Sides', 'Drinks'];
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center py-8">
+        <div className="text-lg">Loading menu...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
