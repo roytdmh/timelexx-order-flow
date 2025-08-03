@@ -7,7 +7,7 @@ import OrderForm from '@/components/OrderForm';
 import OrderTracker from '@/components/OrderTracker';
 import Analytics from '@/components/Analytics';
 import Reports from '@/components/Reports';
-import { useSupabaseOrders } from '@/hooks/useSupabaseOrders';
+import { useOrders } from '@/hooks/useOrders';
 import { MenuItem, OrderItem } from '@/types';
 import { downloadReportAsPDF } from '@/utils/reportGenerator';
 
@@ -22,7 +22,7 @@ const Index = () => {
     resetAllOrders,
     getTodaysOrders, 
     getDailySummary 
-  } = useSupabaseOrders();
+  } = useOrders();
 
   const handleAddToOrder = (menuItem: MenuItem) => {
     setCurrentOrder(prev => {

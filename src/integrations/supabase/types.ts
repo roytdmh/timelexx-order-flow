@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instanciate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "12.2.12 (cd3cf9e)"
+    PostgrestVersion: "12.2.3 (519615d)"
   }
   public: {
     Tables: {
@@ -138,126 +138,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      menu_items: {
-        Row: {
-          category: string
-          created_at: string
-          description: string | null
-          icon: string
-          id: string
-          name: string
-          price: number
-          updated_at: string
-        }
-        Insert: {
-          category: string
-          created_at?: string
-          description?: string | null
-          icon: string
-          id?: string
-          name: string
-          price: number
-          updated_at?: string
-        }
-        Update: {
-          category?: string
-          created_at?: string
-          description?: string | null
-          icon?: string
-          id?: string
-          name?: string
-          price?: number
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      order_items: {
-        Row: {
-          created_at: string
-          id: string
-          menu_item_id: string
-          order_id: string
-          quantity: number
-          unit_price: number
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          menu_item_id: string
-          order_id: string
-          quantity: number
-          unit_price: number
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          menu_item_id?: string
-          order_id?: string
-          quantity?: number
-          unit_price?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "order_items_menu_item_id_fkey"
-            columns: ["menu_item_id"]
-            isOneToOne: false
-            referencedRelation: "menu_items"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "order_items_order_id_fkey"
-            columns: ["order_id"]
-            isOneToOne: false
-            referencedRelation: "orders"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      orders: {
-        Row: {
-          created_at: string
-          customer_address: string | null
-          customer_coordinates: Json | null
-          customer_name: string | null
-          customer_number: string | null
-          id: string
-          order_type: string
-          payment_method: string | null
-          rider_number: string | null
-          status: string
-          total: number
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          customer_address?: string | null
-          customer_coordinates?: Json | null
-          customer_name?: string | null
-          customer_number?: string | null
-          id?: string
-          order_type: string
-          payment_method?: string | null
-          rider_number?: string | null
-          status?: string
-          total: number
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          customer_address?: string | null
-          customer_coordinates?: Json | null
-          customer_name?: string | null
-          customer_number?: string | null
-          id?: string
-          order_type?: string
-          payment_method?: string | null
-          rider_number?: string | null
-          status?: string
-          total?: number
-          updated_at?: string
-        }
-        Relationships: []
       }
       price_data: {
         Row: {
