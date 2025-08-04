@@ -13,6 +13,15 @@ interface MenuDisplayProps {
 const MenuDisplay: React.FC<MenuDisplayProps> = ({ onAddToOrder }) => {
   const { menuItems, loading } = useSupabaseMenu();
   
+  // Custom order for Mains category
+  const mainsOrder = [
+    "Jollof & Chicken",
+    "Chicken Shawarma", 
+    "Beef Shawarma",
+    "Chicken & Beef Shawarma",
+    "Loaded Fries"
+  ];
+  
   const menuByCategory = menuItems.reduce((acc, item) => {
     if (!acc[item.category]) {
       acc[item.category] = [];
@@ -20,6 +29,26 @@ const MenuDisplay: React.FC<MenuDisplayProps> = ({ onAddToOrder }) => {
     acc[item.category].push(item);
     return acc;
   }, {} as Record<string, MenuItem[]>);
+
+  // Apply custom ordering to Mains category
+  if (menuByCategory['Mains']) {
+    menuByCategory['Mains'] = menuByCategory['Mains'].sort((a, b) => {
+      const indexA = mainsOrder.indexOf(a.name);
+      const indexB = mainsOrder.indexOf(b.name);
+      
+      // If both items are in the custom order, sort by that order
+      if (indexA !== -1 && indexB !== -1) {
+        return indexA - indexB;
+      }
+      
+      // If only one item is in the custom order, prioritize it
+      if (indexA !== -1) return -1;
+      if (indexB !== -1) return 1;
+      
+      // If neither is in the custom order, sort alphabetically
+      return a.name.localeCompare(b.name);
+    });
+  }
 
   const categoryOrder: ('Mains' | 'Sides' | 'Drinks')[] = ['Mains', 'Drinks'];
 
