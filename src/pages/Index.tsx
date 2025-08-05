@@ -1,19 +1,41 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
 import MenuDisplay from '@/components/MenuDisplay';
 import OrderForm from '@/components/OrderForm';
+import CustomerOrderForm from '@/components/CustomerOrderForm';
 import OrderTracker from '@/components/OrderTracker';
 import Analytics from '@/components/Analytics';
 import Reports from '@/components/Reports';
 import { useSupabaseOrders } from '@/hooks/useSupabaseOrders';
+import { useAuth } from '@/contexts/AuthContext';
 import { MenuItem, OrderItem } from '@/types';
 import { downloadReportAsPDF } from '@/utils/reportGenerator';
 
 const Index = () => {
+  const { profile } = useAuth();
   const [activeTab, setActiveTab] = useState('menu');
   const [currentOrder, setCurrentOrder] = useState<OrderItem[]>([]);
+
+  // Set default tab based on user role
+  useEffect(() => {
+    if (profile?.role) {
+      switch (profile.role) {
+        case 'timelexx_kitchen':
+          setActiveTab('menu');
+          break;
+        case 'customer_hub':
+          setActiveTab('menu');
+          break;
+        case 'timelexx_riders':
+          setActiveTab('tracker');
+          break;
+        default:
+          setActiveTab('menu');
+      }
+    }
+  }, [profile?.role]);
   
   const { 
     orders, 
@@ -100,13 +122,23 @@ const Index = () => {
               <MenuDisplay onAddToOrder={handleAddToOrder} />
             </div>
             <div>
-              <OrderForm
-                currentOrder={currentOrder}
-                onUpdateQuantity={handleUpdateQuantity}
-                onRemoveItem={handleRemoveItem}
-                onSubmitOrder={handleSubmitOrder}
-                onClearOrder={handleClearOrder}
-              />
+              {profile?.role === 'customer_hub' ? (
+                <CustomerOrderForm
+                  currentOrder={currentOrder}
+                  onUpdateQuantity={handleUpdateQuantity}
+                  onRemoveItem={handleRemoveItem}
+                  onSubmitOrder={handleSubmitOrder}
+                  onClearOrder={handleClearOrder}
+                />
+              ) : (
+                <OrderForm
+                  currentOrder={currentOrder}
+                  onUpdateQuantity={handleUpdateQuantity}
+                  onRemoveItem={handleRemoveItem}
+                  onSubmitOrder={handleSubmitOrder}
+                  onClearOrder={handleClearOrder}
+                />
+              )}
             </div>
           </div>
         )}

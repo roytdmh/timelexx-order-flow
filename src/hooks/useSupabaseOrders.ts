@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { MenuItem, Order, OrderItem, DailySummary } from '@/types';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const useSupabaseOrders = () => {
+  const { user, profile } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastAlertTime, setLastAlertTime] = useState<Record<string, number>>({});
@@ -111,6 +113,8 @@ export const useSupabaseOrders = () => {
 
   const addOrder = async (orderData: Omit<Order, 'id' | 'timestamp'>) => {
     try {
+      if (!user) throw new Error('User not authenticated');
+
       // Create the order
       const { data: newOrder, error: orderError } = await supabase
         .from('orders')
@@ -126,7 +130,11 @@ export const useSupabaseOrders = () => {
             lat: orderData.customerLocation.coordinates[0],
             lng: orderData.customerLocation.coordinates[1]
           } : null,
-          payment_method: orderData.paymentMethod
+          payment_method: orderData.paymentMethod,
+          customer_user_id: profile?.role === 'customer_hub' ? user.id : null,
+          assigned_rider_id: orderData.riderNumber ? 
+            (await supabase.from('profiles').select('user_id').eq('email', orderData.riderNumber).single())?.data?.user_id 
+            : null
         })
         .select()
         .single();
