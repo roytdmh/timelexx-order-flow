@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_logs: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          id: string
+          resource_id: string | null
+          resource_type: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          resource_id?: string | null
+          resource_type: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          resource_id?: string | null
+          resource_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       budgets: {
         Row: {
           created_at: string
@@ -216,11 +246,13 @@ export type Database = {
       }
       orders: {
         Row: {
+          assigned_rider_id: string | null
           created_at: string
           customer_address: string | null
           customer_coordinates: Json | null
           customer_name: string | null
           customer_number: string | null
+          customer_user_id: string | null
           id: string
           order_type: string
           payment_method: string | null
@@ -230,11 +262,13 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          assigned_rider_id?: string | null
           created_at?: string
           customer_address?: string | null
           customer_coordinates?: Json | null
           customer_name?: string | null
           customer_number?: string | null
+          customer_user_id?: string | null
           id?: string
           order_type: string
           payment_method?: string | null
@@ -244,11 +278,13 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          assigned_rider_id?: string | null
           created_at?: string
           customer_address?: string | null
           customer_coordinates?: Json | null
           customer_name?: string | null
           customer_number?: string | null
+          customer_user_id?: string | null
           id?: string
           order_type?: string
           payment_method?: string | null
@@ -292,15 +328,61 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+          is_active: boolean
+          phone_number: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id?: string
+          is_active?: boolean
+          phone_number?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
+          is_active?: boolean
+          phone_number?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_role: {
+        Args: { user_uuid?: string }
+        Returns: Database["public"]["Enums"]["app_role"]
+      }
+      has_role: {
+        Args: {
+          required_role: Database["public"]["Enums"]["app_role"]
+          user_uuid?: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "timelexx_kitchen" | "customer_hub" | "timelexx_riders"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -427,6 +509,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["timelexx_kitchen", "customer_hub", "timelexx_riders"],
+    },
   },
 } as const
