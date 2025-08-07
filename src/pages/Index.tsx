@@ -5,6 +5,7 @@ import Navigation from '@/components/Navigation';
 import MenuDisplay from '@/components/MenuDisplay';
 import OrderForm from '@/components/OrderForm';
 import OrderTracker from '@/components/OrderTracker';
+import RidersTracker from '@/components/RidersTracker';
 import Analytics from '@/components/Analytics';
 import Reports from '@/components/Reports';
 import { useSupabaseOrders } from '@/hooks/useSupabaseOrders';
@@ -113,6 +114,14 @@ const Index = () => {
 
         {activeTab === 'tracker' && (
           <OrderTracker
+            orders={orders}
+            onUpdateStatus={updateOrderStatus}
+            onResetOrders={resetAllOrders}
+          />
+        )}
+
+        {activeTab === 'riders' && (
+          <RidersTracker
             orders={orders}
             onUpdateStatus={updateOrderStatus}
             onResetOrders={resetAllOrders}
