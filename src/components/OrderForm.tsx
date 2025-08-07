@@ -63,11 +63,11 @@ const OrderForm: React.FC<OrderFormProps> = ({
   };
 
   return (
-    <Card className="border-2 border-timelexx-yellow shadow-premium-md">
+    <Card className="border-2 border-timelexx-yellow">
       <OrderFormHeader />
-      <CardContent className="space-y-4 p-4 sm:p-6">
+      <CardContent className="space-y-4">
         {currentOrder.length === 0 ? (
-          <p className="text-muted-foreground text-center py-6 sm:py-8 text-sm sm:text-base">
+          <p className="text-muted-foreground text-center py-8">
             No items in current order. Add items from the menu above.
           </p>
         ) : (
@@ -80,7 +80,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
 
             <div className="border-t pt-4 space-y-4">
               <div className="text-right">
-                <p className="text-xl sm:text-2xl font-bold text-timelexx-red">
+                <p className="text-2xl font-bold text-timelexx-red">
                   Total: ₵{total}
                 </p>
               </div>

@@ -62,52 +62,47 @@ const PendingOrderCard: React.FC<PendingOrderCardProps> = ({
   };
 
   return (
-    <Card className={`${getStatusColor(order)} transition-all duration-200 shadow-premium-sm`}>
-      <CardContent className="p-3 sm:p-4">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-3 gap-2 sm:gap-0">
-          <div className="flex-1 min-w-0">
-            <p className="font-semibold text-sm sm:text-base">Order #{order.id.slice(-6)}</p>
-            <div className="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-2 space-y-1">
+    <Card className={`${getStatusColor(order)} transition-all duration-200`}>
+      <CardContent className="p-4">
+        <div className="flex justify-between items-start mb-3">
+          <div>
+            <p className="font-semibold">Order #{order.id.slice(-6)}</p>
+            <div className="text-sm text-muted-foreground mt-2 space-y-1">
               {order.customerName && (
-                <p className="truncate"><strong>Customer:</strong> {order.customerName}</p>
+                <p><strong>Customer:</strong> {order.customerName}</p>
               )}
               {order.customerNumber && (
                 <p><strong>Phone:</strong> {order.customerNumber}</p>
               )}
               {order.orderType === 'delivery' && order.customerLocation?.address && (
-                <p className="truncate"><strong>Location:</strong> {order.customerLocation.address}</p>
+                <p><strong>Location:</strong> {order.customerLocation.address}</p>
               )}
             </div>
-            <p className="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-2">
+            <p className="text-sm text-muted-foreground mt-2">
               {order.timestamp.toLocaleDateString()} at {order.timestamp.toLocaleTimeString()}
             </p>
           </div>
-          <div className="flex-shrink-0">
-            {getStatusBadge(order)}
-          </div>
+          {getStatusBadge(order)}
         </div>
         
-        <div className="mb-3 space-y-1">
+        <div className="mb-3">
           {order.items.map(item => (
-            <div key={item.menuItem.id} className="flex justify-between items-center text-sm">
-              <span className="flex items-center gap-1 min-w-0 flex-1">
-                <span className="flex-shrink-0">{item.menuItem.icon}</span>
-                <span className="truncate">{item.menuItem.name} x{item.quantity}</span>
-              </span>
-              <span className="font-medium flex-shrink-0">₵{item.menuItem.price * item.quantity}</span>
+            <div key={item.menuItem.id} className="flex justify-between items-center">
+              <span>{item.menuItem.icon} {item.menuItem.name} x{item.quantity}</span>
+              <span>₵{item.menuItem.price * item.quantity}</span>
             </div>
           ))}
         </div>
         
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-3 gap-2">
-          <div className="flex items-center gap-2 text-sm">
+        <div className="flex justify-between items-center mb-3">
+          <div className="flex items-center gap-2">
             {order.orderType === 'delivery' ? (
-              <><Truck className="w-4 h-4 flex-shrink-0" /> <span className="truncate">Delivery - {getRiderDisplayName(order.riderNumber || '')}</span></>
+              <><Truck className="w-4 h-4" /> Delivery - {getRiderDisplayName(order.riderNumber || '')}</>
             ) : (
-              <><MapPin className="w-4 h-4 flex-shrink-0" /> Pickup</>
+              <><MapPin className="w-4 h-4" /> Pickup</>
             )}
           </div>
-          <span className="font-bold text-sm sm:text-base">Total: ₵{order.total}</span>
+          <span className="font-bold">Total: ₵{order.total}</span>
         </div>
 
         <PaymentMethodSelector
