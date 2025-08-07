@@ -2,7 +2,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Menu, Clock, BarChart3, FileText } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
 
 interface NavigationProps {
   activeTab: string;
@@ -10,20 +9,12 @@ interface NavigationProps {
 }
 
 const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
-  const { profile } = useAuth();
-
-  const getTabsForRole = () => {
-    const allTabs = [
-      { id: 'menu', label: 'Menu & Orders', icon: Menu, roles: ['timelexx_kitchen', 'customer_hub'] },
-      { id: 'tracker', label: 'Order Tracker', icon: Clock, roles: ['timelexx_kitchen', 'timelexx_riders'] },
-      { id: 'analytics', label: 'Analytics', icon: BarChart3, roles: ['timelexx_kitchen'] },
-      { id: 'reports', label: 'Reports', icon: FileText, roles: ['timelexx_kitchen'] },
-    ];
-
-    return allTabs.filter(tab => !profile?.role || tab.roles.includes(profile.role));
-  };
-
-  const tabs = getTabsForRole();
+  const tabs = [
+    { id: 'menu', label: 'Menu & Orders', icon: Menu },
+    { id: 'tracker', label: 'Order Tracker', icon: Clock },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+    { id: 'reports', label: 'Reports', icon: FileText },
+  ];
 
   return (
     <nav className="bg-white border-b-2 border-timelexx-yellow p-4">
