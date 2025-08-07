@@ -28,6 +28,8 @@ export interface Order {
     coordinates: [number, number];
   };
   paymentMethod?: 'Cash' | 'MoMo';
+  assignedRiderId?: string;
+  customerUserId?: string;
 }
 
 export interface DailySummary {
