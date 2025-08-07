@@ -56,29 +56,31 @@ const MenuDisplay: React.FC<MenuDisplayProps> = ({ onAddToOrder }) => {
     <div className="space-y-8">
       {categoryOrder.map(category => menuByCategory[category] && (
         <div key={category}>
-          <h2 className="text-2xl font-bold text-timelexx-dark mb-4">{category}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <h2 className="text-xl sm:text-2xl font-bold text-timelexx-dark mb-4">{category}</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
             {menuByCategory[category].map(item => (
-              <Card key={item.id} className="hover:shadow-lg transition-shadow duration-200 border-2 hover:border-timelexx-yellow flex flex-col">
-                <CardHeader className="text-center pb-3 flex-grow">
-                  <div className="text-4xl mb-2">{item.icon}</div>
-                  <CardTitle className="text-lg text-timelexx-dark h-10 flex items-center justify-center">{item.name}</CardTitle>
+              <Card key={item.id} className="hover:shadow-premium-lg transition-all duration-200 border-2 hover:border-timelexx-yellow flex flex-col shadow-premium-sm">
+                <CardHeader className="text-center pb-3 flex-grow p-3 sm:p-6">
+                  <div className="text-3xl sm:text-4xl mb-2">{item.icon}</div>
+                  <CardTitle className="text-sm sm:text-lg text-timelexx-dark min-h-[2.5rem] flex items-center justify-center">{item.name}</CardTitle>
                   {item.description ? (
-                    <p className="text-xs text-muted-foreground mt-1 h-8">{item.description}</p>
+                    <p className="text-xs text-muted-foreground mt-1 min-h-[2rem] flex items-center justify-center">{item.description}</p>
                   ) : (
-                    <div className="h-8 mt-1"></div>
+                    <div className="min-h-[2rem] mt-1"></div>
                   )}
                 </CardHeader>
-                <CardContent className="text-center space-y-3 mt-auto">
-                  <p className="text-2xl font-bold text-timelexx-red">
+                <CardContent className="text-center space-y-3 mt-auto p-3 sm:p-6">
+                  <p className="text-xl sm:text-2xl font-bold text-timelexx-red">
                     ₵{item.price}
                   </p>
                   <Button 
                     onClick={() => onAddToOrder(item)}
-                    className="w-full bg-timelexx-red hover:bg-timelexx-red/90 text-white"
+                    className="w-full bg-timelexx-red hover:bg-timelexx-red/90 text-white text-sm sm:text-base"
+                    size="sm"
                   >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add to Order
+                    <Plus className="w-4 h-4 mr-1 sm:mr-2" />
+                    <span className="hidden sm:inline">Add to Order</span>
+                    <span className="sm:hidden">Add</span>
                   </Button>
                 </CardContent>
               </Card>

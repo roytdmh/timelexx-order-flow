@@ -126,6 +126,32 @@
   .shadow-premium-2xl {
     box-shadow: var(--shadow-2xl);
   }
+
+  /* Mobile-first responsive utilities */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Smooth scrolling for better mobile experience */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Touch-friendly button sizes */
+  @media (max-width: 768px) {
+    button {
+      min-height: 44px;
+    }
+  }
 }
 
 @layer components {
