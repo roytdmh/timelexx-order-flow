@@ -17,7 +17,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
   ];
 
   return (
-    <nav className="bg-white border-b-2 border-timelexx-yellow p-4">
+    <nav className="bg-white border-b-2 border-timelexx-yellow p-4 shadow-premium-sm">
       <div className="container mx-auto">
         <div className="flex flex-wrap gap-2 justify-center">
           {tabs.map(tab => {
@@ -27,14 +27,16 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
                 key={tab.id}
                 variant={activeTab === tab.id ? "default" : "outline"}
                 onClick={() => onTabChange(tab.id)}
+                size="sm"
                 className={
                   activeTab === tab.id 
-                    ? "bg-timelexx-red hover:bg-timelexx-red/90 text-white" 
-                    : "border-timelexx-yellow hover:bg-timelexx-yellow hover:text-timelexx-dark"
+                    ? "bg-timelexx-red hover:bg-timelexx-red/90 text-white text-xs sm:text-sm" 
+                    : "border-timelexx-yellow hover:bg-timelexx-yellow hover:text-timelexx-dark text-xs sm:text-sm"
                 }
               >
-                <Icon className="w-4 h-4 mr-2" />
-                {tab.label}
+                <Icon className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">{tab.label}</span>
+                <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
               </Button>
             );
           })}

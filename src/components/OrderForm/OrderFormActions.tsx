@@ -16,10 +16,10 @@ const OrderFormActions: React.FC<OrderFormActionsProps> = ({
   hasRider
 }) => {
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-col sm:flex-row gap-2">
       <Button
         onClick={onSubmit}
-        className="flex-1 bg-timelexx-red hover:bg-timelexx-red/90"
+        className="flex-1 bg-timelexx-red hover:bg-timelexx-red/90 text-sm sm:text-base"
         disabled={isDelivery && !hasRider}
       >
         Place Order
@@ -27,7 +27,7 @@ const OrderFormActions: React.FC<OrderFormActionsProps> = ({
       <Button
         onClick={onClear}
         variant="outline"
-        className="border-timelexx-red text-timelexx-red hover:bg-timelexx-red hover:text-white"
+        className="border-timelexx-red text-timelexx-red hover:bg-timelexx-red hover:text-white text-sm sm:text-base sm:w-auto"
       >
         Clear
       </Button>

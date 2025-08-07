@@ -93,13 +93,13 @@ const Index = () => {
       <Header />
       <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
       
-      <main className="container mx-auto p-6">
+      <main className="container mx-auto p-4 sm:p-6">
         {activeTab === 'menu' && (
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-            <div className="xl:col-span-2">
+          <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6">
+            <div className="lg:col-span-2 xl:col-span-2">
               <MenuDisplay onAddToOrder={handleAddToOrder} />
             </div>
-            <div>
+            <div className="lg:col-span-1 xl:col-span-1">
               <OrderForm
                 currentOrder={currentOrder}
                 onUpdateQuantity={handleUpdateQuantity}
