@@ -12,6 +12,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
   const tabs = [
     { id: 'menu', label: 'Menu & Orders', icon: Menu },
     { id: 'tracker', label: 'Order Tracker', icon: Clock },
+    { id: 'riders', label: 'Riders', icon: Clock },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'reports', label: 'Reports', icon: FileText },
   ];
