@@ -53,28 +53,28 @@ const RecentOrderCard: React.FC<RecentOrderCardProps> = ({ order }) => {
   };
 
   return (
-    <Card className="border shadow-premium-xs">
+    <Card className="border">
       <CardContent className="p-3">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
-          <div className="flex-1 min-w-0">
-            <p className="font-medium text-sm sm:text-base">Order #{order.id.slice(-6)}</p>
-            <div className="text-xs sm:text-sm text-muted-foreground mt-1 space-y-0.5">
-              {order.customerName && (<p className="truncate">{order.customerName}</p>)}
+        <div className="flex justify-between items-center">
+          <div>
+            <p className="font-medium">Order #{order.id.slice(-6)}</p>
+            <div className="text-sm text-muted-foreground mt-1 space-y-0.5">
+              {order.customerName && (<p>{order.customerName}</p>)}
               {order.customerNumber && (<p>{order.customerNumber}</p>)}
-              {order.orderType === 'delivery' && order.customerLocation?.address && (<p className="truncate">{order.customerLocation.address}</p>)}
+              {order.orderType === 'delivery' && order.customerLocation?.address && (<p>{order.customerLocation.address}</p>)}
               {order.orderType === 'delivery' && order.riderNumber && (
-                <p className="truncate"><strong>Rider:</strong> {getRiderDisplayName(order.riderNumber)}</p>
+                <p><strong>Rider:</strong> {getRiderDisplayName(order.riderNumber)}</p>
               )}
             </div>
-            <p className="text-sm sm:text-base mt-2 line-clamp-2">{getOrderSummary(order)}</p>
-            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mt-1">
-              <p className="text-xs sm:text-sm text-muted-foreground">
+            <p className="text-lg mt-2">{getOrderSummary(order)}</p>
+            <div className="flex items-center gap-2 mt-1">
+              <p className="text-sm text-muted-foreground">
                 {order.timestamp.toLocaleDateString()} at {order.timestamp.toLocaleTimeString()} - ₵{order.total}
               </p>
               {order.paymentMethod && getPaymentMethodBadge(order.paymentMethod)}
             </div>
           </div>
-          <div className="flex flex-col items-end gap-1 flex-shrink-0">
+          <div className="flex flex-col items-end gap-1">
             {getStatusBadge(order)}
           </div>
         </div>

@@ -3,63 +3,50 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Premium SaaS Design System - Refined & Elegant */
+/* Timelexx Inn Design System - Red, Yellow, White Theme */
 
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 215 25% 27%;
+    --foreground: 0 0% 8%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 27%;
+    --card-foreground: 0 0% 8%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 27%;
+    --popover-foreground: 0 0% 8%;
 
     --primary: 0 84% 60%;
     --primary-foreground: 0 0% 98%;
 
     --secondary: 45 100% 51%;
-    --secondary-foreground: 215 25% 27%;
+    --secondary-foreground: 0 0% 8%;
 
-    --muted: 210 40% 98%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
     --accent: 45 100% 51%;
-    --accent-foreground: 215 25% 27%;
+    --accent-foreground: 0 0% 8%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
     --ring: 0 84% 60%;
 
-    --radius: 0.875rem;
+    --radius: 0.75rem;
 
-    /* Premium Color Palette */
+    /* Custom Timelexx Inn Colors */
     --timelexx-red: 0 84% 60%;
     --timelexx-yellow: 45 100% 51%;
     --timelexx-white: 0 0% 100%;
-    --timelexx-dark: 215 25% 27%;
+    --timelexx-dark: 0 0% 8%;
     
     /* Status Colors */
-    --status-green: 142 76% 36%;
+    --status-green: 120 70% 50%;
     --status-yellow: 45 100% 51%;
     --status-red: 0 84% 60%;
-
-    /* Premium Shadows */
-    --shadow-xs: 0 1px 2px 0 hsl(215 25% 27% / 0.05);
-    --shadow-sm: 0 1px 3px 0 hsl(215 25% 27% / 0.1), 0 1px 2px -1px hsl(215 25% 27% / 0.1);
-    --shadow-md: 0 4px 6px -1px hsl(215 25% 27% / 0.1), 0 2px 4px -2px hsl(215 25% 27% / 0.1);
-    --shadow-lg: 0 10px 15px -3px hsl(215 25% 27% / 0.1), 0 4px 6px -4px hsl(215 25% 27% / 0.1);
-    --shadow-xl: 0 20px 25px -5px hsl(215 25% 27% / 0.1), 0 8px 10px -6px hsl(215 25% 27% / 0.1);
-    --shadow-2xl: 0 25px 50px -12px hsl(215 25% 27% / 0.25);
-
-    /* Premium Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--timelexx-red)) 0%, hsl(var(--timelexx-yellow)) 100%);
-    --gradient-subtle: linear-gradient(135deg, hsl(210 40% 98%) 0%, hsl(0 0% 100%) 100%);
-    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(210 40% 99%) 100%);
   }
 }
 
@@ -69,88 +56,11 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    @apply bg-background text-foreground font-sans;
   }
 
   .timelexx-gradient {
-    background: var(--gradient-primary);
-  }
-
-  .gradient-subtle {
-    background: var(--gradient-subtle);
-  }
-
-  .gradient-card {
-    background: var(--gradient-card);
-  }
-
-  /* Premium Typography */
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
-  }
-
-  h1 {
-    @apply text-3xl lg:text-4xl;
-  }
-
-  h2 {
-    @apply text-2xl lg:text-3xl;
-  }
-
-  h3 {
-    @apply text-xl lg:text-2xl;
-  }
-
-  /* Premium Shadow Utilities */
-  .shadow-premium-xs {
-    box-shadow: var(--shadow-xs);
-  }
-
-  .shadow-premium-sm {
-    box-shadow: var(--shadow-sm);
-  }
-
-  .shadow-premium-md {
-    box-shadow: var(--shadow-md);
-  }
-
-  .shadow-premium-lg {
-    box-shadow: var(--shadow-lg);
-  }
-
-  .shadow-premium-xl {
-    box-shadow: var(--shadow-xl);
-  }
-
-  .shadow-premium-2xl {
-    box-shadow: var(--shadow-2xl);
-  }
-
-  /* Mobile-first responsive utilities */
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .truncate {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  /* Smooth scrolling for better mobile experience */
-  html {
-    scroll-behavior: smooth;
-  }
-
-  /* Touch-friendly button sizes */
-  @media (max-width: 768px) {
-    button {
-      min-height: 44px;
-    }
+    background: linear-gradient(135deg, hsl(var(--timelexx-red)) 0%, hsl(var(--timelexx-yellow)) 100%);
   }
 }
 
