@@ -80,18 +80,19 @@ export const useSupabaseOrders = () => {
       orders.forEach(order => {
         if (order.status === 'pending') {
           const timePending = now - order.timestamp.getTime();
-          const minutesPending = timePending / (1000 * 60);
+          const minutesPending = Math.max(0, Math.floor(timePending / (1000 * 60)));
           
-          // Alert every 30 minutes after 30 minutes
-          if (minutesPending >= 30) {
-            const alertKey = order.id;
+          // Alert every 30 minutes starting at 30 minutes
+          if (minutesPending >= 30 && minutesPending % 30 === 0) {
+            const alertKey = `${order.id}-${Math.floor(minutesPending / 30)}`;
             const lastAlert = lastAlertTime[alertKey] || 0;
             const timeSinceLastAlert = now - lastAlert;
             
-            if (timeSinceLastAlert >= 30 * 60 * 1000) { // 30 minutes
+            // Only alert once per 30-minute interval (with 1-minute tolerance)
+            if (timeSinceLastAlert >= 29 * 60 * 1000) {
               toast({
                 title: "Order Alert!",
-                description: `Order #${order.id.slice(-6)} has been pending for ${Math.floor(minutesPending)} minutes`,
+                description: `Order #${order.id.slice(-6)} has been pending for ${minutesPending} minutes`,
                 variant: minutesPending >= 90 ? "destructive" : "default",
               });
               

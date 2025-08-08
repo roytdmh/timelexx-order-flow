@@ -24,9 +24,10 @@ const PendingOrderCard: React.FC<PendingOrderCardProps> = ({
   onUpdateStatus
 }) => {
   const getTimePending = (order: Order) => {
-    const now = Date.now();
-    const timeDiff = now - order.timestamp.getTime();
-    return Math.floor(timeDiff / (1000 * 60)); // minutes
+    const now = new Date();
+    const timeDiff = now.getTime() - order.timestamp.getTime();
+    const minutes = Math.floor(timeDiff / (1000 * 60));
+    return Math.max(0, minutes); // Ensure we don't show negative minutes
   };
 
   const getStatusColor = (order: Order) => {
