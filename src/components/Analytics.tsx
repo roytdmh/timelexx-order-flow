@@ -108,17 +108,31 @@ const Analytics: React.FC<AnalyticsProps> = ({ summary }) => {
       {chartData.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Sales by Menu Item</CardTitle>
+            <CardTitle className="text-sm sm:text-base">Sales by Menu Item</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData}>
+            <div className="h-64 sm:h-80 overflow-x-auto">
+              <ResponsiveContainer width="100%" height="100%" minWidth={300}>
+                <BarChart data={chartData} margin={{ top: 5, right: 5, left: 5, bottom: 25 }}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="orders" fill="hsl(var(--timelexx-red))" name="Orders" />
+                  <XAxis 
+                    dataKey="name" 
+                    tick={{ fontSize: 12 }}
+                    interval={0}
+                    angle={-45}
+                    textAnchor="end"
+                    height={60}
+                  />
+                  <YAxis tick={{ fontSize: 12 }} />
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: 'white',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px',
+                      fontSize: '14px'
+                    }}
+                  />
+                  <Bar dataKey="orders" fill="hsl(var(--timelexx-red))" name="Orders" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
