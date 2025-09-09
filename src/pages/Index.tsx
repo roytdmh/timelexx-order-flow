@@ -8,7 +8,6 @@ import OrderTracker from '@/components/OrderTracker';
 import RidersTracker from '@/components/RidersTracker';
 import Analytics from '@/components/Analytics';
 import Reports from '@/components/Reports';
-import SecurityNotice from '@/components/SecurityNotice';
 import { useSupabaseOrders } from '@/hooks/useSupabaseOrders';
 import { MenuItem, OrderItem } from '@/types';
 import { downloadReportAsPDF } from '@/utils/reportGenerator';
@@ -114,42 +113,30 @@ const Index = () => {
         )}
 
         {activeTab === 'tracker' && (
-          <div className="space-y-6">
-            <SecurityNotice />
-            <OrderTracker
-              orders={orders}
-              onUpdateStatus={updateOrderStatus}
-              onResetOrders={resetAllOrders}
-            />
-          </div>
+          <OrderTracker
+            orders={orders}
+            onUpdateStatus={updateOrderStatus}
+            onResetOrders={resetAllOrders}
+          />
         )}
 
         {activeTab === 'riders' && (
-          <div className="space-y-6">
-            <SecurityNotice />
-            <RidersTracker
-              orders={orders}
-              onUpdateStatus={updateOrderStatus}
-              onResetOrders={resetAllOrders}
-            />
-          </div>
+          <RidersTracker
+            orders={orders}
+            onUpdateStatus={updateOrderStatus}
+            onResetOrders={resetAllOrders}
+          />
         )}
 
         {activeTab === 'analytics' && (
-          <div className="space-y-6">
-            <SecurityNotice />
-            <Analytics summary={summary} />
-          </div>
+          <Analytics summary={summary} />
         )}
 
         {activeTab === 'reports' && (
-          <div className="space-y-6">
-            <SecurityNotice />
-            <Reports
-              summary={summary}
-              onDownloadReport={handleDownloadReport}
-            />
-          </div>
+          <Reports
+            summary={summary}
+            onDownloadReport={handleDownloadReport}
+          />
         )}
       </main>
     </div>
