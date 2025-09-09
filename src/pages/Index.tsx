@@ -9,11 +9,15 @@ import RidersTracker from '@/components/RidersTracker';
 import Analytics from '@/components/Analytics';
 import Reports from '@/components/Reports';
 import SecurityNotice from '@/components/SecurityNotice';
+import AuthPage from '@/components/AuthPage';
+import { useAuth } from '@/hooks/useAuth';
 import { useSupabaseOrders } from '@/hooks/useSupabaseOrders';
 import { MenuItem, OrderItem } from '@/types';
 import { downloadReportAsPDF } from '@/utils/reportGenerator';
+import { Loader2 } from 'lucide-react';
 
 const Index = () => {
+  const { user, loading: authLoading, isKitchenStaff } = useAuth();
   const [activeTab, setActiveTab] = useState('menu');
   const [currentOrder, setCurrentOrder] = useState<OrderItem[]>([]);
   
@@ -25,6 +29,35 @@ const Index = () => {
     getTodaysOrders, 
     getDailySummary 
   } = useSupabaseOrders();
+
+  // Show loading spinner while checking auth
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="flex flex-col items-center space-y-4">
+          <Loader2 className="h-8 w-8 animate-spin text-timelexx-red" />
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show auth page if not authenticated
+  if (!user) {
+    return <AuthPage onAuthSuccess={() => window.location.reload()} />;
+  }
+
+  // Show access denied if not kitchen staff
+  if (!isKitchenStaff()) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <h1 className="text-2xl font-bold text-gray-900">Access Denied</h1>
+          <p className="text-gray-600">You need kitchen staff permissions to access this system.</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleAddToOrder = (menuItem: MenuItem) => {
     setCurrentOrder(prev => {
@@ -114,42 +147,30 @@ const Index = () => {
         )}
 
         {activeTab === 'tracker' && (
-          <div className="space-y-6">
-            <SecurityNotice />
-            <OrderTracker
-              orders={orders}
-              onUpdateStatus={updateOrderStatus}
-              onResetOrders={resetAllOrders}
-            />
-          </div>
+          <OrderTracker
+            orders={orders}
+            onUpdateStatus={updateOrderStatus}
+            onResetOrders={resetAllOrders}
+          />
         )}
 
         {activeTab === 'riders' && (
-          <div className="space-y-6">
-            <SecurityNotice />
-            <RidersTracker
-              orders={orders}
-              onUpdateStatus={updateOrderStatus}
-              onResetOrders={resetAllOrders}
-            />
-          </div>
+          <RidersTracker
+            orders={orders}
+            onUpdateStatus={updateOrderStatus}
+            onResetOrders={resetAllOrders}
+          />
         )}
 
         {activeTab === 'analytics' && (
-          <div className="space-y-6">
-            <SecurityNotice />
-            <Analytics summary={summary} />
-          </div>
+          <Analytics summary={summary} />
         )}
 
         {activeTab === 'reports' && (
-          <div className="space-y-6">
-            <SecurityNotice />
-            <Reports
-              summary={summary}
-              onDownloadReport={handleDownloadReport}
-            />
-          </div>
+          <Reports
+            summary={summary}
+            onDownloadReport={handleDownloadReport}
+          />
         )}
       </main>
     </div>
