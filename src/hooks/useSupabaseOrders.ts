@@ -22,7 +22,19 @@ export const useSupabaseOrders = () => {
         `)
         .order('created_at', { ascending: false });
 
-      if (ordersError) throw ordersError;
+      if (ordersError) {
+        if (ordersError.message.includes('permission denied') || ordersError.message.includes('access denied')) {
+          // User doesn't have kitchen staff permissions
+          setOrders([]);
+          toast({
+            title: "Access Required",
+            description: "Please sign in with kitchen staff credentials to view orders",
+            variant: "destructive",
+          });
+          return;
+        }
+        throw ordersError;
+      }
 
       // Transform the data to match our Order interface
       const transformedOrders: Order[] = ordersData?.map(order => ({
@@ -191,7 +203,17 @@ export const useSupabaseOrders = () => {
         .update(updateData)
         .eq('id', orderId);
 
-      if (error) throw error;
+      if (error) {
+        if (error.message.includes('permission denied') || error.message.includes('access denied')) {
+          toast({
+            title: "Access Denied",
+            description: "You need kitchen staff permissions to update orders",
+            variant: "destructive",
+          });
+          return;
+        }
+        throw error;
+      }
 
       const statusMessages = {
         delivered: paymentMethod ? `Order marked as delivered (Payment: ${paymentMethod})` : "Order marked as delivered",
@@ -210,7 +232,7 @@ export const useSupabaseOrders = () => {
       console.error('Error updating order:', error);
       toast({
         title: "Error",
-        description: "Failed to update order",
+        description: "Failed to update order. Please check your permissions.",
         variant: "destructive",
       });
     }
@@ -218,12 +240,19 @@ export const useSupabaseOrders = () => {
 
   const resetAllOrders = async () => {
     try {
-      const { error } = await supabase
-        .from('orders')
-        .delete()
-        .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all orders
+      const { error } = await supabase.rpc('reset_all_orders');
 
-      if (error) throw error;
+      if (error) {
+        if (error.message.includes('Access denied')) {
+          toast({
+            title: "Access Denied",
+            description: "You need kitchen staff permissions to reset orders",
+            variant: "destructive",
+          });
+          return;
+        }
+        throw error;
+      }
 
       setOrders([]);
       setLastAlertTime({});
@@ -236,7 +265,7 @@ export const useSupabaseOrders = () => {
       console.error('Error resetting orders:', error);
       toast({
         title: "Error",
-        description: "Failed to reset orders",
+        description: "Failed to reset orders. Please check your permissions.",
         variant: "destructive",
       });
     }

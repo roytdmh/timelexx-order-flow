@@ -8,6 +8,7 @@ import OrderTracker from '@/components/OrderTracker';
 import RidersTracker from '@/components/RidersTracker';
 import Analytics from '@/components/Analytics';
 import Reports from '@/components/Reports';
+import SecurityNotice from '@/components/SecurityNotice';
 import { useSupabaseOrders } from '@/hooks/useSupabaseOrders';
 import { MenuItem, OrderItem } from '@/types';
 import { downloadReportAsPDF } from '@/utils/reportGenerator';
@@ -113,30 +114,42 @@ const Index = () => {
         )}
 
         {activeTab === 'tracker' && (
-          <OrderTracker
-            orders={orders}
-            onUpdateStatus={updateOrderStatus}
-            onResetOrders={resetAllOrders}
-          />
+          <div className="space-y-6">
+            <SecurityNotice />
+            <OrderTracker
+              orders={orders}
+              onUpdateStatus={updateOrderStatus}
+              onResetOrders={resetAllOrders}
+            />
+          </div>
         )}
 
         {activeTab === 'riders' && (
-          <RidersTracker
-            orders={orders}
-            onUpdateStatus={updateOrderStatus}
-            onResetOrders={resetAllOrders}
-          />
+          <div className="space-y-6">
+            <SecurityNotice />
+            <RidersTracker
+              orders={orders}
+              onUpdateStatus={updateOrderStatus}
+              onResetOrders={resetAllOrders}
+            />
+          </div>
         )}
 
         {activeTab === 'analytics' && (
-          <Analytics summary={summary} />
+          <div className="space-y-6">
+            <SecurityNotice />
+            <Analytics summary={summary} />
+          </div>
         )}
 
         {activeTab === 'reports' && (
-          <Reports
-            summary={summary}
-            onDownloadReport={handleDownloadReport}
-          />
+          <div className="space-y-6">
+            <SecurityNotice />
+            <Reports
+              summary={summary}
+              onDownloadReport={handleDownloadReport}
+            />
+          </div>
         )}
       </main>
     </div>
