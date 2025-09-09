@@ -1,31 +1,26 @@
 import React from 'react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Shield, AlertTriangle, Users, CheckCircle } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { Shield, AlertTriangle } from 'lucide-react';
 
 const SecurityNotice: React.FC = () => {
-  const { isKitchenStaff, profile } = useAuth();
-
-  if (!isKitchenStaff()) {
-    return (
-      <Alert variant="destructive">
-        <AlertTriangle className="h-4 w-4" />
-        <AlertTitle>Access Restricted</AlertTitle>
+  return (
+    <div className="space-y-4 p-4">
+      <Alert>
+        <Shield className="h-4 w-4" />
+        <AlertTitle>Security Enhancement Active</AlertTitle>
         <AlertDescription>
-          This section requires kitchen staff permissions. Current role: {profile?.role || 'Unknown'}
+          This application now has enhanced security controls. Kitchen staff authentication is required to view orders, update order status, and perform administrative actions.
         </AlertDescription>
       </Alert>
-    );
-  }
-
-  return (
-    <Alert className="border-green-200 bg-green-50">
-      <CheckCircle className="h-4 w-4 text-green-600" />
-      <AlertTitle className="text-green-800">Access Granted</AlertTitle>
-      <AlertDescription className="text-green-700">
-        You have kitchen staff permissions. All features are available.
-      </AlertDescription>
-    </Alert>
+      
+      <Alert variant="destructive">
+        <AlertTriangle className="h-4 w-4" />
+        <AlertTitle>Access Required</AlertTitle>
+        <AlertDescription>
+          If you're seeing empty data or permission errors, you need to be authenticated with kitchen staff credentials. Contact your administrator to set up proper access.
+        </AlertDescription>
+      </Alert>
+    </div>
   );
 };
 
