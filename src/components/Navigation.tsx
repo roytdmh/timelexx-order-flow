@@ -18,9 +18,9 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
   ];
 
   return (
-    <nav className="bg-white border-b-2 border-timelexx-yellow p-4 shadow-premium-sm">
+    <nav className="bg-white border-b-2 border-timelexx-yellow p-3 sm:p-4 shadow-premium-sm">
       <div className="container mx-auto">
-        <div className="flex flex-wrap gap-2 justify-center">
+        <div className="flex flex-wrap gap-1 sm:gap-2 justify-center">
           {tabs.map(tab => {
             const Icon = tab.icon;
             return (
@@ -29,15 +29,17 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
                 variant={activeTab === tab.id ? "default" : "outline"}
                 onClick={() => onTabChange(tab.id)}
                 size="sm"
-                className={
-                  activeTab === tab.id 
+                className={`
+                  min-h-[44px] px-2 sm:px-4 touch-manipulation
+                  ${activeTab === tab.id 
                     ? "bg-timelexx-red hover:bg-timelexx-red/90 text-white text-xs sm:text-sm" 
                     : "border-timelexx-yellow hover:bg-timelexx-yellow hover:text-timelexx-dark text-xs sm:text-sm"
-                }
+                  }
+                `}
               >
-                <Icon className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline">{tab.label}</span>
-                <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
+                <Icon className="w-4 h-4 sm:mr-2 flex-shrink-0" />
+                <span className="hidden sm:inline whitespace-nowrap">{tab.label}</span>
+                <span className="sm:hidden text-[10px] leading-tight">{tab.label.split(' ')[0]}</span>
               </Button>
             );
           })}
