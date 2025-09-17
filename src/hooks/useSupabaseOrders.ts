@@ -112,34 +112,27 @@ export const useSupabaseOrders = () => {
 
   const addOrder = async (orderData: Omit<Order, 'id' | 'timestamp'>) => {
     try {
-      console.log('Creating order with data:', orderData);
-      
       // Create the order
       const { data: newOrder, error: orderError } = await supabase
         .from('orders')
         .insert({
           total: orderData.total,
           order_type: orderData.orderType,
-          rider_number: orderData.riderNumber || null,
+          rider_number: orderData.riderNumber,
           status: orderData.status,
-          customer_name: orderData.customerName || null,
-          customer_number: orderData.customerNumber || null,
-          customer_address: orderData.customerLocation?.address || null,
+          customer_name: orderData.customerName,
+          customer_number: orderData.customerNumber,
+          customer_address: orderData.customerLocation?.address,
           customer_coordinates: orderData.customerLocation ? {
             lat: orderData.customerLocation.coordinates[0],
             lng: orderData.customerLocation.coordinates[1]
           } : null,
-          payment_method: orderData.paymentMethod || null
+          payment_method: orderData.paymentMethod
         })
         .select()
         .single();
 
-      if (orderError) {
-        console.error('Order creation error:', orderError);
-        throw orderError;
-      }
-
-      console.log('Order created successfully:', newOrder);
+      if (orderError) throw orderError;
 
       // Create order items
       const orderItems = orderData.items.map(item => ({
@@ -149,31 +142,24 @@ export const useSupabaseOrders = () => {
         unit_price: item.menuItem.price
       }));
 
-      console.log('Creating order items:', orderItems);
-
       const { error: itemsError } = await supabase
         .from('order_items')
         .insert(orderItems);
 
-      if (itemsError) {
-        console.error('Order items creation error:', itemsError);
-        throw itemsError;
-      }
-
-      console.log('Order items created successfully');
+      if (itemsError) throw itemsError;
 
       toast({
         title: "Order Added",
-        description: `Order #${newOrder.id.slice(-6)} has been created successfully`,
+        description: `Order #${newOrder.id.slice(-6)} has been created`,
       });
 
-      // Refresh orders to show the new order
+      // Refresh orders
       await fetchOrders();
     } catch (error) {
       console.error('Error adding order:', error);
       toast({
         title: "Error",
-        description: "Failed to create order. Please try again.",
+        description: "Failed to create order",
         variant: "destructive",
       });
     }
