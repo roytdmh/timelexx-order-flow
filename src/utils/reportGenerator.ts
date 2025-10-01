@@ -14,7 +14,7 @@ const getRiderName = (riderNumber?: string): string => {
   }
 };
 
-export const generateDailyReport = (summary: DailySummary, orders: Order[]): string => {
+export const generateDailyReport = (summary: DailySummary, orders: Order[], userName?: string): string => {
   const today = new Date().toLocaleDateString();
   const todaysOrders = orders.filter(order => {
     const orderDate = new Date(order.timestamp);
@@ -24,6 +24,7 @@ export const generateDailyReport = (summary: DailySummary, orders: Order[]): str
 
   let report = `TIMELEXX INN - DAILY SALES REPORT\n`;
   report += `Date: ${today}\n`;
+  report += `Report By: ${userName || "Unknown User"}\n`;
   report += `${'='.repeat(50)}\n\n`;
 
   // Summary Section
@@ -148,10 +149,10 @@ export const generateDailyReport = (summary: DailySummary, orders: Order[]): str
   return report;
 };
 
-export const downloadReportAsPDF = (summary: DailySummary, orders: Order[]): void => {
+export const downloadReportAsPDF = (summary: DailySummary, orders: Order[], userName?: string): void => {
   console.log('Generating PDF report...');
   
-  const reportContent = generateDailyReport(summary, orders);
+  const reportContent = generateDailyReport(summary, orders, userName);
   const doc = new jsPDF();
   
   // Set font

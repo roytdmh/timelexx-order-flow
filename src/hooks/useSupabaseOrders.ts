@@ -114,6 +114,12 @@ export const useSupabaseOrders = () => {
     try {
       console.log('Creating order with data:', orderData);
       
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        throw new Error('User must be authenticated to create orders');
+      }
+
       // Create the order
       const { data: newOrder, error: orderError } = await supabase
         .from('orders')
@@ -129,7 +135,8 @@ export const useSupabaseOrders = () => {
             lat: orderData.customerLocation.coordinates[0],
             lng: orderData.customerLocation.coordinates[1]
           } : null,
-          payment_method: orderData.paymentMethod || null
+          payment_method: orderData.paymentMethod || null,
+          waiter_user_id: user.id
         })
         .select()
         .single();
@@ -226,10 +233,8 @@ export const useSupabaseOrders = () => {
 
   const resetAllOrders = async () => {
     try {
-      const { error } = await supabase
-        .from('orders')
-        .delete()
-        .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all orders
+      // Call the database function which handles user-specific deletion
+      const { error } = await supabase.rpc('reset_all_orders');
 
       if (error) throw error;
 
@@ -238,7 +243,7 @@ export const useSupabaseOrders = () => {
       
       toast({
         title: "Orders Reset",
-        description: "All orders have been cleared for a new day",
+        description: "All your orders have been cleared for a new day",
       });
     } catch (error) {
       console.error('Error resetting orders:', error);

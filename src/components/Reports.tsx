@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Download, FileText, TrendingUp, DollarSign, ShoppingBag, Loader2 } from 'lucide-react';
 import { DailySummary } from '@/types';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 
 interface ReportsProps {
   summary: DailySummary;
@@ -12,7 +13,9 @@ interface ReportsProps {
 }
 
 const Reports: React.FC<ReportsProps> = ({ summary, onDownloadReport }) => {
+  const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const userName = user?.user_metadata?.full_name || user?.email || "Unknown User";
 
   const handleDownloadReport = async () => {
     setIsLoading(true);
@@ -44,6 +47,9 @@ const Reports: React.FC<ReportsProps> = ({ summary, onDownloadReport }) => {
             <FileText className="w-5 h-5" />
             Daily Sales Report - {today}
           </CardTitle>
+          <p className="text-sm text-muted-foreground mt-1">
+            Report By: {userName}
+          </p>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">

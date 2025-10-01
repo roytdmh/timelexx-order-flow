@@ -260,6 +260,7 @@ export type Database = {
           status: string
           total: number
           updated_at: string
+          waiter_user_id: string | null
         }
         Insert: {
           assigned_rider_id?: string | null
@@ -276,6 +277,7 @@ export type Database = {
           status?: string
           total: number
           updated_at?: string
+          waiter_user_id?: string | null
         }
         Update: {
           assigned_rider_id?: string | null
@@ -292,6 +294,7 @@ export type Database = {
           status?: string
           total?: number
           updated_at?: string
+          waiter_user_id?: string | null
         }
         Relationships: []
       }
