@@ -186,12 +186,20 @@ export const useSupabaseOrders = () => {
         updateData.payment_method = paymentMethod;
       }
 
-      const { error } = await supabase
+      console.log('Updating order:', orderId, 'with data:', updateData);
+
+      const { data, error } = await supabase
         .from('orders')
         .update(updateData)
-        .eq('id', orderId);
+        .eq('id', orderId)
+        .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Update error:', error);
+        throw error;
+      }
+
+      console.log('Update successful:', data);
 
       const statusMessages = {
         delivered: paymentMethod ? `Order marked as delivered (Payment: ${paymentMethod})` : "Order marked as delivered",
@@ -204,7 +212,7 @@ export const useSupabaseOrders = () => {
         description: statusMessages[status],
       });
 
-      // Refresh orders
+      // Refresh orders immediately after successful update
       await fetchOrders();
     } catch (error) {
       console.error('Error updating order:', error);
