@@ -1,6 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
 import MenuDisplay from '@/components/MenuDisplay';
@@ -12,19 +11,10 @@ import Reports from '@/components/Reports';
 import { useSupabaseOrders } from '@/hooks/useSupabaseOrders';
 import { MenuItem, OrderItem } from '@/types';
 import { downloadReportAsPDF } from '@/utils/reportGenerator';
-import { useAuth } from '@/hooks/useAuth';
 
 const Index = () => {
-  const navigate = useNavigate();
-  const { user, loading: authLoading } = useAuth();
   const [activeTab, setActiveTab] = useState('menu');
   const [currentOrder, setCurrentOrder] = useState<OrderItem[]>([]);
-
-  useEffect(() => {
-    if (!authLoading && !user) {
-      navigate('/auth');
-    }
-  }, [user, authLoading, navigate]);
   
   const { 
     orders, 
@@ -34,18 +24,6 @@ const Index = () => {
     getTodaysOrders, 
     getDailySummary 
   } = useSupabaseOrders();
-
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return null;
-  }
 
   const handleAddToOrder = (menuItem: MenuItem) => {
     setCurrentOrder(prev => {
@@ -106,8 +84,7 @@ const Index = () => {
   const handleDownloadReport = async (): Promise<void> => {
     const summary = getDailySummary();
     const todaysOrders = getTodaysOrders();
-    const userName = user?.user_metadata?.full_name || user?.email || "Unknown User";
-    downloadReportAsPDF(summary, todaysOrders, userName);
+    downloadReportAsPDF(summary, todaysOrders);
   };
 
   const summary = getDailySummary();
