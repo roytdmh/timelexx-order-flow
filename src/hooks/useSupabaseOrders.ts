@@ -114,7 +114,7 @@ export const useSupabaseOrders = () => {
     try {
       console.log('Creating order with data:', orderData);
       
-      // Create the order - waiter_user_id will be set automatically by trigger
+      // Create the order
       const { data: newOrder, error: orderError } = await supabase
         .from('orders')
         .insert({
@@ -129,7 +129,8 @@ export const useSupabaseOrders = () => {
             lat: orderData.customerLocation.coordinates[0],
             lng: orderData.customerLocation.coordinates[1]
           } : null,
-          payment_method: orderData.paymentMethod || null
+          payment_method: orderData.paymentMethod || null,
+          waiter_user_id: null
         })
         .select()
         .single();
