@@ -114,7 +114,7 @@ export const useSupabaseOrders = () => {
     try {
       console.log('Creating order with data:', orderData);
       
-      // Create the order
+      // Create the order - waiter_user_id will be set automatically by trigger
       const { data: newOrder, error: orderError } = await supabase
         .from('orders')
         .insert({
@@ -226,20 +226,19 @@ export const useSupabaseOrders = () => {
 
   const resetAllOrders = async () => {
     try {
-      const { error } = await supabase
-        .from('orders')
-        .delete()
-        .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all orders
+      const { error } = await supabase.rpc('reset_todays_orders');
 
       if (error) throw error;
 
-      setOrders([]);
       setLastAlertTime({});
       
       toast({
         title: "Orders Reset",
-        description: "All orders have been cleared for a new day",
+        description: "Today's orders have been cleared",
       });
+
+      // Refresh orders after reset
+      await fetchOrders();
     } catch (error) {
       console.error('Error resetting orders:', error);
       toast({

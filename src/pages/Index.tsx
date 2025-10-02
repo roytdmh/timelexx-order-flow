@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
 import MenuDisplay from '@/components/MenuDisplay';
@@ -9,10 +10,13 @@ import RidersTracker from '@/components/RidersTracker';
 import Analytics from '@/components/Analytics';
 import Reports from '@/components/Reports';
 import { useSupabaseOrders } from '@/hooks/useSupabaseOrders';
+import { useAuth } from '@/hooks/useAuth';
 import { MenuItem, OrderItem } from '@/types';
 import { downloadReportAsPDF } from '@/utils/reportGenerator';
 
 const Index = () => {
+  const navigate = useNavigate();
+  const { user, loading } = useAuth();
   const [activeTab, setActiveTab] = useState('menu');
   const [currentOrder, setCurrentOrder] = useState<OrderItem[]>([]);
   
@@ -24,6 +28,12 @@ const Index = () => {
     getTodaysOrders, 
     getDailySummary 
   } = useSupabaseOrders();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/auth');
+    }
+  }, [user, loading, navigate]);
 
   const handleAddToOrder = (menuItem: MenuItem) => {
     setCurrentOrder(prev => {
@@ -88,6 +98,18 @@ const Index = () => {
   };
 
   const summary = getDailySummary();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">

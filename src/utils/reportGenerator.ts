@@ -6,9 +6,11 @@ import jsPDF from 'jspdf';
 const getRiderName = (riderNumber?: string): string => {
   switch (riderNumber) {
     case 'Rider 001':
-      return 'Asante';
+      return 'Sabolia';
     case 'Rider 002':
-      return 'Savior';
+      return 'Awaga';
+    case 'Rider 003':
+      return 'Joe Lee';
     default:
       return riderNumber || '';
   }
