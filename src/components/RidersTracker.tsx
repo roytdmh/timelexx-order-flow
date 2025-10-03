@@ -35,10 +35,17 @@ const RidersTracker: React.FC<RidersTrackerProps> = ({ orders, onUpdateStatus, o
     }
   };
 
-  // Filter orders to only show delivery orders
+  // Helper to check if order is from today
+  const isToday = (timestamp: Date) => {
+    const today = new Date();
+    return timestamp.toDateString() === today.toDateString();
+  };
+
+  // Filter orders to only show today's delivery orders
   const deliveryOrders = orders.filter(order => order.orderType === 'delivery');
-  const pendingDeliveryOrders = deliveryOrders.filter(order => order.status === 'pending');
-  const recentDeliveryOrders = deliveryOrders.slice(0, 10);
+  const todaysDeliveryOrders = deliveryOrders.filter(order => isToday(order.timestamp));
+  const pendingDeliveryOrders = todaysDeliveryOrders.filter(order => order.status === 'pending');
+  const recentDeliveryOrders = todaysDeliveryOrders.slice(0, 10);
 
   return (
     <div className="space-y-6 relative">

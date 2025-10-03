@@ -36,8 +36,16 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onR
     }
   };
 
-  const pendingOrders = orders.filter(order => order.status === 'pending');
-  const recentOrders = orders.slice(0, 10);
+  // Helper to check if order is from today
+  const isToday = (timestamp: Date) => {
+    const today = new Date();
+    return timestamp.toDateString() === today.toDateString();
+  };
+
+  // Filter to today's orders only
+  const todaysOrders = orders.filter(order => isToday(order.timestamp));
+  const pendingOrders = todaysOrders.filter(order => order.status === 'pending');
+  const recentOrders = todaysOrders.slice(0, 10);
 
   return (
     <div className="space-y-6 relative">

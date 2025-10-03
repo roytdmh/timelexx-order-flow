@@ -29,7 +29,7 @@ const ResetOrdersButton: React.FC<ResetOrdersButtonProps> = ({ onResetOrders }) 
         className={`shadow-lg ${showResetConfirm ? 'animate-pulse' : ''}`}
       >
         <Trash2 className="w-4 h-4 mr-2" />
-        {showResetConfirm ? 'Confirm Reset?' : 'Reset All Orders'}
+        {showResetConfirm ? 'Confirm Reset?' : "Reset Today's Orders"}
       </Button>
     </div>
   );
