@@ -21,6 +21,7 @@ interface OrderFormProps {
     customerLocation?: { address: string; coordinates: [number, number] }
   ) => void;
   onClearOrder: () => void;
+  isCustomer?: boolean;
 }
 
 const OrderForm: React.FC<OrderFormProps> = ({
@@ -28,7 +29,8 @@ const OrderForm: React.FC<OrderFormProps> = ({
   onUpdateQuantity,
   onRemoveItem,
   onSubmitOrder,
-  onClearOrder
+  onClearOrder,
+  isCustomer = false
 }) => {
   const [orderType, setOrderType] = useState<'pickup' | 'delivery'>('pickup');
   const [riderNumber, setRiderNumber] = useState('');
@@ -85,21 +87,23 @@ const OrderForm: React.FC<OrderFormProps> = ({
                 </p>
               </div>
 
-              <CustomerDetailsForm
-                customerName={customerName}
-                customerNumber={customerNumber}
-                customerLocationText={customerLocationText}
-                onCustomerNameChange={setCustomerName}
-                onCustomerNumberChange={setCustomerNumber}
-                onCustomerLocationChange={setCustomerLocationText}
-              />
+              {!isCustomer && (
+                <CustomerDetailsForm
+                  customerName={customerName}
+                  customerNumber={customerNumber}
+                  customerLocationText={customerLocationText}
+                  onCustomerNameChange={setCustomerName}
+                  onCustomerNumberChange={setCustomerNumber}
+                  onCustomerLocationChange={setCustomerLocationText}
+                />
+              )}
 
               <OrderTypeSelector
                 orderType={orderType}
                 onOrderTypeChange={setOrderType}
               />
 
-              {orderType === 'delivery' && (
+              {orderType === 'delivery' && !isCustomer && (
                 <RiderSelector
                   riderNumber={riderNumber}
                   onRiderChange={setRiderNumber}
@@ -110,7 +114,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
                 onSubmit={handleSubmit}
                 onClear={onClearOrder}
                 isDelivery={orderType === 'delivery'}
-                hasRider={!!riderNumber}
+                hasRider={isCustomer || !!riderNumber}
               />
             </div>
           </>

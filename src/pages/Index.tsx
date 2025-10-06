@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
 import MenuDisplay from '@/components/MenuDisplay';
@@ -8,11 +9,18 @@ import OrderTracker from '@/components/OrderTracker';
 import RidersTracker from '@/components/RidersTracker';
 import Analytics from '@/components/Analytics';
 import Reports from '@/components/Reports';
+import CustomerOrderTracker from '@/components/CustomerOrderTracker';
 import { useSupabaseOrders } from '@/hooks/useSupabaseOrders';
+import { useAuth } from '@/hooks/useAuth';
 import { MenuItem, OrderItem } from '@/types';
 import { downloadReportAsPDF } from '@/utils/reportGenerator';
+import { Button } from '@/components/ui/button';
+import { LogOut } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const Index = () => {
+  const navigate = useNavigate();
+  const { user, role, profile, loading: authLoading, signOut } = useAuth();
   const [activeTab, setActiveTab] = useState('menu');
   const [currentOrder, setCurrentOrder] = useState<OrderItem[]>([]);
   
@@ -24,6 +32,20 @@ const Index = () => {
     getTodaysOrders, 
     getDailySummary 
   } = useSupabaseOrders();
+
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate('/');
+    }
+  }, [user, authLoading, navigate]);
+
+  // Filter orders based on role
+  const filteredOrders = role === 'customer' 
+    ? orders.filter(order => order.customerUserId === user?.id)
+    : role === 'rider'
+    ? orders.filter(order => order.orderType === 'delivery' && order.riderNumber === profile?.full_name)
+    : orders;
 
   const handleAddToOrder = (menuItem: MenuItem) => {
     setCurrentOrder(prev => {
@@ -62,19 +84,36 @@ const Index = () => {
   ) => {
     const total = currentOrder.reduce((sum, item) => sum + (item.menuItem.price * item.quantity), 0);
     
+    // Auto-fill customer details for customer role
+    const finalCustomerName = role === 'customer' ? profile?.full_name || customerName : customerName;
+    const finalCustomerNumber = role === 'customer' ? profile?.phone_number || customerNumber : customerNumber;
+    const finalCustomerLocation = role === 'customer' 
+      ? { address: profile?.location || '', coordinates: [0, 0] as [number, number] }
+      : customerLocation;
+
+    // Random rider assignment for customers ordering delivery
+    let finalRiderNumber = riderNumber;
+    if (role === 'customer' && orderType === 'delivery') {
+      const riders = ['Saboli', 'Mensa', 'Kwame']; // From RIDERS data
+      finalRiderNumber = riders[Math.floor(Math.random() * riders.length)];
+    }
+    
     addOrder({
       items: [...currentOrder],
       total,
       orderType,
-      riderNumber,
-      customerName,
-      customerNumber,
-      customerLocation,
-      status: 'pending'
+      riderNumber: finalRiderNumber,
+      customerName: finalCustomerName,
+      customerNumber: finalCustomerNumber,
+      customerLocation: finalCustomerLocation,
+      status: 'pending',
+      customerUserId: role === 'customer' ? user?.id : undefined,
     });
 
     setCurrentOrder([]);
-    setActiveTab('tracker'); // Switch to tracker after placing order
+    if (role !== 'customer') {
+      setActiveTab('tracker'); // Switch to tracker after placing order (admin only)
+    }
   };
 
   const handleClearOrder = () => {
@@ -89,50 +128,116 @@ const Index = () => {
 
   const summary = getDailySummary();
 
+  // Show loading state
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="container mx-auto p-6">
+          <Skeleton className="h-12 w-full mb-4" />
+          <Skeleton className="h-64 w-full" />
+        </div>
+      </div>
+    );
+  }
+
+  // Define available tabs based on role
+  const getAvailableTabs = () => {
+    if (role === 'customer') {
+      return ['menu'];
+    } else if (role === 'rider') {
+      return ['riders'];
+    } else {
+      return ['menu', 'tracker', 'riders', 'analytics', 'reports'];
+    }
+  };
+
+  // Set initial tab based on role
+  useEffect(() => {
+    if (role === 'rider') {
+      setActiveTab('riders');
+    } else if (role === 'customer') {
+      setActiveTab('menu');
+    }
+  }, [role]);
+
+  const availableTabs = getAvailableTabs();
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
+      <div className="border-b-2 border-timelexx-yellow bg-white">
+        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            {role !== 'rider' && (
+              <Navigation 
+                activeTab={activeTab} 
+                onTabChange={(tab) => availableTabs.includes(tab) && setActiveTab(tab)} 
+              />
+            )}
+          </div>
+          <div className="flex items-center gap-4">
+            {role === 'customer' && profile?.full_name && (
+              <span className="text-sm font-medium">Hi, {profile.full_name}!</span>
+            )}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={signOut}
+              className="border-timelexx-red text-timelexx-red hover:bg-timelexx-red hover:text-white"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Sign Out
+            </Button>
+          </div>
+        </div>
+      </div>
       
       <main className="container mx-auto p-3 sm:p-4 lg:p-6 max-w-7xl">
-        {activeTab === 'menu' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6">
-            <div className="lg:col-span-2 xl:col-span-2 order-2 lg:order-1">
-              <MenuDisplay onAddToOrder={handleAddToOrder} />
+        {availableTabs.includes('menu') && activeTab === 'menu' && (
+          <>
+            <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6">
+              <div className="lg:col-span-2 xl:col-span-2 order-2 lg:order-1">
+                <MenuDisplay onAddToOrder={handleAddToOrder} />
+              </div>
+              <div className="lg:col-span-1 xl:col-span-1 order-1 lg:order-2">
+                <OrderForm
+                  currentOrder={currentOrder}
+                  onUpdateQuantity={handleUpdateQuantity}
+                  onRemoveItem={handleRemoveItem}
+                  onSubmitOrder={handleSubmitOrder}
+                  onClearOrder={handleClearOrder}
+                  isCustomer={role === 'customer'}
+                />
+              </div>
             </div>
-            <div className="lg:col-span-1 xl:col-span-1 order-1 lg:order-2">
-              <OrderForm
-                currentOrder={currentOrder}
-                onUpdateQuantity={handleUpdateQuantity}
-                onRemoveItem={handleRemoveItem}
-                onSubmitOrder={handleSubmitOrder}
-                onClearOrder={handleClearOrder}
-              />
-            </div>
-          </div>
+            {role === 'customer' && (
+              <CustomerOrderTracker orders={filteredOrders} />
+            )}
+          </>
         )}
 
-        {activeTab === 'tracker' && (
+        {availableTabs.includes('tracker') && activeTab === 'tracker' && (
           <OrderTracker
-            orders={orders}
+            orders={filteredOrders}
             onUpdateStatus={updateOrderStatus}
             onResetOrders={resetAllOrders}
           />
         )}
 
-        {activeTab === 'riders' && (
+        {availableTabs.includes('riders') && activeTab === 'riders' && (
           <RidersTracker
-            orders={orders}
+            orders={filteredOrders}
             onUpdateStatus={updateOrderStatus}
             onResetOrders={resetAllOrders}
           />
         )}
 
-        {activeTab === 'analytics' && (
+        {availableTabs.includes('analytics') && activeTab === 'analytics' && (
           <Analytics summary={summary} />
         )}
 
-        {activeTab === 'reports' && (
+        {availableTabs.includes('reports') && activeTab === 'reports' && (
           <Reports
             summary={summary}
             onDownloadReport={handleDownloadReport}

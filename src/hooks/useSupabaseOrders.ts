@@ -52,7 +52,8 @@ export const useSupabaseOrders = () => {
             (order.customer_coordinates as any)?.lng || 0
           ] : [0, 0]
         } : undefined,
-        paymentMethod: order.payment_method as 'Cash' | 'MoMo' | undefined
+        paymentMethod: order.payment_method as 'Cash' | 'MoMo' | undefined,
+        customerUserId: order.customer_user_id
       })) || [];
 
       setOrders(transformedOrders);
@@ -130,6 +131,7 @@ export const useSupabaseOrders = () => {
             lng: orderData.customerLocation.coordinates[1]
           } : null,
           payment_method: orderData.paymentMethod || null,
+          customer_user_id: orderData.customerUserId || null,
           waiter_user_id: null
         })
         .select()

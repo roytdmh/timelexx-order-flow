@@ -338,8 +338,8 @@ export type Database = {
           full_name: string | null
           id: string
           is_active: boolean
+          location: string | null
           phone_number: string | null
-          role: Database["public"]["Enums"]["app_role"]
           updated_at: string
           user_id: string
         }
@@ -349,8 +349,8 @@ export type Database = {
           full_name?: string | null
           id?: string
           is_active?: boolean
+          location?: string | null
           phone_number?: string | null
-          role?: Database["public"]["Enums"]["app_role"]
           updated_at?: string
           user_id: string
         }
@@ -360,9 +360,30 @@ export type Database = {
           full_name?: string | null
           id?: string
           is_active?: boolean
+          location?: string | null
           phone_number?: string | null
-          role?: Database["public"]["Enums"]["app_role"]
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role_new"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role_new"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role_new"]
           user_id?: string
         }
         Relationships: []
@@ -381,10 +402,15 @@ export type Database = {
         Returns: Database["public"]["Enums"]["app_role"]
       }
       has_role: {
-        Args: {
-          required_role: Database["public"]["Enums"]["app_role"]
-          user_uuid?: string
-        }
+        Args:
+          | {
+              _role: Database["public"]["Enums"]["app_role_new"]
+              _user_id: string
+            }
+          | {
+              required_role: Database["public"]["Enums"]["app_role"]
+              user_uuid?: string
+            }
         Returns: boolean
       }
       reset_all_orders: {
@@ -398,6 +424,7 @@ export type Database = {
     }
     Enums: {
       app_role: "timelexx_kitchen" | "customer_hub" | "timelexx_riders"
+      app_role_new: "customer" | "admin" | "rider"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -526,6 +553,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["timelexx_kitchen", "customer_hub", "timelexx_riders"],
+      app_role_new: ["customer", "admin", "rider"],
     },
   },
 } as const

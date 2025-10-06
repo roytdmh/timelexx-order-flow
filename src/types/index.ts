@@ -28,6 +28,7 @@ export interface Order {
     coordinates: [number, number];
   };
   paymentMethod?: 'Cash' | 'MoMo';
+  customerUserId?: string;
 }
 
 export interface DailySummary {
