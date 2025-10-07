@@ -61,6 +61,7 @@ const Auth = () => {
           email,
           password,
           options: {
+            emailRedirectTo: `${window.location.origin}/`,
             data: {
               full_name: username,
               role: role,
@@ -163,6 +164,7 @@ const Auth = () => {
           email,
           password,
           options: {
+            emailRedirectTo: `${window.location.origin}/`,
             data: {
               full_name: username,
               phone_number: phone,
@@ -350,7 +352,6 @@ const Auth = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="TimelexxInn00233"
                   required
                 />
               </div>
