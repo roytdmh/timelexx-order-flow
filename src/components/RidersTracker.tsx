@@ -4,7 +4,7 @@ import { Clock } from 'lucide-react';
 import { Order } from '@/types';
 import PendingOrderCard from './OrderTracker/PendingOrderCard';
 import RecentOrderCard from './OrderTracker/RecentOrderCard';
-import ResetOrdersButton from './OrderTracker/ResetOrdersButton';
+
 
 interface RidersTrackerProps {
   orders: Order[];
@@ -70,6 +70,7 @@ const RidersTracker: React.FC<RidersTrackerProps> = ({ orders, onUpdateStatus, o
                   onPaymentMethodChange={handlePaymentMethodChange}
                   onMarkAsDelivered={handleMarkAsDelivered}
                   onUpdateStatus={onUpdateStatus}
+                  manageEnabled={false}
                 />
               ))}
             </div>
@@ -95,7 +96,7 @@ const RidersTracker: React.FC<RidersTrackerProps> = ({ orders, onUpdateStatus, o
         </CardContent>
       </Card>
 
-      <ResetOrdersButton onResetOrders={onResetOrders} />
+      {/* Riders cannot reset orders */}
     </div>
   );
 };

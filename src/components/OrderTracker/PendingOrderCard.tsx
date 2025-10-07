@@ -14,6 +14,7 @@ interface PendingOrderCardProps {
   onPaymentMethodChange: (orderId: string, paymentMethod: 'Cash' | 'MoMo') => void;
   onMarkAsDelivered: (orderId: string) => void;
   onUpdateStatus: (orderId: string, status: Order['status']) => void;
+  manageEnabled?: boolean;
 }
 
 const PendingOrderCard: React.FC<PendingOrderCardProps> = ({
@@ -21,7 +22,8 @@ const PendingOrderCard: React.FC<PendingOrderCardProps> = ({
   selectedPaymentMethod,
   onPaymentMethodChange,
   onMarkAsDelivered,
-  onUpdateStatus
+  onUpdateStatus,
+  manageEnabled = true
 }) => {
   const getTimePending = (order: Order) => {
     const now = new Date();
@@ -111,18 +113,21 @@ const PendingOrderCard: React.FC<PendingOrderCardProps> = ({
           <span className="font-bold text-sm sm:text-base">Total: ₵{order.total}</span>
         </div>
 
-        <PaymentMethodSelector
-          orderId={order.id}
-          selectedPaymentMethod={selectedPaymentMethod}
-          onPaymentMethodChange={onPaymentMethodChange}
-        />
-        
-        <OrderActionButtons
-          orderId={order.id}
-          selectedPaymentMethod={selectedPaymentMethod}
-          onMarkAsDelivered={onMarkAsDelivered}
-          onCancel={handleCancel}
-        />
+        {manageEnabled && (
+          <>
+            <PaymentMethodSelector
+              orderId={order.id}
+              selectedPaymentMethod={selectedPaymentMethod}
+              onPaymentMethodChange={onPaymentMethodChange}
+            />
+            <OrderActionButtons
+              orderId={order.id}
+              selectedPaymentMethod={selectedPaymentMethod}
+              onMarkAsDelivered={onMarkAsDelivered}
+              onCancel={handleCancel}
+            />
+          </>
+        )}
       </CardContent>
     </Card>
   );
