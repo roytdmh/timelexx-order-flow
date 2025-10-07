@@ -61,7 +61,7 @@ const Auth = () => {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/`,
+            emailRedirectTo: `${window.location.origin}/dashboard`,
             data: {
               full_name: username,
               role: role,
@@ -71,26 +71,38 @@ const Auth = () => {
 
         if (signUpError) throw signUpError;
 
-        // Insert role into user_roles table
-        const { error: roleError } = await supabase
-          .from('user_roles')
-          .insert({
-            user_id: signUpData.user!.id,
-            role: role,
-          });
+        if (signUpData.user) {
+          // Wait for trigger to create profile
+          await new Promise(resolve => setTimeout(resolve, 500));
 
-        if (roleError) throw roleError;
+          // Insert role into user_roles table
+          const { error: roleError } = await supabase
+            .from('user_roles')
+            .insert({
+              user_id: signUpData.user.id,
+              role: role,
+            });
 
-        // Update profile
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .update({
-            full_name: username,
-            phone_number: role === 'rider' ? username : null,
-          })
-          .eq('user_id', signUpData.user!.id);
+          if (roleError && !roleError.message.includes('duplicate')) {
+            console.error('Role insertion error:', roleError);
+            throw roleError;
+          }
 
-        if (profileError) throw profileError;
+          // Update profile with additional details
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .upsert({
+              user_id: signUpData.user.id,
+              email: email,
+              full_name: username,
+              phone_number: role === 'rider' ? username : null,
+            });
+
+          if (profileError) {
+            console.error('Profile update error:', profileError);
+            throw profileError;
+          }
+        }
       } else {
         // Successfully signed in, check if role exists
         const { data: roleData, error: roleCheckError } = await supabase
@@ -164,7 +176,7 @@ const Auth = () => {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/`,
+            emailRedirectTo: `${window.location.origin}/dashboard`,
             data: {
               full_name: username,
               phone_number: phone,
@@ -176,27 +188,39 @@ const Auth = () => {
 
         if (error) throw error;
 
-        // Insert customer role
-        const { error: roleError } = await supabase
-          .from('user_roles')
-          .insert({
-            user_id: data.user!.id,
-            role: 'customer',
-          });
+        if (data.user) {
+          // Wait for trigger to create profile
+          await new Promise(resolve => setTimeout(resolve, 500));
 
-        if (roleError) throw roleError;
+          // Insert customer role
+          const { error: roleError } = await supabase
+            .from('user_roles')
+            .insert({
+              user_id: data.user.id,
+              role: 'customer',
+            });
 
-        // Update profile with location
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .update({
-            full_name: username,
-            phone_number: phone,
-            location: location,
-          })
-          .eq('user_id', data.user!.id);
+          if (roleError && !roleError.message.includes('duplicate')) {
+            console.error('Role insertion error:', roleError);
+            throw roleError;
+          }
 
-        if (profileError) throw profileError;
+          // Update profile with full details
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .upsert({
+              user_id: data.user.id,
+              email: email,
+              full_name: username,
+              phone_number: phone,
+              location: location,
+            });
+
+          if (profileError) {
+            console.error('Profile update error:', profileError);
+            throw profileError;
+          }
+        }
 
         toast({
           title: 'Account Created!',

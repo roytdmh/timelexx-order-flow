@@ -115,6 +115,9 @@ export const useSupabaseOrders = () => {
     try {
       console.log('Creating order with data:', orderData);
       
+      // Get current user for waiter_user_id
+      const { data: { user } } = await supabase.auth.getUser();
+      
       // Create the order
       const { data: newOrder, error: orderError } = await supabase
         .from('orders')
@@ -132,7 +135,7 @@ export const useSupabaseOrders = () => {
           } : null,
           payment_method: orderData.paymentMethod || null,
           customer_user_id: orderData.customerUserId || null,
-          waiter_user_id: null
+          waiter_user_id: user?.id || null
         })
         .select()
         .single();
