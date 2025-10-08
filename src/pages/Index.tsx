@@ -126,20 +126,16 @@ const Index = () => {
     downloadReportAsPDF(summary, todaysOrders);
   };
 
-  const summary = getDailySummary();
+  // Set initial tab based on role - MUST be before any early returns
+  useEffect(() => {
+    if (role === 'rider') {
+      setActiveTab('riders');
+    } else if (role === 'customer') {
+      setActiveTab('menu');
+    }
+  }, [role]);
 
-  // Show loading state
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="container mx-auto p-6">
-          <Skeleton className="h-12 w-full mb-4" />
-          <Skeleton className="h-64 w-full" />
-        </div>
-      </div>
-    );
-  }
+  const summary = getDailySummary();
 
   // Define available tabs based on role
   const getAvailableTabs = () => {
@@ -152,16 +148,20 @@ const Index = () => {
     }
   };
 
-  // Set initial tab based on role
-  useEffect(() => {
-    if (role === 'rider') {
-      setActiveTab('riders');
-    } else if (role === 'customer') {
-      setActiveTab('menu');
-    }
-  }, [role]);
-
   const availableTabs = getAvailableTabs();
+
+  // Show loading state - AFTER all hooks
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="container mx-auto p-6">
+          <Skeleton className="h-12 w-full mb-4" />
+          <Skeleton className="h-64 w-full" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
