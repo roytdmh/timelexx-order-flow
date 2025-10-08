@@ -173,6 +173,7 @@ const Index = () => {
               <Navigation 
                 activeTab={activeTab} 
                 onTabChange={(tab) => availableTabs.includes(tab) && setActiveTab(tab)} 
+                allowedTabs={availableTabs}
               />
             )}
           </div>

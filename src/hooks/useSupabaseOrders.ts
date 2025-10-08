@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { MenuItem, Order, OrderItem, DailySummary } from '@/types';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 
 export const useSupabaseOrders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastAlertTime, setLastAlertTime] = useState<Record<string, number>>({});
+  const { user, role } = useAuth();
 
   // Fetch orders from Supabase
   const fetchOrders = async () => {
@@ -73,6 +75,36 @@ export const useSupabaseOrders = () => {
     fetchOrders();
   }, []);
 
+  // Realtime notifications and sync
+  useEffect(() => {
+    const channel = supabase
+      .channel('orders-realtime')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, (payload: any) => {
+        const o = payload?.new as any;
+        if (role === 'admin' || role === 'rider') {
+          toast({ title: 'New Order', description: `Order #${String(o?.id || '').slice(-6)} received` });
+        } else if (role === 'customer' && o?.customer_user_id === user?.id) {
+          toast({ title: 'Order Placed', description: 'Your order has been received' });
+        }
+        fetchOrders();
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders' }, (payload: any) => {
+        const prevStatus = payload?.old?.status;
+        const next = payload?.new as any;
+        const nextStatus = next?.status;
+        if (prevStatus !== nextStatus) {
+          const msg = nextStatus === 'delivered' ? 'Order delivered' : nextStatus === 'cancelled' ? 'Order cancelled' : 'Order updated';
+          toast({ title: 'Order Update', description: `${msg} #${String(next?.id || '').slice(-6)}` });
+        }
+        fetchOrders();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [role, user?.id]);
+
   // Check for pending orders that need alerts
   useEffect(() => {
     const checkPendingOrders = () => {
@@ -134,7 +166,7 @@ export const useSupabaseOrders = () => {
             lng: orderData.customerLocation.coordinates[1]
           } : null,
           payment_method: orderData.paymentMethod || null,
-          customer_user_id: orderData.customerUserId || null,
+          customer_user_id: orderData.customerUserId ?? (role === 'customer' ? user?.id : null),
           waiter_user_id: user?.id || null
         })
         .select()

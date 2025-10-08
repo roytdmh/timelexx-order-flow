@@ -6,16 +6,18 @@ import { Menu, Clock, BarChart3, FileText } from 'lucide-react';
 interface NavigationProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
+  allowedTabs?: string[];
 }
 
-const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
-  const tabs = [
+const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, allowedTabs }) => {
+  const allTabs = [
     { id: 'menu', label: 'Menu & Orders', icon: Menu },
     { id: 'tracker', label: 'Order Tracker', icon: Clock },
     { id: 'riders', label: 'Riders', icon: Clock },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'reports', label: 'Reports', icon: FileText },
   ];
+  const tabs = allowedTabs ? allTabs.filter(t => allowedTabs.includes(t.id)) : allTabs;
 
   return (
     <nav className="bg-white border-b-2 border-timelexx-yellow p-3 sm:p-4 shadow-premium-sm">
