@@ -4,6 +4,7 @@ import { Clock } from 'lucide-react';
 import { Order } from '@/types';
 import PendingOrderCard from './OrderTracker/PendingOrderCard';
 import RecentOrderCard from './OrderTracker/RecentOrderCard';
+import { useAuth } from '@/hooks/useAuth';
 
 
 interface RidersTrackerProps {
@@ -14,6 +15,7 @@ interface RidersTrackerProps {
 
 const RidersTracker: React.FC<RidersTrackerProps> = ({ orders, onUpdateStatus, onResetOrders }) => {
   const [selectedPaymentMethods, setSelectedPaymentMethods] = useState<Record<string, 'Cash' | 'MoMo'>>({});
+  const { profile } = useAuth();
 
   const handlePaymentMethodChange = (orderId: string, paymentMethod: 'Cash' | 'MoMo') => {
     setSelectedPaymentMethods(prev => ({
@@ -41,8 +43,11 @@ const RidersTracker: React.FC<RidersTrackerProps> = ({ orders, onUpdateStatus, o
     return timestamp.toDateString() === today.toDateString();
   };
 
-  // Filter orders to only show today's delivery orders
-  const deliveryOrders = orders.filter(order => order.orderType === 'delivery');
+  // Filter orders to only show today's delivery orders for this specific rider
+  const riderName = profile?.full_name;
+  const deliveryOrders = orders.filter(order => 
+    order.orderType === 'delivery' && order.riderNumber === riderName
+  );
   const todaysDeliveryOrders = deliveryOrders.filter(order => isToday(order.timestamp));
   const pendingDeliveryOrders = todaysDeliveryOrders.filter(order => order.status === 'pending');
   const recentDeliveryOrders = todaysDeliveryOrders.slice(0, 10);
@@ -54,7 +59,7 @@ const RidersTracker: React.FC<RidersTrackerProps> = ({ orders, onUpdateStatus, o
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-timelexx-red">
             <Clock className="w-5 h-5" />
-            Pending Delivery Orders ({pendingDeliveryOrders.length})
+            My Pending Deliveries ({pendingDeliveryOrders.length})
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -70,7 +75,7 @@ const RidersTracker: React.FC<RidersTrackerProps> = ({ orders, onUpdateStatus, o
                   onPaymentMethodChange={handlePaymentMethodChange}
                   onMarkAsDelivered={handleMarkAsDelivered}
                   onUpdateStatus={onUpdateStatus}
-                  manageEnabled={false}
+                  manageEnabled={true}
                 />
               ))}
             </div>
@@ -81,7 +86,7 @@ const RidersTracker: React.FC<RidersTrackerProps> = ({ orders, onUpdateStatus, o
       {/* Recent Delivery Orders */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-timelexx-dark">Recent Delivery Orders</CardTitle>
+          <CardTitle className="text-timelexx-dark">My Recent Deliveries</CardTitle>
         </CardHeader>
         <CardContent>
           {recentDeliveryOrders.length === 0 ? (

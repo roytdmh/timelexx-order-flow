@@ -8,6 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { RIDERS } from '@/data/riders';
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
@@ -359,15 +361,30 @@ const Auth = () => {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="staff-username">
-                  {role === 'rider' ? 'Rider Name' : 'Username'}
+                  {role === 'rider' ? 'Select Rider' : 'Username'}
                 </Label>
-                <Input
-                  id="staff-username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder={role === 'rider' ? 'Enter your name (e.g., Saboli)' : 'Enter username'}
-                  required
-                />
+                {role === 'rider' ? (
+                  <Select value={username} onValueChange={setUsername} required>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choose your name" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {RIDERS.map(rider => (
+                        <SelectItem key={rider.id} value={rider.name}>
+                          {rider.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <Input
+                    id="staff-username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Enter username"
+                    required
+                  />
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="staff-password">Password</Label>
