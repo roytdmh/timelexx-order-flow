@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
@@ -141,30 +141,35 @@ const Index = () => {
 
   // Set initial tab based on role - MUST be before any early returns
   useEffect(() => {
+    if (!role) return;
+    
     if (role === 'rider') {
       setActiveTab('riders');
     } else if (role === 'customer') {
+      setActiveTab('menu');
+    } else if (role === 'admin') {
       setActiveTab('menu');
     }
   }, [role]);
 
   const summary = getDailySummary();
 
-  // Define available tabs based on role
-  const getAvailableTabs = () => {
+  // Define available tabs based on role - recalculate when role changes
+  const availableTabs = useMemo(() => {
+    if (!role) return [];
+    
     if (role === 'customer') {
       return ['menu', 'orders'];
     } else if (role === 'rider') {
       return ['riders'];
-    } else {
+    } else if (role === 'admin') {
       return ['menu', 'tracker', 'riders', 'analytics', 'reports'];
     }
-  };
+    return [];
+  }, [role]);
 
-  const availableTabs = getAvailableTabs();
-
-  // Show loading state - AFTER all hooks
-  if (authLoading) {
+  // Show loading state while auth or role is loading
+  if (authLoading || !role) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
