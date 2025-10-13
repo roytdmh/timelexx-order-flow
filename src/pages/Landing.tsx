@@ -1,7 +1,9 @@
 import { LandingNav } from '@/components/LandingNav';
 import { ImageCarousel } from '@/components/ImageCarousel';
 import timelexxMenu from '@/assets/timelexx-menu.jpeg';
-import { Carrot, Apple, Leaf } from 'lucide-react';
+import { Carrot, Apple, Leaf, MapPin } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent } from '@/components/ui/card';
 
 const Landing = () => {
   return (
@@ -25,54 +27,111 @@ const Landing = () => {
             </p>
           </div>
 
-          {/* Carousel Section */}
-          <div className="mb-16 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            <ImageCarousel />
-          </div>
+          {/* Tabs Section */}
+          <Tabs defaultValue="home" className="w-full max-w-6xl mx-auto">
+            <TabsList className="grid w-full grid-cols-2 mb-8 bg-white/10 backdrop-blur-sm border border-white/20">
+              <TabsTrigger 
+                value="home"
+                className="data-[state=active]:bg-timelexx-red data-[state=active]:text-white text-white/80"
+              >
+                Home
+              </TabsTrigger>
+              <TabsTrigger 
+                value="info"
+                className="data-[state=active]:bg-timelexx-red data-[state=active]:text-white text-white/80"
+              >
+                Info
+              </TabsTrigger>
+            </TabsList>
 
-          {/* Menu Section */}
-          <div className="mb-12 animate-fade-in" style={{ animationDelay: '0.4s' }}>
-            <div className="relative max-w-4xl mx-auto">
-              {/* Decorative Veggie Icons */}
-              <Carrot 
-                className="absolute -top-4 -left-8 w-10 h-10 text-timelexx-red animate-pulse z-10"
-                style={{ transform: 'rotate(-25deg)' }}
-              />
-              <Leaf 
-                className="absolute top-1/3 -right-6 w-12 h-12 text-green-500 animate-pulse z-10"
-                style={{ transform: 'rotate(15deg)', animationDelay: '0.5s' }}
-              />
-              <Apple 
-                className="absolute -bottom-6 left-1/4 w-10 h-10 text-timelexx-red animate-pulse z-10"
-                style={{ transform: 'rotate(45deg)', animationDelay: '1s' }}
-              />
-              
-              {/* Menu Image with Blended Edges */}
-              <div className="relative rounded-2xl overflow-hidden shadow-premium-lg">
-                <img
-                  src={timelexxMenu}
-                  alt="Timelexx Inn Menu"
-                  className="w-full h-auto"
-                  style={{
-                    maskImage: 'linear-gradient(to bottom, rgba(0,0,0,0.9) 10%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 70%, rgba(0,0,0,0.9) 90%)',
-                    WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,0.9) 10%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 70%, rgba(0,0,0,0.9) 90%)',
-                  }}
-                />
+            <TabsContent value="home" className="space-y-12">
+              {/* Carousel Section */}
+              <div className="animate-fade-in">
+                <ImageCarousel />
               </div>
-            </div>
-          </div>
 
-          {/* CTA Section */}
-          <div className="text-center animate-fade-in" style={{ animationDelay: '0.6s' }}>
-            <p className="text-white text-lg mb-4">
-              Select your role above to get started
-            </p>
-            <div className="flex flex-wrap justify-center gap-4 text-white/80 text-sm">
-              <span>🍽️ Fresh Food</span>
-              <span>🚀 Fast Delivery</span>
-              <span>⭐ Quality Service</span>
-            </div>
-          </div>
+              {/* Menu Section */}
+              <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
+                <div className="relative max-w-4xl mx-auto">
+                  {/* Decorative Veggie Icons */}
+                  <Carrot 
+                    className="absolute -top-4 -left-8 w-10 h-10 text-timelexx-red animate-pulse z-10"
+                    style={{ transform: 'rotate(-25deg)' }}
+                  />
+                  <Leaf 
+                    className="absolute top-1/3 -right-6 w-12 h-12 text-green-500 animate-pulse z-10"
+                    style={{ transform: 'rotate(15deg)', animationDelay: '0.5s' }}
+                  />
+                  <Apple 
+                    className="absolute -bottom-6 left-1/4 w-10 h-10 text-timelexx-red animate-pulse z-10"
+                    style={{ transform: 'rotate(45deg)', animationDelay: '1s' }}
+                  />
+                  
+                  {/* Menu Image with Blended Edges */}
+                  <div className="relative rounded-2xl overflow-hidden shadow-premium-lg">
+                    <img
+                      src={timelexxMenu}
+                      alt="Timelexx Inn Menu"
+                      className="w-full h-auto"
+                      style={{
+                        maskImage: 'linear-gradient(to bottom, rgba(0,0,0,0.9) 10%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 70%, rgba(0,0,0,0.9) 90%)',
+                        WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,0.9) 10%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 70%, rgba(0,0,0,0.9) 90%)',
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* CTA Section */}
+              <div className="text-center animate-fade-in" style={{ animationDelay: '0.4s' }}>
+                <p className="text-white text-lg mb-4">
+                  Select your role above to get started
+                </p>
+                <div className="flex flex-wrap justify-center gap-4 text-white/80 text-sm">
+                  <span>🍽️ Fresh Food</span>
+                  <span>🚀 Fast Delivery</span>
+                  <span>⭐ Quality Service</span>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="info" className="space-y-8">
+              {/* Bio Section */}
+              <Card className="bg-white/10 backdrop-blur-sm border-white/20 animate-fade-in">
+                <CardContent className="pt-6">
+                  <h2 className="text-3xl font-bold text-white mb-4 text-center">About Us</h2>
+                  <p className="text-white/90 text-lg leading-relaxed text-center max-w-3xl mx-auto">
+                    Timelexx Inn is a hub for great food and cool vibes. Based in Nungua, Timelexx Inn captures the life and taste of the Neighbourhood, offering the best in foods, drinks, service and soul. Welcome to Timelexx Inn!
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* Map Section */}
+              <Card className="bg-white/10 backdrop-blur-sm border-white/20 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-center gap-2 mb-4">
+                    <MapPin className="h-6 w-6 text-timelexx-red" />
+                    <h2 className="text-2xl font-bold text-white">Find Us</h2>
+                  </div>
+                  <div className="relative w-full h-[400px] rounded-lg overflow-hidden shadow-premium-lg">
+                    <iframe
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3970.8982895847396!2d-0.07468519999999999!3d5.6044812!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfdf87003d1cf659%3A0x31d171072b5e2cc6!2sTimelexx%20Inn!5e0!3m2!1sen!2s!4v1234567890!5m2!1sen!2s"
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      title="Timelexx Inn Location"
+                    />
+                  </div>
+                  <p className="text-white/80 text-center mt-4">
+                    Nungua, Accra, Ghana
+                  </p>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>
