@@ -1,5 +1,7 @@
 import { LandingNav } from '@/components/LandingNav';
 import { ImageCarousel } from '@/components/ImageCarousel';
+import timelexxMenu from '@/assets/timelexx-menu.jpeg';
+import { Carrot, Apple, Leaf } from 'lucide-react';
 
 const Landing = () => {
   return (
@@ -24,12 +26,44 @@ const Landing = () => {
           </div>
 
           {/* Carousel Section */}
-          <div className="mb-12 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+          <div className="mb-16 animate-fade-in" style={{ animationDelay: '0.2s' }}>
             <ImageCarousel />
           </div>
 
+          {/* Menu Section */}
+          <div className="mb-12 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+            <div className="relative max-w-4xl mx-auto">
+              {/* Decorative Veggie Icons */}
+              <Carrot 
+                className="absolute -top-4 -left-8 w-10 h-10 text-timelexx-red animate-pulse z-10"
+                style={{ transform: 'rotate(-25deg)' }}
+              />
+              <Leaf 
+                className="absolute top-1/3 -right-6 w-12 h-12 text-green-500 animate-pulse z-10"
+                style={{ transform: 'rotate(15deg)', animationDelay: '0.5s' }}
+              />
+              <Apple 
+                className="absolute -bottom-6 left-1/4 w-10 h-10 text-timelexx-red animate-pulse z-10"
+                style={{ transform: 'rotate(45deg)', animationDelay: '1s' }}
+              />
+              
+              {/* Menu Image with Blended Edges */}
+              <div className="relative rounded-2xl overflow-hidden shadow-premium-lg">
+                <img
+                  src={timelexxMenu}
+                  alt="Timelexx Inn Menu"
+                  className="w-full h-auto"
+                  style={{
+                    maskImage: 'linear-gradient(to bottom, rgba(0,0,0,0.9) 10%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 70%, rgba(0,0,0,0.9) 90%)',
+                    WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,0.9) 10%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 70%, rgba(0,0,0,0.9) 90%)',
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
           {/* CTA Section */}
-          <div className="text-center animate-fade-in" style={{ animationDelay: '0.4s' }}>
+          <div className="text-center animate-fade-in" style={{ animationDelay: '0.6s' }}>
             <p className="text-white text-lg mb-4">
               Select your role above to get started
             </p>
