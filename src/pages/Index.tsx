@@ -47,6 +47,10 @@ const Index = () => {
     ? orders.filter(order => order.orderType === 'delivery' && order.riderNumber === profile?.full_name)
     : orders;
 
+  // Count new orders for badges
+  const newOrdersCount = orders.filter(order => order.status === 'placed').length;
+  const newRiderOrdersCount = orders.filter(order => order.status === 'placed' && order.orderType === 'delivery').length;
+
   const handleAddToOrder = (menuItem: MenuItem) => {
     setCurrentOrder(prev => {
       const existing = prev.find(item => item.menuItem.id === menuItem.id);
@@ -208,6 +212,8 @@ const Index = () => {
                 activeTab={activeTab} 
                 onTabChange={(tab) => availableTabs.includes(tab) && setActiveTab(tab)} 
                 allowedTabs={availableTabs}
+                orderCount={newOrdersCount}
+                riderOrderCount={newRiderOrdersCount}
               />
             )}
           </div>
