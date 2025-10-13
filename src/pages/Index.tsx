@@ -126,7 +126,17 @@ const Index = () => {
   const handleDownloadReport = async (): Promise<void> => {
     const summary = getDailySummary();
     const todaysOrders = getTodaysOrders();
-    downloadReportAsPDF(summary, todaysOrders);
+    
+    // Extract username from email if admin
+    let adminUsername: string | undefined;
+    if (role === 'admin' && profile?.email) {
+      const emailParts = profile.email.split('@');
+      if (emailParts[1] === 'timelexx.admin') {
+        adminUsername = emailParts[0];
+      }
+    }
+    
+    downloadReportAsPDF(summary, todaysOrders, adminUsername);
   };
 
   // Set initial tab based on role - MUST be before any early returns
@@ -249,6 +259,7 @@ const Index = () => {
           <Reports
             summary={summary}
             onDownloadReport={handleDownloadReport}
+            adminUsername={role === 'admin' && profile?.email ? profile.email.split('@')[0] : undefined}
           />
         )}
       </main>

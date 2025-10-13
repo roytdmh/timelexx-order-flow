@@ -12,7 +12,7 @@ import { ShieldCheck } from 'lucide-react';
 const AdminAuth = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   useEffect(() => {
@@ -30,12 +30,28 @@ const AdminAuth = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      // Validate username format (alphanumeric and underscore only)
+      if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+        throw new Error('Invalid username format');
+      }
+
+      // Check predetermined password
+      if (password !== 'TimelexxInn00233') {
+        throw new Error('Invalid password');
+      }
+
+      // Convert username to internal email format for Supabase auth
+      const internalEmail = `${username}@timelexx.admin`;
+      
+      const { error } = await supabase.auth.signInWithPassword({ 
+        email: internalEmail, 
+        password 
+      });
       if (error) throw error;
       toast.success('Admin signed in successfully!');
       navigate('/dashboard');
     } catch (error: any) {
-      toast.error(error.message || 'Sign in failed');
+      toast.error(error.message || 'Invalid username or password');
     } finally {
       setIsLoading(false);
     }
@@ -55,12 +71,13 @@ const AdminAuth = () => {
           <CardContent>
             <form onSubmit={handleSignIn} className="space-y-4">
               <div>
-                <Label htmlFor="admin-email">Email</Label>
+                <Label htmlFor="admin-username">Admin Username</Label>
                 <Input
-                  id="admin-email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  id="admin-username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value.toLowerCase())}
+                  placeholder="Enter your admin username"
                   required
                 />
               </div>
@@ -71,6 +88,7 @@ const AdminAuth = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter admin password"
                   required
                 />
               </div>
