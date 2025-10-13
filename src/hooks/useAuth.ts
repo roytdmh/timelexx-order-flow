@@ -25,10 +25,12 @@ export const useAuth = () => {
       .from('user_roles')
       .select('role')
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
 
     if (!error && data) {
       setRole(data.role as UserRole);
+    } else {
+      setRole(null);
     }
   };
 
@@ -37,10 +39,12 @@ export const useAuth = () => {
       .from('profiles')
       .select('full_name, phone_number, location, email')
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
 
     if (!error && data) {
       setProfile(data);
+    } else {
+      setProfile(null);
     }
   };
 

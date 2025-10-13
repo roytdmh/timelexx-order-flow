@@ -21,7 +21,15 @@ const RiderAuth = () => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        navigate('/dashboard');
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .maybeSingle();
+        
+        if (roleData?.role) {
+          navigate('/dashboard');
+        }
       }
     };
     checkAuth();
@@ -38,8 +46,26 @@ const RiderAuth = () => {
       }
 
       const email = `${rider.name.toLowerCase()}@timelexx.com`;
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data: authData, error } = await supabase.auth.signInWithPassword({ 
+        email, 
+        password 
+      });
+      
       if (error) throw error;
+      
+      // Verify rider role exists
+      if (authData.user) {
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', authData.user.id)
+          .maybeSingle();
+        
+        if (!roleData || roleData.role !== 'rider') {
+          await supabase.auth.signOut();
+          throw new Error('Account does not have rider privileges');
+        }
+      }
       
       toast.success(`Welcome ${rider.name}!`);
       navigate('/dashboard');

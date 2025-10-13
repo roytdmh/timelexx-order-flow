@@ -19,7 +19,15 @@ const AdminAuth = () => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        navigate('/dashboard');
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .maybeSingle();
+        
+        if (roleData?.role) {
+          navigate('/dashboard');
+        }
       }
     };
     checkAuth();
@@ -46,11 +54,27 @@ const AdminAuth = () => {
       // Convert username to internal email format for Supabase auth
       const internalEmail = `${normalizedUsername}@timelexx.admin`;
       
-      const { error } = await supabase.auth.signInWithPassword({ 
+      const { data: authData, error } = await supabase.auth.signInWithPassword({ 
         email: internalEmail, 
         password 
       });
+      
       if (error) throw error;
+      
+      // Verify admin role exists
+      if (authData.user) {
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', authData.user.id)
+          .maybeSingle();
+        
+        if (!roleData || roleData.role !== 'admin') {
+          await supabase.auth.signOut();
+          throw new Error('Account does not have admin privileges');
+        }
+      }
+      
       toast.success('Admin signed in successfully!');
       navigate('/dashboard');
     } catch (error: any) {

@@ -28,11 +28,11 @@ const CustomerAuth = () => {
           .from('user_roles')
           .select('role')
           .eq('user_id', session.user.id)
-          .single();
+          .maybeSingle();
         
         if (roleData?.role === 'customer') {
           navigate('/customer-dashboard');
-        } else {
+        } else if (roleData?.role) {
           navigate('/dashboard');
         }
       }
@@ -80,25 +80,37 @@ const CustomerAuth = () => {
       if (signUpError) throw signUpError;
 
       if (authData.user) {
-        const { error: profileError } = await supabase.from('profiles').insert({
-          user_id: authData.user.id,
-          full_name: fullName,
-          phone_number: phone,
-          location: location,
-          email: internalEmail
-        });
+        // Update profile with additional info (profile is created by trigger)
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({
+            full_name: fullName,
+            phone_number: phone,
+            location: location,
+          })
+          .eq('user_id', authData.user.id);
 
-        if (profileError) throw profileError;
+        if (profileError) {
+          console.error('Profile update error:', profileError);
+        }
 
+        // Insert user role
         const { error: roleError } = await supabase.from('user_roles').insert({
           user_id: authData.user.id,
           role: 'customer'
         });
 
-        if (roleError) throw roleError;
+        if (roleError) {
+          console.error('Role assignment error:', roleError);
+          throw new Error('Failed to assign customer role');
+        }
 
         toast.success('Account created successfully!');
-        navigate('/customer-dashboard');
+        
+        // Wait a bit for role to be set
+        setTimeout(() => {
+          navigate('/customer-dashboard');
+        }, 500);
       }
     } catch (error: any) {
       toast.error(error.message || 'Sign up failed');
@@ -118,11 +130,27 @@ const CustomerAuth = () => {
       // Convert username to internal email format
       const internalEmail = `${normalizedUsername}@timelexx.customer`;
       
-      const { error } = await supabase.auth.signInWithPassword({ 
+      const { data: authData, error } = await supabase.auth.signInWithPassword({ 
         email: internalEmail, 
         password 
       });
+      
       if (error) throw error;
+      
+      // Verify customer role exists
+      if (authData.user) {
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', authData.user.id)
+          .maybeSingle();
+        
+        if (!roleData || roleData.role !== 'customer') {
+          await supabase.auth.signOut();
+          throw new Error('Invalid customer account');
+        }
+      }
+      
       toast.success('Signed in successfully!');
       navigate('/customer-dashboard');
     } catch (error: any) {
