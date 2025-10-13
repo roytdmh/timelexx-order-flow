@@ -110,6 +110,19 @@ const RiderAuth = () => {
           }
         }
         
+        // Update profile with the actual rider name
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .upsert({
+            user_id: authUser.id,
+            email: masterEmail,
+            full_name: rider.name,
+          }, { onConflict: 'user_id' });
+
+        if (profileError) {
+          console.error('Profile update error:', profileError);
+        }
+        
         // Store rider name in localStorage for tracking
         localStorage.setItem('riderName', rider.name);
       }

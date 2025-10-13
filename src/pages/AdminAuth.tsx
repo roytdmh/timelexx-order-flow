@@ -110,6 +110,19 @@ const AdminAuth = () => {
             // Proceed anyway; master account is authenticated
           }
         }
+
+        // Update profile with the actual admin name
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .upsert({
+            user_id: authUser.id,
+            email: masterEmail,
+            full_name: username.trim(),
+          }, { onConflict: 'user_id' });
+
+        if (profileError) {
+          console.error('Profile update error:', profileError);
+        }
       }
       
       toast.success(`Welcome ${username.trim()}!`);
