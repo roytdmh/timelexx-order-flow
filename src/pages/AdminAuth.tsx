@@ -30,8 +30,11 @@ const AdminAuth = () => {
     setIsLoading(true);
 
     try {
+      // Normalize username to lowercase for authentication
+      const normalizedUsername = username.toLowerCase();
+      
       // Validate username format (alphanumeric and underscore only)
-      if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+      if (!/^[a-zA-Z0-9_]{3,20}$/.test(normalizedUsername)) {
         throw new Error('Invalid username format');
       }
 
@@ -41,7 +44,7 @@ const AdminAuth = () => {
       }
 
       // Convert username to internal email format for Supabase auth
-      const internalEmail = `${username}@timelexx.admin`;
+      const internalEmail = `${normalizedUsername}@timelexx.admin`;
       
       const { error } = await supabase.auth.signInWithPassword({ 
         email: internalEmail, 
@@ -76,7 +79,7 @@ const AdminAuth = () => {
                   id="admin-username"
                   type="text"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value.toLowerCase())}
+                  onChange={(e) => setUsername(e.target.value)}
                   placeholder="Enter your admin username"
                   required
                 />

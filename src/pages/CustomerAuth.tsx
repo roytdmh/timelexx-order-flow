@@ -34,8 +34,11 @@ const CustomerAuth = () => {
     setIsLoading(true);
 
     try {
+      // Normalize username to lowercase for validation and storage
+      const normalizedUsername = username.toLowerCase();
+      
       // Validate username format (alphanumeric and underscore only)
-      if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+      if (!/^[a-zA-Z0-9_]{3,20}$/.test(normalizedUsername)) {
         throw new Error('Username must be 3-20 characters and contain only letters, numbers, and underscores');
       }
 
@@ -43,7 +46,7 @@ const CustomerAuth = () => {
       const { data: existingProfile } = await supabase
         .from('profiles')
         .select('user_id')
-        .eq('email', `${username}@timelexx.customer`)
+        .eq('email', `${normalizedUsername}@timelexx.customer`)
         .single();
 
       if (existingProfile) {
@@ -51,7 +54,7 @@ const CustomerAuth = () => {
       }
 
       // Create email from username for Supabase auth (internal use only)
-      const internalEmail = `${username}@timelexx.customer`;
+      const internalEmail = `${normalizedUsername}@timelexx.customer`;
       
       const redirectUrl = `${window.location.origin}/`;
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
@@ -59,7 +62,7 @@ const CustomerAuth = () => {
         password,
         options: { 
           emailRedirectTo: redirectUrl,
-          data: { username }
+          data: { username: normalizedUsername }
         }
       });
 
@@ -98,8 +101,11 @@ const CustomerAuth = () => {
     setIsLoading(true);
 
     try {
+      // Normalize username to lowercase for authentication
+      const normalizedUsername = username.toLowerCase();
+      
       // Convert username to internal email format
-      const internalEmail = `${username}@timelexx.customer`;
+      const internalEmail = `${normalizedUsername}@timelexx.customer`;
       
       const { error } = await supabase.auth.signInWithPassword({ 
         email: internalEmail, 
@@ -141,7 +147,7 @@ const CustomerAuth = () => {
                       id="signin-username"
                       type="text"
                       value={username}
-                      onChange={(e) => setUsername(e.target.value.toLowerCase())}
+                      onChange={(e) => setUsername(e.target.value)}
                       placeholder="Enter your username"
                       required
                     />
@@ -174,7 +180,7 @@ const CustomerAuth = () => {
                       id="signup-username"
                       type="text"
                       value={username}
-                      onChange={(e) => setUsername(e.target.value.toLowerCase())}
+                      onChange={(e) => setUsername(e.target.value)}
                       placeholder="Choose a username (3-20 characters)"
                       pattern="[a-zA-Z0-9_]{3,20}"
                       required
