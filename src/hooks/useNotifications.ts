@@ -43,9 +43,10 @@ export const useNotifications = (userId: string | undefined, userRole: string | 
 
     fetchNotifications();
 
-    // Subscribe to new notifications
+    // Subscribe to new notifications with unique channel ID per user session
+    const channelId = `notifications-${userId}-${Date.now()}`;
     const channel = supabase
-      .channel('notifications-changes')
+      .channel(channelId)
       .on(
         'postgres_changes',
         {

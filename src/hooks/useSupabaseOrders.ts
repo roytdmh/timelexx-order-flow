@@ -78,10 +78,15 @@ export const useSupabaseOrders = () => {
     fetchOrders();
   }, []);
 
-  // Realtime notifications and sync
+  // Realtime notifications and sync with unique channel per user
   useEffect(() => {
+    if (!user?.id) return;
+    
+    // Create unique channel ID for this user session to avoid conflicts
+    const channelId = `orders-${user.id}-${Date.now()}`;
+    
     const channel = supabase
-      .channel('orders-realtime')
+      .channel(channelId)
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, (payload: any) => {
         const o = payload?.new as any;
         // Only notify admin when new order is placed, not riders yet

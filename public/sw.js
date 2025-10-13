@@ -18,19 +18,48 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Fetch event - serve from cache when offline
+// Fetch event - intelligent caching strategy
 self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+  
+  // NEVER cache Supabase API requests or any API calls
+  if (url.hostname.includes('supabase.co') || 
+      url.pathname.includes('/api/') ||
+      url.pathname.includes('/auth/') ||
+      event.request.method !== 'GET') {
+    // Always fetch fresh for API calls
+    event.respondWith(fetch(event.request));
+    return;
+  }
+  
+  // For static assets, use network-first strategy with cache fallback
   event.respondWith(
-    caches.match(event.request)
+    fetch(event.request)
       .then((response) => {
-        // Return cached version or fetch from network
-        return response || fetch(event.request);
+        // Clone the response before caching
+        const responseToCache = response.clone();
+        
+        // Only cache successful responses
+        if (response.status === 200) {
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
+        }
+        
+        return response;
       })
       .catch(() => {
-        // If both cache and network fail, return offline page for navigation requests
-        if (event.request.destination === 'document') {
-          return caches.match('/');
-        }
+        // If network fails, try cache
+        return caches.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          
+          // If both fail and it's a navigation request, return home
+          if (event.request.destination === 'document') {
+            return caches.match('/');
+          }
+        });
       })
   );
 });
