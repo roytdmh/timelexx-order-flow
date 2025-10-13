@@ -4,7 +4,7 @@ import { ImageCarousel } from '@/components/ImageCarousel';
 const Landing = () => {
   return (
     <div className="min-h-screen timelexx-gradient">
-      <LandingNav showContactUs={true} />
+      <LandingNav />
       
       <div className="pt-24 pb-12 px-4">
         <div className="container mx-auto">

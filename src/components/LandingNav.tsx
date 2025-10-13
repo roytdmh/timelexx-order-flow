@@ -1,14 +1,12 @@
 import { Button } from '@/components/ui/button';
 import { Home, Mail } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 
-interface LandingNavProps {
-  showContactUs?: boolean;
-}
-
-export const LandingNav = ({ showContactUs = false }: LandingNavProps) => {
+export const LandingNav = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { isAuthenticated } = useAuth();
   const currentPath = location.pathname;
 
   const handleContactUs = () => {
@@ -19,15 +17,18 @@ export const LandingNav = ({ showContactUs = false }: LandingNavProps) => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-timelexx-yellow shadow-premium-sm">
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
-          {/* Home Button - Left */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate('/')}
-            className="hover:bg-timelexx-yellow/20"
-          >
-            <Home className="h-5 w-5 text-timelexx-red" />
-          </Button>
+          {/* Home Button - Left (hidden when authenticated) */}
+          {!isAuthenticated && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/')}
+              className="hover:bg-timelexx-yellow/20"
+            >
+              <Home className="h-5 w-5 text-timelexx-red" />
+            </Button>
+          )}
+          {isAuthenticated && <div className="w-10" />}
 
           {/* Center Tabs */}
           <div className="flex gap-2">
@@ -66,18 +67,19 @@ export const LandingNav = ({ showContactUs = false }: LandingNavProps) => {
             </Button>
           </div>
 
-          {/* Contact Us Button - Right */}
-          {showContactUs ? (
+          {/* Contact Us Button - Right (hidden when authenticated) */}
+          {!isAuthenticated ? (
             <Button
-              variant="outline"
+              variant="ghost"
+              size="icon"
               onClick={handleContactUs}
-              className="border-timelexx-red text-timelexx-red hover:bg-timelexx-red hover:text-white"
+              className="hover:bg-timelexx-yellow/20"
+              title="Contact Us"
             >
-              <Mail className="h-4 w-4 mr-2" />
-              Contact Us
+              <Mail className="h-5 w-5 text-timelexx-red" />
             </Button>
           ) : (
-            <div className="w-[120px]" /> // Spacer for layout balance
+            <div className="w-10" />
           )}
         </div>
       </div>
