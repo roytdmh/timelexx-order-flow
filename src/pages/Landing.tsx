@@ -13,7 +13,7 @@ const Landing = () => {
             <img
               src="/lovable-uploads/3b434d95-7b2c-4d7d-a0c2-8458f1f0999c.png"
               alt="Timelexx Inn Logo"
-              className="h-32 sm:h-40 mx-auto object-contain mb-6"
+              className="h-32 sm:h-40 mx-auto object-contain mb-6 mix-blend-lighten opacity-90"
             />
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4">
               Welcome to Timelexx Inn
