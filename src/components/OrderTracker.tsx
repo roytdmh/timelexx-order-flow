@@ -44,22 +44,50 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onR
 
   // Filter to today's orders only
   const todaysOrders = orders.filter(order => isToday(order.timestamp));
-  const pendingOrders = todaysOrders.filter(order => order.status === 'pending');
+  const placedOrders = todaysOrders.filter(order => order.status === 'placed');
+  const pendingOrders = todaysOrders.filter(order => order.status === 'pending' || order.status === 'confirmed' || order.status === 'preparing');
   const recentOrders = todaysOrders.slice(0, 10);
 
   return (
     <div className="space-y-6 relative">
-      {/* Pending Orders - Priority Section */}
+      {/* New Orders - Placed by Customers */}
+      {placedOrders.length > 0 && (
+        <Card className="border-2 border-blue-500">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-blue-600">
+              <Clock className="w-5 h-5" />
+              New Orders ({placedOrders.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {placedOrders.map(order => (
+                <PendingOrderCard
+                  key={order.id}
+                  order={order}
+                  selectedPaymentMethod={selectedPaymentMethods[order.id]}
+                  onPaymentMethodChange={handlePaymentMethodChange}
+                  onMarkAsDelivered={handleMarkAsDelivered}
+                  onUpdateStatus={onUpdateStatus}
+                  showAcceptButton={true}
+                />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Pending Orders - Being Prepared */}
       <Card className="border-2 border-timelexx-red">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-timelexx-red">
             <Clock className="w-5 h-5" />
-            Pending Orders ({pendingOrders.length})
+            Active Orders ({pendingOrders.length})
           </CardTitle>
         </CardHeader>
         <CardContent>
           {pendingOrders.length === 0 ? (
-            <p className="text-center text-muted-foreground py-4">No pending orders</p>
+            <p className="text-center text-muted-foreground py-4">No active orders</p>
           ) : (
             <div className="space-y-3">
               {pendingOrders.map(order => (

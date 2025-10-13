@@ -43,7 +43,7 @@ export const useSupabaseOrders = () => {
         total: Number(order.total),
         orderType: order.order_type as 'pickup' | 'delivery',
         riderNumber: order.rider_number,
-        status: order.status as 'pending' | 'delivered' | 'cancelled',
+        status: order.status as Order['status'],
         timestamp: new Date(order.created_at),
         customerName: order.customer_name,
         customerNumber: order.customer_number,
@@ -55,7 +55,10 @@ export const useSupabaseOrders = () => {
           ] : [0, 0]
         } : undefined,
         paymentMethod: order.payment_method as 'Cash' | 'MoMo' | undefined,
-        customerUserId: order.customer_user_id
+        customerUserId: order.customer_user_id,
+        confirmedAt: order.confirmed_at ? new Date(order.confirmed_at) : undefined,
+        estimatedReadyTime: order.estimated_ready_time ? new Date(order.estimated_ready_time) : undefined,
+        riderAcceptedAt: order.rider_accepted_at ? new Date(order.rider_accepted_at) : undefined
       })) || [];
 
       setOrders(transformedOrders);
@@ -150,6 +153,9 @@ export const useSupabaseOrders = () => {
       // Get current user for waiter_user_id
       const { data: { user } } = await supabase.auth.getUser();
       
+      // Determine initial status - customers place orders with "placed" status
+      const initialStatus = role === 'customer' ? 'placed' : (orderData.status || 'pending');
+      
       // Create the order
       const { data: newOrder, error: orderError } = await supabase
         .from('orders')
@@ -157,7 +163,7 @@ export const useSupabaseOrders = () => {
           total: orderData.total,
           order_type: orderData.orderType,
           rider_number: orderData.riderNumber || null,
-          status: orderData.status,
+          status: initialStatus,
           customer_name: orderData.customerName || null,
           customer_number: orderData.customerNumber || null,
           customer_address: orderData.customerLocation?.address || null,
@@ -202,7 +208,9 @@ export const useSupabaseOrders = () => {
 
       toast({
         title: "Order Added",
-        description: `Order #${newOrder.id.slice(-6)} has been created successfully`,
+        description: role === 'customer' 
+          ? `Your order has been placed! Order #${newOrder.id.slice(-6)}`
+          : `Order #${newOrder.id.slice(-6)} has been created successfully`,
       });
 
       // Refresh orders to show the new order
@@ -220,6 +228,20 @@ export const useSupabaseOrders = () => {
   const updateOrderStatus = async (orderId: string, status: Order['status'], paymentMethod?: 'Cash' | 'MoMo') => {
     try {
       const updateData: any = { status };
+      
+      // When accepting/confirming an order, set estimated ready time to 30 minutes from now
+      if (status === 'confirmed') {
+        updateData.confirmed_at = new Date().toISOString();
+        const estimatedTime = new Date();
+        estimatedTime.setMinutes(estimatedTime.getMinutes() + 30);
+        updateData.estimated_ready_time = estimatedTime.toISOString();
+      }
+      
+      // When marking as pending (admin accepts but not confirmed to customer yet)
+      if (status === 'pending') {
+        updateData.confirmed_at = new Date().toISOString();
+      }
+      
       if (paymentMethod) {
         updateData.payment_method = paymentMethod;
       }
@@ -239,15 +261,18 @@ export const useSupabaseOrders = () => {
 
       console.log('Update successful:', data);
 
-      const statusMessages = {
+      const statusMessages: Record<Order['status'], string> = {
+        placed: "Order placed",
+        pending: "Order accepted and being prepared",
+        confirmed: "Order confirmed - Ready in 30 minutes",
+        preparing: "Order is being prepared",
         delivered: paymentMethod ? `Order marked as delivered (Payment: ${paymentMethod})` : "Order marked as delivered",
-        cancelled: "Order has been cancelled",
-        pending: "Order marked as pending"
+        cancelled: "Order has been cancelled"
       };
       
       toast({
         title: "Order Updated",
-        description: statusMessages[status],
+        description: statusMessages[status] || "Order status updated",
       });
 
       // Refresh orders immediately after successful update

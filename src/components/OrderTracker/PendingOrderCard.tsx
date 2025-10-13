@@ -2,6 +2,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Clock, CheckCircle, XCircle, Truck, MapPin } from 'lucide-react';
 import { Order } from '@/types';
 import { getRiderDisplayName } from '@/data/riders';
@@ -15,6 +16,7 @@ interface PendingOrderCardProps {
   onMarkAsDelivered: (orderId: string) => void;
   onUpdateStatus: (orderId: string, status: Order['status']) => void;
   manageEnabled?: boolean;
+  showAcceptButton?: boolean;
 }
 
 const PendingOrderCard: React.FC<PendingOrderCardProps> = ({
@@ -23,7 +25,8 @@ const PendingOrderCard: React.FC<PendingOrderCardProps> = ({
   onPaymentMethodChange,
   onMarkAsDelivered,
   onUpdateStatus,
-  manageEnabled = true
+  manageEnabled = true,
+  showAcceptButton = false
 }) => {
   const getTimePending = (order: Order) => {
     const now = new Date();
@@ -46,6 +49,12 @@ const PendingOrderCard: React.FC<PendingOrderCardProps> = ({
     const minutes = getTimePending(order);
     
     switch (order.status) {
+      case 'placed':
+        return <Badge className="bg-blue-500"><Clock className="w-4 h-4 mr-1" />New Order</Badge>;
+      case 'confirmed':
+        return <Badge className="bg-green-500"><CheckCircle className="w-4 h-4 mr-1" />Confirmed</Badge>;
+      case 'preparing':
+        return <Badge className="bg-purple-500"><Clock className="w-4 h-4 mr-1" />Preparing</Badge>;
       case 'delivered':
         return <Badge className="bg-gray-500"><CheckCircle className="w-4 h-4 mr-1" />Delivered</Badge>;
       case 'cancelled':
@@ -115,17 +124,31 @@ const PendingOrderCard: React.FC<PendingOrderCardProps> = ({
 
         {manageEnabled && (
           <>
-            <PaymentMethodSelector
-              orderId={order.id}
-              selectedPaymentMethod={selectedPaymentMethod}
-              onPaymentMethodChange={onPaymentMethodChange}
-            />
-            <OrderActionButtons
-              orderId={order.id}
-              selectedPaymentMethod={selectedPaymentMethod}
-              onMarkAsDelivered={onMarkAsDelivered}
-              onCancel={handleCancel}
-            />
+            {showAcceptButton && order.status === 'placed' && (
+              <div className="mb-3">
+                <Button
+                  onClick={() => onUpdateStatus(order.id, 'confirmed')}
+                  className="w-full bg-green-600 hover:bg-green-700"
+                >
+                  Accept Order
+                </Button>
+              </div>
+            )}
+            {(order.status === 'pending' || order.status === 'confirmed' || order.status === 'preparing') && (
+              <>
+                <PaymentMethodSelector
+                  orderId={order.id}
+                  selectedPaymentMethod={selectedPaymentMethod}
+                  onPaymentMethodChange={onPaymentMethodChange}
+                />
+                <OrderActionButtons
+                  orderId={order.id}
+                  selectedPaymentMethod={selectedPaymentMethod}
+                  onMarkAsDelivered={onMarkAsDelivered}
+                  onCancel={handleCancel}
+                />
+              </>
+            )}
           </>
         )}
       </CardContent>

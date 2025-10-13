@@ -19,7 +19,7 @@ export interface Order {
   total: number;
   orderType: 'pickup' | 'delivery';
   riderNumber?: string;
-  status: 'pending' | 'delivered' | 'cancelled';
+  status: 'placed' | 'pending' | 'confirmed' | 'preparing' | 'delivered' | 'cancelled';
   timestamp: Date;
   customerName?: string;
   customerNumber?: string;
@@ -29,6 +29,20 @@ export interface Order {
   };
   paymentMethod?: 'Cash' | 'MoMo';
   customerUserId?: string;
+  confirmedAt?: Date;
+  estimatedReadyTime?: Date;
+  riderAcceptedAt?: Date;
+}
+
+export interface Notification {
+  id: string;
+  userId: string;
+  orderId: string;
+  type: 'new_order' | 'order_confirmed' | 'order_ready' | 'rider_assigned';
+  title: string;
+  message: string;
+  read: boolean;
+  createdAt: Date;
 }
 
 export interface DailySummary {

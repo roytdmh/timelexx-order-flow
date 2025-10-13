@@ -202,6 +202,47 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          created_at: string | null
+          id: string
+          message: string
+          order_id: string | null
+          read: boolean | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          message: string
+          order_id?: string | null
+          read?: boolean | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          message?: string
+          order_id?: string | null
+          read?: boolean | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       order_items: {
         Row: {
           created_at: string
@@ -246,16 +287,21 @@ export type Database = {
       }
       orders: {
         Row: {
+          admin_notified: boolean | null
           assigned_rider_id: string | null
+          confirmed_at: string | null
           created_at: string
           customer_address: string | null
           customer_coordinates: Json | null
           customer_name: string | null
           customer_number: string | null
           customer_user_id: string | null
+          estimated_ready_time: string | null
           id: string
           order_type: string
           payment_method: string | null
+          rider_accepted_at: string | null
+          rider_notified: boolean | null
           rider_number: string | null
           status: string
           total: number
@@ -263,16 +309,21 @@ export type Database = {
           waiter_user_id: string | null
         }
         Insert: {
+          admin_notified?: boolean | null
           assigned_rider_id?: string | null
+          confirmed_at?: string | null
           created_at?: string
           customer_address?: string | null
           customer_coordinates?: Json | null
           customer_name?: string | null
           customer_number?: string | null
           customer_user_id?: string | null
+          estimated_ready_time?: string | null
           id?: string
           order_type: string
           payment_method?: string | null
+          rider_accepted_at?: string | null
+          rider_notified?: boolean | null
           rider_number?: string | null
           status?: string
           total: number
@@ -280,16 +331,21 @@ export type Database = {
           waiter_user_id?: string | null
         }
         Update: {
+          admin_notified?: boolean | null
           assigned_rider_id?: string | null
+          confirmed_at?: string | null
           created_at?: string
           customer_address?: string | null
           customer_coordinates?: Json | null
           customer_name?: string | null
           customer_number?: string | null
           customer_user_id?: string | null
+          estimated_ready_time?: string | null
           id?: string
           order_type?: string
           payment_method?: string | null
+          rider_accepted_at?: string | null
+          rider_notified?: boolean | null
           rider_number?: string | null
           status?: string
           total?: number
