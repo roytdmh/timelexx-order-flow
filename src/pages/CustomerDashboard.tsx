@@ -20,8 +20,14 @@ const CustomerDashboard = () => {
 
   // Redirect if not authenticated or not a customer
   useEffect(() => {
-    if (!authLoading && (!user || role !== 'customer')) {
+    if (!authLoading && !user) {
       navigate('/');
+      return;
+    }
+    
+    if (!authLoading && role && role !== 'customer') {
+      navigate('/dashboard');
+      return;
     }
   }, [user, role, authLoading, navigate]);
 
@@ -97,7 +103,20 @@ const CustomerDashboard = () => {
   };
 
   // Show loading state
-  if (authLoading || !role) {
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="container mx-auto p-6">
+          <Skeleton className="h-12 w-full mb-4" />
+          <Skeleton className="h-64 w-full" />
+        </div>
+      </div>
+    );
+  }
+
+  // Wait for role to be determined
+  if (!role) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />

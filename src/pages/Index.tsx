@@ -36,11 +36,9 @@ const Index = () => {
   useEffect(() => {
     if (!authLoading && !user) {
       navigate('/');
-    } else if (!authLoading && user && role === 'customer') {
-      // Customers should be on their own dashboard
-      navigate('/customer-dashboard');
     }
-  }, [user, authLoading, role, navigate]);
+    // Don't redirect customers here - let them stay on this page
+  }, [user, authLoading, navigate]);
 
   // Filter orders based on role
   const filteredOrders = role === 'customer' 
@@ -163,7 +161,7 @@ const Index = () => {
   const availableTabs = useMemo(() => {
     if (!role) return [];
     
-    // Customers don't use this page anymore
+    // Customers use a different page
     if (role === 'customer') {
       return [];
     } else if (role === 'rider') {
@@ -175,7 +173,20 @@ const Index = () => {
   }, [role]);
 
   // Show loading state while auth or role is loading
-  if (authLoading || !role) {
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="container mx-auto p-6">
+          <Skeleton className="h-12 w-full mb-4" />
+          <Skeleton className="h-64 w-full" />
+        </div>
+      </div>
+    );
+  }
+
+  // If no role yet but authenticated, show loading
+  if (!role && user) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
