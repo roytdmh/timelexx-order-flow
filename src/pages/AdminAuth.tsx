@@ -38,25 +38,26 @@ const AdminAuth = () => {
     setIsLoading(true);
 
     try {
-      // Normalize username to lowercase for authentication
-      const normalizedUsername = username.toLowerCase();
-      
-      // Validate username format (alphanumeric and underscore only)
-      if (!/^[a-zA-Z0-9_]{3,20}$/.test(normalizedUsername)) {
-        throw new Error('Invalid username format');
+      // Validate username format (alphanumeric, spaces, and underscore only)
+      if (!username.trim() || username.length < 2 || username.length > 50) {
+        throw new Error('Please enter a valid name (2-50 characters)');
       }
 
-      // Check predetermined password
+      // Check predetermined code
       if (password !== 'TimelexxInn00233') {
-        throw new Error('Invalid password');
+        throw new Error('Invalid access code');
       }
 
-      // Convert username to internal email format for Supabase auth
-      const internalEmail = `${normalizedUsername}@timelexx.admin`;
+      // Store admin name in localStorage for report generation
+      localStorage.setItem('adminName', username.trim());
+
+      // Use a master admin account for authentication
+      const masterEmail = 'admin@timelexx.admin';
+      const masterPassword = 'TimelexxInn00233';
       
       const { data: authData, error } = await supabase.auth.signInWithPassword({ 
-        email: internalEmail, 
-        password 
+        email: masterEmail, 
+        password: masterPassword 
       });
       
       if (error) throw error;
@@ -75,10 +76,10 @@ const AdminAuth = () => {
         }
       }
       
-      toast.success('Admin signed in successfully!');
+      toast.success(`Welcome ${username.trim()}!`);
       navigate('/dashboard');
     } catch (error: any) {
-      toast.error(error.message || 'Invalid username or password');
+      toast.error(error.message || 'Invalid name or access code');
     } finally {
       setIsLoading(false);
     }
@@ -98,24 +99,27 @@ const AdminAuth = () => {
           <CardContent>
             <form onSubmit={handleSignIn} className="space-y-4">
               <div>
-                <Label htmlFor="admin-username">Admin Username</Label>
+                <Label htmlFor="admin-username">Your Name</Label>
                 <Input
                   id="admin-username"
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Enter your admin username"
+                  placeholder="Enter your name"
                   required
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  This name will appear on generated reports
+                </p>
               </div>
               <div>
-                <Label htmlFor="admin-password">Password</Label>
+                <Label htmlFor="admin-password">Access Code</Label>
                 <Input
                   id="admin-password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter admin password"
+                  placeholder="Enter access code"
                   required
                 />
               </div>

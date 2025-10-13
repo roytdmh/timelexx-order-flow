@@ -126,13 +126,10 @@ const Index = () => {
     const summary = getDailySummary();
     const todaysOrders = getTodaysOrders();
     
-    // Extract username from email if admin
+    // Get admin name from localStorage (set during admin sign-in)
     let adminUsername: string | undefined;
-    if (role === 'admin' && profile?.email) {
-      const emailParts = profile.email.split('@');
-      if (emailParts[1] === 'timelexx.admin') {
-        adminUsername = emailParts[0];
-      }
+    if (role === 'admin') {
+      adminUsername = localStorage.getItem('adminName') || undefined;
     }
     
     downloadReportAsPDF(summary, todaysOrders, adminUsername);
@@ -276,7 +273,7 @@ const Index = () => {
           <Reports
             summary={summary}
             onDownloadReport={handleDownloadReport}
-            adminUsername={role === 'admin' && profile?.email ? profile.email.split('@')[0] : undefined}
+            adminUsername={role === 'admin' ? localStorage.getItem('adminName') || undefined : undefined}
           />
         )}
       </main>
