@@ -9,6 +9,7 @@ import AdminAuth from "./pages/AdminAuth";
 import RiderAuth from "./pages/RiderAuth";
 import Auth from "./pages/Auth";
 import Index from "./pages/Index";
+import CustomerDashboard from "./pages/CustomerDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/admin-auth" element={<AdminAuth />} />
           <Route path="/rider-auth" element={<RiderAuth />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/customer-dashboard" element={<CustomerDashboard />} />
           <Route path="/dashboard" element={<Index />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

@@ -9,8 +9,6 @@ import OrderTracker from '@/components/OrderTracker';
 import RidersTracker from '@/components/RidersTracker';
 import Analytics from '@/components/Analytics';
 import Reports from '@/components/Reports';
-import CustomerOrderTracker from '@/components/CustomerOrderTracker';
-import { CustomerOrders } from '@/pages/CustomerOrders';
 import { useSupabaseOrders } from '@/hooks/useSupabaseOrders';
 import { useAuth } from '@/hooks/useAuth';
 import { MenuItem, OrderItem } from '@/types';
@@ -38,8 +36,11 @@ const Index = () => {
   useEffect(() => {
     if (!authLoading && !user) {
       navigate('/');
+    } else if (!authLoading && user && role === 'customer') {
+      // Customers should be on their own dashboard
+      navigate('/customer-dashboard');
     }
-  }, [user, authLoading, navigate]);
+  }, [user, authLoading, role, navigate]);
 
   // Filter orders based on role
   const filteredOrders = role === 'customer' 
@@ -143,14 +144,18 @@ const Index = () => {
   useEffect(() => {
     if (!role) return;
     
+    // Redirect customers to their dedicated dashboard
+    if (role === 'customer') {
+      navigate('/customer-dashboard');
+      return;
+    }
+    
     if (role === 'rider') {
       setActiveTab('riders');
-    } else if (role === 'customer') {
-      setActiveTab('menu');
     } else if (role === 'admin') {
       setActiveTab('menu');
     }
-  }, [role]);
+  }, [role, navigate]);
 
   const summary = getDailySummary();
 
@@ -158,8 +163,9 @@ const Index = () => {
   const availableTabs = useMemo(() => {
     if (!role) return [];
     
+    // Customers don't use this page anymore
     if (role === 'customer') {
-      return ['menu', 'orders'];
+      return [];
     } else if (role === 'rider') {
       return ['riders'];
     } else if (role === 'admin') {
@@ -187,7 +193,9 @@ const Index = () => {
       <div className="border-b-2 border-timelexx-yellow bg-white">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            {role !== 'rider' && (
+            {role === 'rider' ? (
+              <h1 className="text-xl font-bold text-timelexx-red">Delivery Tracker</h1>
+            ) : (
               <Navigation 
                 activeTab={activeTab} 
                 onTabChange={(tab) => availableTabs.includes(tab) && setActiveTab(tab)} 
@@ -196,8 +204,10 @@ const Index = () => {
             )}
           </div>
           <div className="flex items-center gap-4">
-            {role === 'customer' && profile?.full_name && (
-              <span className="text-sm font-medium">Hi, {profile.full_name}!</span>
+            {profile?.full_name && (
+              <span className="text-sm font-medium">
+                {role === 'admin' ? `Admin: ${profile.full_name}` : `Hi, ${profile.full_name}!`}
+              </span>
             )}
             <Button
               variant="outline"
@@ -214,30 +224,21 @@ const Index = () => {
       
       <main className="container mx-auto p-3 sm:p-4 lg:p-6 max-w-7xl">
         {availableTabs.includes('menu') && activeTab === 'menu' && (
-          <>
-            <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6">
-              <div className="lg:col-span-2 xl:col-span-2 order-2 lg:order-1">
-                <MenuDisplay onAddToOrder={handleAddToOrder} />
-              </div>
-              <div className="lg:col-span-1 xl:col-span-1 order-1 lg:order-2">
-                <OrderForm
-                  currentOrder={currentOrder}
-                  onUpdateQuantity={handleUpdateQuantity}
-                  onRemoveItem={handleRemoveItem}
-                  onSubmitOrder={handleSubmitOrder}
-                  onClearOrder={handleClearOrder}
-                  isCustomer={role === 'customer'}
-                />
-              </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6">
+            <div className="lg:col-span-2 xl:col-span-2 order-2 lg:order-1">
+              <MenuDisplay onAddToOrder={handleAddToOrder} />
             </div>
-            {role === 'customer' && (
-              <CustomerOrderTracker orders={filteredOrders} />
-            )}
-          </>
-        )}
-
-        {availableTabs.includes('orders') && activeTab === 'orders' && (
-          <CustomerOrders />
+            <div className="lg:col-span-1 xl:col-span-1 order-1 lg:order-2">
+              <OrderForm
+                currentOrder={currentOrder}
+                onUpdateQuantity={handleUpdateQuantity}
+                onRemoveItem={handleRemoveItem}
+                onSubmitOrder={handleSubmitOrder}
+                onClearOrder={handleClearOrder}
+                isCustomer={false}
+              />
+            </div>
+          </div>
         )}
 
         {availableTabs.includes('tracker') && activeTab === 'tracker' && (

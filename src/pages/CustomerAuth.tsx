@@ -23,7 +23,18 @@ const CustomerAuth = () => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        navigate('/dashboard');
+        // Check user role to redirect appropriately
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .single();
+        
+        if (roleData?.role === 'customer') {
+          navigate('/customer-dashboard');
+        } else {
+          navigate('/dashboard');
+        }
       }
     };
     checkAuth();
@@ -87,7 +98,7 @@ const CustomerAuth = () => {
         if (roleError) throw roleError;
 
         toast.success('Account created successfully!');
-        navigate('/dashboard');
+        navigate('/customer-dashboard');
       }
     } catch (error: any) {
       toast.error(error.message || 'Sign up failed');
@@ -113,7 +124,7 @@ const CustomerAuth = () => {
       });
       if (error) throw error;
       toast.success('Signed in successfully!');
-      navigate('/dashboard');
+      navigate('/customer-dashboard');
     } catch (error: any) {
       toast.error(error.message || 'Invalid username or password');
     } finally {
