@@ -4,8 +4,12 @@ import timelexxMenu from '@/assets/timelexx-menu.jpeg';
 import { Carrot, Apple, Leaf, MapPin } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
+import { useSearchParams } from 'react-router-dom';
 
 const Landing = () => {
+  const [searchParams] = useSearchParams();
+  const activeTab = searchParams.get('tab') === 'info' ? 'info' : 'home';
+
   return (
     <div className="min-h-screen timelexx-gradient">
       <LandingNav />
@@ -28,21 +32,7 @@ const Landing = () => {
           </div>
 
           {/* Tabs Section */}
-          <Tabs defaultValue="home" className="w-full max-w-6xl mx-auto">
-            <TabsList className="grid w-full grid-cols-2 mb-8 bg-white/10 backdrop-blur-sm border border-white/20">
-              <TabsTrigger 
-                value="home"
-                className="data-[state=active]:bg-timelexx-red data-[state=active]:text-white text-white/80"
-              >
-                Home
-              </TabsTrigger>
-              <TabsTrigger 
-                value="info"
-                className="data-[state=active]:bg-timelexx-red data-[state=active]:text-white text-white/80"
-              >
-                Info
-              </TabsTrigger>
-            </TabsList>
+          <Tabs value={activeTab} className="w-full max-w-6xl mx-auto">
 
             <TabsContent value="home" className="space-y-12">
               {/* Carousel Section */}

@@ -69,6 +69,17 @@ export const LandingNav = () => {
             >
               Rider
             </Button>
+            <Button
+              variant={currentPath === '/' && location.search === '?tab=info' ? 'default' : 'outline'}
+              onClick={() => navigate('/?tab=info')}
+              className={
+                currentPath === '/' && location.search === '?tab=info'
+                  ? 'bg-timelexx-red hover:bg-timelexx-red/90'
+                  : 'border-timelexx-yellow hover:bg-timelexx-yellow hover:text-timelexx-dark'
+              }
+            >
+              Info
+            </Button>
           </div>
 
           {/* Contact Us Button - Right */}
