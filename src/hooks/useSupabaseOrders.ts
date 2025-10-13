@@ -84,7 +84,8 @@ export const useSupabaseOrders = () => {
       .channel('orders-realtime')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, (payload: any) => {
         const o = payload?.new as any;
-        if (role === 'admin' || role === 'rider') {
+        // Only notify admin when new order is placed, not riders yet
+        if (role === 'admin') {
           toast({ title: 'New Order', description: `Order #${String(o?.id || '').slice(-6)} received` });
         } else if (role === 'customer' && o?.customer_user_id === user?.id) {
           toast({ title: 'Order Placed', description: 'Your order has been received' });
@@ -96,6 +97,10 @@ export const useSupabaseOrders = () => {
         const next = payload?.new as any;
         const nextStatus = next?.status;
         if (prevStatus !== nextStatus) {
+          // Notify rider when admin confirms a delivery order
+          if (role === 'rider' && nextStatus === 'confirmed' && next?.order_type === 'delivery') {
+            toast({ title: 'New Delivery', description: `Order #${String(next?.id || '').slice(-6)} assigned to you` });
+          }
           const msg = nextStatus === 'delivered' ? 'Order delivered' : nextStatus === 'cancelled' ? 'Order cancelled' : 'Order updated';
           toast({ title: 'Order Update', description: `${msg} #${String(next?.id || '').slice(-6)}` });
         }
@@ -229,7 +234,7 @@ export const useSupabaseOrders = () => {
     try {
       const updateData: any = { status };
       
-      // When accepting/confirming an order, set estimated ready time to 30 minutes from now
+      // When admin accepts a placed order, change to confirmed status
       if (status === 'confirmed') {
         updateData.confirmed_at = new Date().toISOString();
         const estimatedTime = new Date();
@@ -237,9 +242,11 @@ export const useSupabaseOrders = () => {
         updateData.estimated_ready_time = estimatedTime.toISOString();
       }
       
-      // When marking as pending (admin accepts but not confirmed to customer yet)
+      // When rider or admin marks as pending (in progress)
       if (status === 'pending') {
-        updateData.confirmed_at = new Date().toISOString();
+        if (!updateData.confirmed_at) {
+          updateData.rider_accepted_at = new Date().toISOString();
+        }
       }
       
       if (paymentMethod) {

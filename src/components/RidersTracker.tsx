@@ -15,7 +15,7 @@ interface RidersTrackerProps {
 
 const RidersTracker: React.FC<RidersTrackerProps> = ({ orders, onUpdateStatus, onResetOrders }) => {
   const [selectedPaymentMethods, setSelectedPaymentMethods] = useState<Record<string, 'Cash' | 'MoMo'>>({});
-  const { profile } = useAuth();
+  const { profile, role } = useAuth();
 
   const handlePaymentMethodChange = (orderId: string, paymentMethod: 'Cash' | 'MoMo') => {
     setSelectedPaymentMethods(prev => ({
@@ -43,24 +43,31 @@ const RidersTracker: React.FC<RidersTrackerProps> = ({ orders, onUpdateStatus, o
     return timestamp.toDateString() === today.toDateString();
   };
 
-  // Filter orders to only show today's delivery orders for this specific rider
+  // For riders: show only their delivery orders
+  // For admin: show ALL delivery orders
   const riderName = profile?.full_name;
-  const deliveryOrders = orders.filter(order => 
-    order.orderType === 'delivery' && order.riderNumber === riderName
-  );
+  const deliveryOrders = role === 'admin' 
+    ? orders.filter(order => order.orderType === 'delivery')
+    : orders.filter(order => order.orderType === 'delivery' && order.riderNumber === riderName);
+  
   const todaysDeliveryOrders = deliveryOrders.filter(order => isToday(order.timestamp));
   
-  // Separate new orders (placed) from active orders (confirmed/pending/preparing)
-  const newDeliveryOrders = todaysDeliveryOrders.filter(order => order.status === 'placed');
+  // For riders: new orders are those confirmed by admin (status: confirmed)
+  // For admin: show pending/preparing orders (orders in progress)
+  const newDeliveryOrders = role === 'rider' 
+    ? todaysDeliveryOrders.filter(order => order.status === 'confirmed')
+    : [];
+  
   const activeDeliveryOrders = todaysDeliveryOrders.filter(order => 
     order.status === 'pending' || order.status === 'confirmed' || order.status === 'preparing'
   );
-  const recentDeliveryOrders = todaysDeliveryOrders.slice(0, 10);
+  
+  const deliveredOrders = todaysDeliveryOrders.filter(order => order.status === 'delivered');
 
   return (
     <div className="space-y-6 relative">
-      {/* New Delivery Orders - Need Rider Acceptance */}
-      {newDeliveryOrders.length > 0 && (
+      {/* New Delivery Orders - Only for riders (confirmed by admin) */}
+      {role === 'rider' && newDeliveryOrders.length > 0 && (
         <Card className="border-2 border-blue-500">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-blue-600">
@@ -79,7 +86,6 @@ const RidersTracker: React.FC<RidersTrackerProps> = ({ orders, onUpdateStatus, o
                   onMarkAsDelivered={handleMarkAsDelivered}
                   onUpdateStatus={onUpdateStatus}
                   manageEnabled={true}
-                  showAcceptButton={true}
                 />
               ))}
             </div>
@@ -87,17 +93,17 @@ const RidersTracker: React.FC<RidersTrackerProps> = ({ orders, onUpdateStatus, o
         </Card>
       )}
 
-      {/* Active Delivery Orders - In Progress */}
+      {/* Pending/Active Delivery Orders - For both admin and riders */}
       <Card className="border-2 border-timelexx-red">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-timelexx-red">
             <Clock className="w-5 h-5" />
-            My Active Deliveries ({activeDeliveryOrders.length})
+            {role === 'admin' ? 'Pending Delivery Orders' : 'My Active Deliveries'} ({activeDeliveryOrders.length})
           </CardTitle>
         </CardHeader>
         <CardContent>
           {activeDeliveryOrders.length === 0 ? (
-            <p className="text-center text-muted-foreground py-4">No active delivery orders</p>
+            <p className="text-center text-muted-foreground py-4">No {role === 'admin' ? 'pending' : 'active'} delivery orders</p>
           ) : (
             <div className="space-y-3">
               {activeDeliveryOrders.map(order => (
@@ -116,17 +122,19 @@ const RidersTracker: React.FC<RidersTrackerProps> = ({ orders, onUpdateStatus, o
         </CardContent>
       </Card>
 
-      {/* Recent Delivery Orders */}
+      {/* Delivered Delivery Orders - For both admin and riders */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-timelexx-dark">My Recent Deliveries</CardTitle>
+          <CardTitle className="text-timelexx-dark">
+            {role === 'admin' ? 'Delivered Delivery Orders' : 'My Recent Deliveries'} ({deliveredOrders.length})
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          {recentDeliveryOrders.length === 0 ? (
-            <p className="text-center text-muted-foreground py-4">No delivery orders yet</p>
+          {deliveredOrders.length === 0 ? (
+            <p className="text-center text-muted-foreground py-4">No delivered orders yet</p>
           ) : (
             <div className="space-y-3">
-              {recentDeliveryOrders.map(order => (
+              {deliveredOrders.map(order => (
                 <RecentOrderCard key={order.id} order={order} />
               ))}
             </div>
