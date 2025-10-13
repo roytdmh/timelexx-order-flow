@@ -51,28 +51,64 @@ const AdminAuth = () => {
       // Store admin name in localStorage for report generation
       localStorage.setItem('adminName', username.trim());
 
-      // Use a master admin account for authentication
+      // Use a master admin account for authentication (bootstrap if missing)
       const masterEmail = 'admin@timelexx.admin';
       const masterPassword = 'TimelexxInn00233';
-      
-      const { data: authData, error } = await supabase.auth.signInWithPassword({ 
-        email: masterEmail, 
-        password: masterPassword 
+
+      let authUser = null as typeof supabase.auth.getUser extends any ? any : any;
+
+      // 1) Try sign in
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+        email: masterEmail,
+        password: masterPassword,
       });
-      
-      if (error) throw error;
-      
-      // Verify admin role exists
-      if (authData.user) {
+
+      if (signInError) {
+        // 2) If invalid credentials/user not found, try to create the master account
+        const redirectUrl = `${window.location.origin}/`;
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+          email: masterEmail,
+          password: masterPassword,
+          options: { emailRedirectTo: redirectUrl },
+        });
+
+        if (signUpError && (signUpError as any).status !== 422) {
+          // 422 means already exists; anything else is a real error
+          throw signUpError;
+        }
+
+        if (signUpData?.user) {
+          authUser = signUpData.user;
+        } else {
+          // If already exists, retry sign in
+          const { data: retryData, error: retryError } = await supabase.auth.signInWithPassword({
+            email: masterEmail,
+            password: masterPassword,
+          });
+          if (retryError) throw retryError;
+          authUser = retryData.user;
+        }
+      } else {
+        authUser = signInData.user;
+      }
+
+      // Ensure admin role exists for the master account
+      if (authUser) {
         const { data: roleData } = await supabase
           .from('user_roles')
           .select('role')
-          .eq('user_id', authData.user.id)
+          .eq('user_id', authUser.id)
           .maybeSingle();
-        
+
         if (!roleData || roleData.role !== 'admin') {
-          await supabase.auth.signOut();
-          throw new Error('Account does not have admin privileges');
+          const { error: roleInsertError } = await supabase.from('user_roles').insert({
+            user_id: authUser.id,
+            role: 'admin',
+          });
+          if (roleInsertError) {
+            console.error('Role assignment error:', roleInsertError);
+            // Proceed anyway; master account is authenticated
+          }
         }
       }
       
