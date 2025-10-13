@@ -49,25 +49,58 @@ const RidersTracker: React.FC<RidersTrackerProps> = ({ orders, onUpdateStatus, o
     order.orderType === 'delivery' && order.riderNumber === riderName
   );
   const todaysDeliveryOrders = deliveryOrders.filter(order => isToday(order.timestamp));
-  const pendingDeliveryOrders = todaysDeliveryOrders.filter(order => order.status === 'pending');
+  
+  // Separate new orders (placed) from active orders (confirmed/pending/preparing)
+  const newDeliveryOrders = todaysDeliveryOrders.filter(order => order.status === 'placed');
+  const activeDeliveryOrders = todaysDeliveryOrders.filter(order => 
+    order.status === 'pending' || order.status === 'confirmed' || order.status === 'preparing'
+  );
   const recentDeliveryOrders = todaysDeliveryOrders.slice(0, 10);
 
   return (
     <div className="space-y-6 relative">
-      {/* Pending Delivery Orders - Priority Section */}
+      {/* New Delivery Orders - Need Rider Acceptance */}
+      {newDeliveryOrders.length > 0 && (
+        <Card className="border-2 border-blue-500">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-blue-600">
+              <Clock className="w-5 h-5" />
+              New Delivery Orders ({newDeliveryOrders.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {newDeliveryOrders.map(order => (
+                <PendingOrderCard
+                  key={order.id}
+                  order={order}
+                  selectedPaymentMethod={selectedPaymentMethods[order.id]}
+                  onPaymentMethodChange={handlePaymentMethodChange}
+                  onMarkAsDelivered={handleMarkAsDelivered}
+                  onUpdateStatus={onUpdateStatus}
+                  manageEnabled={true}
+                  showAcceptButton={true}
+                />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Active Delivery Orders - In Progress */}
       <Card className="border-2 border-timelexx-red">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-timelexx-red">
             <Clock className="w-5 h-5" />
-            My Pending Deliveries ({pendingDeliveryOrders.length})
+            My Active Deliveries ({activeDeliveryOrders.length})
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {pendingDeliveryOrders.length === 0 ? (
-            <p className="text-center text-muted-foreground py-4">No pending delivery orders</p>
+          {activeDeliveryOrders.length === 0 ? (
+            <p className="text-center text-muted-foreground py-4">No active delivery orders</p>
           ) : (
             <div className="space-y-3">
-              {pendingDeliveryOrders.map(order => (
+              {activeDeliveryOrders.map(order => (
                 <PendingOrderCard
                   key={order.id}
                   order={order}

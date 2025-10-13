@@ -10,6 +10,7 @@ import RidersTracker from '@/components/RidersTracker';
 import Analytics from '@/components/Analytics';
 import Reports from '@/components/Reports';
 import CustomerOrderTracker from '@/components/CustomerOrderTracker';
+import { CustomerOrders } from '@/pages/CustomerOrders';
 import { useSupabaseOrders } from '@/hooks/useSupabaseOrders';
 import { useAuth } from '@/hooks/useAuth';
 import { MenuItem, OrderItem } from '@/types';
@@ -111,7 +112,9 @@ const Index = () => {
     });
 
     setCurrentOrder([]);
-    if (role !== 'customer') {
+    if (role === 'customer') {
+      setActiveTab('orders'); // Switch to orders tab to see the order status
+    } else {
       setActiveTab('tracker'); // Switch to tracker after placing order (admin only)
     }
   };
@@ -140,7 +143,7 @@ const Index = () => {
   // Define available tabs based on role
   const getAvailableTabs = () => {
     if (role === 'customer') {
-      return ['menu'];
+      return ['menu', 'orders'];
     } else if (role === 'rider') {
       return ['riders'];
     } else {
@@ -216,6 +219,10 @@ const Index = () => {
               <CustomerOrderTracker orders={filteredOrders} />
             )}
           </>
+        )}
+
+        {availableTabs.includes('orders') && activeTab === 'orders' && (
+          <CustomerOrders />
         )}
 
         {availableTabs.includes('tracker') && activeTab === 'tracker' && (

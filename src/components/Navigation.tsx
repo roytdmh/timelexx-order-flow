@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Menu, Clock, BarChart3, FileText } from 'lucide-react';
+import { Menu, Clock, BarChart3, FileText, Package } from 'lucide-react';
 
 interface NavigationProps {
   activeTab: string;
@@ -12,6 +12,7 @@ interface NavigationProps {
 const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, allowedTabs }) => {
   const allTabs = [
     { id: 'menu', label: 'Menu & Orders', icon: Menu },
+    { id: 'orders', label: 'My Orders', icon: Package },
     { id: 'tracker', label: 'Order Tracker', icon: Clock },
     { id: 'riders', label: 'Riders', icon: Clock },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
