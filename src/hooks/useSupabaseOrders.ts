@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { MenuItem, Order, OrderItem, DailySummary } from '@/types';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { playNotificationSound } from '@/utils/notificationSound';
 
 export const useSupabaseOrders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -106,8 +107,22 @@ export const useSupabaseOrders = () => {
           if (role === 'rider' && nextStatus === 'confirmed' && next?.order_type === 'delivery') {
             toast({ title: 'New Delivery', description: `Order #${String(next?.id || '').slice(-6)} assigned to you` });
           }
-          const msg = nextStatus === 'delivered' ? 'Order delivered' : nextStatus === 'cancelled' ? 'Order cancelled' : 'Order updated';
-          toast({ title: 'Order Update', description: `${msg} #${String(next?.id || '').slice(-6)}` });
+          
+          // Play sound and show notification when order is delivered (for admin and customer)
+          if (nextStatus === 'delivered') {
+            if (role === 'admin' || (role === 'customer' && next?.customer_user_id === user?.id)) {
+              playNotificationSound();
+              const paymentInfo = next?.payment_method ? ` (Payment: ${next.payment_method})` : '';
+              toast({ 
+                title: '🎉 Order Delivered!', 
+                description: `Order #${String(next?.id || '').slice(-6)} has been delivered${paymentInfo}`,
+                duration: 5000,
+              });
+            }
+          } else {
+            const msg = nextStatus === 'cancelled' ? 'Order cancelled' : 'Order updated';
+            toast({ title: 'Order Update', description: `${msg} #${String(next?.id || '').slice(-6)}` });
+          }
         }
         fetchOrders();
       })
