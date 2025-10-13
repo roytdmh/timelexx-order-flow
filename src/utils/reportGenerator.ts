@@ -4,16 +4,8 @@ import jsPDF from 'jspdf';
 
 // Map rider numbers to names
 const getRiderName = (riderNumber?: string): string => {
-  switch (riderNumber) {
-    case 'Rider 001':
-      return 'Sabolia';
-    case 'Rider 002':
-      return 'Awaga';
-    case 'Rider 003':
-      return 'Joe Lee';
-    default:
-      return riderNumber || '';
-  }
+  // Rider names are already in the correct format
+  return riderNumber || '';
 };
 
 export const generateDailyReport = (summary: DailySummary, orders: Order[]): string => {
