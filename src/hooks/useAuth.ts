@@ -91,8 +91,9 @@ export const useAuth = () => {
     setSession(null);
     setRole(null);
     setProfile(null);
-    // Clear admin name from localStorage
+    // Clear stored names from localStorage
     localStorage.removeItem('adminName');
+    localStorage.removeItem('riderName');
     navigate('/');
   };
 

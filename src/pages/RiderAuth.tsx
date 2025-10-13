@@ -45,10 +45,18 @@ const RiderAuth = () => {
         throw new Error('Invalid rider selection');
       }
 
-      const email = `${rider.name.toLowerCase()}@timelexx.com`;
+      // Check predetermined code
+      if (password !== 'TimelexxInn00233') {
+        throw new Error('Invalid access code');
+      }
+
+      // Use master rider account for authentication
+      const masterEmail = 'rider@timelexx.com';
+      const masterPassword = 'TimelexxInn00233';
+      
       const { data: authData, error } = await supabase.auth.signInWithPassword({ 
-        email, 
-        password 
+        email: masterEmail, 
+        password: masterPassword 
       });
       
       if (error) throw error;
@@ -65,6 +73,9 @@ const RiderAuth = () => {
           await supabase.auth.signOut();
           throw new Error('Account does not have rider privileges');
         }
+        
+        // Store rider name in localStorage for tracking
+        localStorage.setItem('riderName', rider.name);
       }
       
       toast.success(`Welcome ${rider.name}!`);
@@ -92,10 +103,10 @@ const RiderAuth = () => {
               <div>
                 <Label htmlFor="rider-name">Rider Name</Label>
                 <Select value={riderName} onValueChange={setRiderName} required>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-white">
                     <SelectValue placeholder="Select your name" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white z-50">
                     {RIDERS.map((rider) => (
                       <SelectItem key={rider.id} value={rider.name}>
                         {rider.name}
@@ -105,12 +116,13 @@ const RiderAuth = () => {
                 </Select>
               </div>
               <div>
-                <Label htmlFor="rider-password">Password</Label>
+                <Label htmlFor="rider-password">Access Code</Label>
                 <Input
                   id="rider-password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter access code"
                   required
                 />
               </div>
