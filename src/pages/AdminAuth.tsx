@@ -94,7 +94,7 @@ const AdminAuth = () => {
           <CardHeader className="text-center">
             <ShieldCheck className="w-16 h-16 text-timelexx-red mx-auto mb-4" />
             <CardTitle className="text-2xl">Admin Portal</CardTitle>
-            <CardDescription>Sign in to access admin features</CardDescription>
+            <CardDescription>Enter your name and access code to sign in</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSignIn} className="space-y-4">

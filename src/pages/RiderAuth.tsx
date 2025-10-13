@@ -96,7 +96,7 @@ const RiderAuth = () => {
           <CardHeader className="text-center">
             <Bike className="w-16 h-16 text-timelexx-red mx-auto mb-4" />
             <CardTitle className="text-2xl">Rider Portal</CardTitle>
-            <CardDescription>Sign in to view your deliveries</CardDescription>
+            <CardDescription>Select your name and enter access code to sign in</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSignIn} className="space-y-4">
