@@ -13,7 +13,7 @@ import { Users } from 'lucide-react';
 const CustomerAuth = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
@@ -34,11 +34,33 @@ const CustomerAuth = () => {
     setIsLoading(true);
 
     try {
+      // Validate username format (alphanumeric and underscore only)
+      if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+        throw new Error('Username must be 3-20 characters and contain only letters, numbers, and underscores');
+      }
+
+      // Check if username already exists
+      const { data: existingProfile } = await supabase
+        .from('profiles')
+        .select('user_id')
+        .eq('email', `${username}@timelexx.customer`)
+        .single();
+
+      if (existingProfile) {
+        throw new Error('Username already taken');
+      }
+
+      // Create email from username for Supabase auth (internal use only)
+      const internalEmail = `${username}@timelexx.customer`;
+      
       const redirectUrl = `${window.location.origin}/`;
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
-        email,
+        email: internalEmail,
         password,
-        options: { emailRedirectTo: redirectUrl }
+        options: { 
+          emailRedirectTo: redirectUrl,
+          data: { username }
+        }
       });
 
       if (signUpError) throw signUpError;
@@ -49,7 +71,7 @@ const CustomerAuth = () => {
           full_name: fullName,
           phone_number: phone,
           location: location,
-          email: email
+          email: internalEmail
         });
 
         if (profileError) throw profileError;
@@ -76,12 +98,18 @@ const CustomerAuth = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      // Convert username to internal email format
+      const internalEmail = `${username}@timelexx.customer`;
+      
+      const { error } = await supabase.auth.signInWithPassword({ 
+        email: internalEmail, 
+        password 
+      });
       if (error) throw error;
       toast.success('Signed in successfully!');
       navigate('/dashboard');
     } catch (error: any) {
-      toast.error(error.message || 'Sign in failed');
+      toast.error(error.message || 'Invalid username or password');
     } finally {
       setIsLoading(false);
     }
@@ -108,12 +136,13 @@ const CustomerAuth = () => {
               <TabsContent value="signin">
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div>
-                    <Label htmlFor="signin-email">Email</Label>
+                    <Label htmlFor="signin-username">Username</Label>
                     <Input
-                      id="signin-email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      id="signin-username"
+                      type="text"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value.toLowerCase())}
+                      placeholder="Enter your username"
                       required
                     />
                   </div>
@@ -139,6 +168,21 @@ const CustomerAuth = () => {
 
               <TabsContent value="signup">
                 <form onSubmit={handleSignUp} className="space-y-4">
+                  <div>
+                    <Label htmlFor="signup-username">Username</Label>
+                    <Input
+                      id="signup-username"
+                      type="text"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value.toLowerCase())}
+                      placeholder="Choose a username (3-20 characters)"
+                      pattern="[a-zA-Z0-9_]{3,20}"
+                      required
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Letters, numbers, and underscores only
+                    </p>
+                  </div>
                   <div>
                     <Label htmlFor="signup-name">Full Name</Label>
                     <Input
@@ -168,24 +212,18 @@ const CustomerAuth = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="signup-email">Email</Label>
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div>
                     <Label htmlFor="signup-password">Password</Label>
                     <Input
                       id="signup-password"
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
+                      minLength={6}
                       required
                     />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Minimum 6 characters
+                    </p>
                   </div>
                   <Button 
                     type="submit" 
