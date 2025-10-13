@@ -91,7 +91,7 @@ const CustomerDashboard = () => {
       customerName: finalCustomerName,
       customerNumber: finalCustomerNumber,
       customerLocation: finalCustomerLocation,
-      status: 'pending',
+      status: 'placed',
       customerUserId: user?.id,
     });
 

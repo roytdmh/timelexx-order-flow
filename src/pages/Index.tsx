@@ -110,7 +110,7 @@ const Index = () => {
       customerName: finalCustomerName,
       customerNumber: finalCustomerNumber,
       customerLocation: finalCustomerLocation,
-      status: 'pending',
+      status: 'placed',
       customerUserId: role === 'customer' ? user?.id : undefined,
     });
 
