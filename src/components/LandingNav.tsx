@@ -88,7 +88,7 @@ export const LandingNav = () => {
                 variant="outline"
                 size="sm"
                 onClick={handleInstallClick}
-                className="border-2 border-timelexx-red text-timelexx-red bg-white hover:bg-timelexx-red hover:text-white"
+                className="bg-timelexx-red text-white border-timelexx-red hover:bg-timelexx-red/90"
               >
                 <Download className="h-4 w-4 sm:mr-2" />
                 <span className="hidden sm:inline">Install App</span>
