@@ -46,8 +46,8 @@ export const showPushNotification = async (
     const registration = await navigator.serviceWorker.ready;
     
     await registration.showNotification(title, {
-      icon: '/lovable-uploads/3b434d95-7b2c-4d7d-a0c2-8458f1f0999c.png',
-      badge: '/lovable-uploads/3b434d95-7b2c-4d7d-a0c2-8458f1f0999c.png',
+      icon: '/logo.png',
+      badge: '/logo.png',
       requireInteraction: true,
       ...options,
     } as any);

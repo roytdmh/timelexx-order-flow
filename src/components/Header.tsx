@@ -2,6 +2,7 @@ import React from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { NotificationBadge } from '@/components/NotificationBadge';
 import NotificationPermissionPrompt from '@/components/NotificationPermissionPrompt';
+import timelexxLogo from '@/assets/timelexx-logo.png';
 
 const Header = () => {
   const { user, role } = useAuth();
@@ -15,9 +16,12 @@ const Header = () => {
             <div className="flex-1" />
             <div className="flex flex-col justify-center items-center flex-1">
               <img
-                src="/lovable-uploads/3b434d95-7b2c-4d7d-a0c2-8458f1f0999c.png"
+                src={timelexxLogo}
                 alt="Timelexx Inn Logo"
                 className="h-20 sm:h-24 md:h-32 lg:h-40 object-contain mix-blend-lighten"
+                style={{
+                  filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))'
+                }}
               />
               <p className="text-sm sm:text-lg md:text-xl italic -mt-1 sm:-mt-2 md:-mt-4 tracking-wide font-serif">
                 Eat good, Feel good

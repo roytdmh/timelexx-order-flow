@@ -1,6 +1,7 @@
 import { LandingNav } from '@/components/LandingNav';
 import { ImageCarousel } from '@/components/ImageCarousel';
 import timelexxMenu from '@/assets/timelexx-menu.jpeg';
+import timelexxLogo from '@/assets/timelexx-logo.png';
 import { Carrot, Apple, Leaf, MapPin } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
@@ -19,9 +20,12 @@ const Landing = () => {
           {/* Header Section */}
           <div className="text-center mb-8 sm:mb-12 animate-fade-in">
             <img
-              src="/lovable-uploads/3b434d95-7b2c-4d7d-a0c2-8458f1f0999c.png"
+              src={timelexxLogo}
               alt="Timelexx Inn Logo"
               className="h-24 sm:h-32 md:h-40 mx-auto object-contain mb-4 sm:mb-6 mix-blend-lighten opacity-90"
+              style={{
+                filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.35)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25))'
+              }}
             />
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 sm:mb-4 px-4">
               Welcome to Timelexx Inn

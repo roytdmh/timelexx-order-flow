@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RIDERS } from '@/data/riders';
+import timelexxLogo from '@/assets/timelexx-logo.png';
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
@@ -255,9 +256,12 @@ const Auth = () => {
       <Card className="w-full max-w-md shadow-premium-lg">
         <CardHeader className="text-center">
           <img
-            src="/lovable-uploads/3b434d95-7b2c-4d7d-a0c2-8458f1f0999c.png"
+            src={timelexxLogo}
             alt="Timelexx Inn Logo"
             className="h-24 mx-auto object-contain mb-2"
+            style={{
+              filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))'
+            }}
           />
           <CardTitle className="text-2xl">
             {role === 'customer' ? 'Customer' : role === 'admin' ? 'Admin' : 'Rider'} Portal
