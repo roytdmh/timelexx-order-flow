@@ -28,8 +28,18 @@ export const LandingNav = () => {
   const [showContactDialog, setShowContactDialog] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isInstallable, setIsInstallable] = useState(false);
+  const [isStandalone, setIsStandalone] = useState(false);
 
   useEffect(() => {
+    // Check if app is running in standalone mode (installed)
+    const checkStandalone = () => {
+      const isStandaloneMode = window.matchMedia('(display-mode: standalone)').matches ||
+        (window.navigator as any).standalone === true;
+      setIsStandalone(isStandaloneMode);
+    };
+
+    checkStandalone();
+
     const handler = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e);
@@ -73,7 +83,7 @@ export const LandingNav = () => {
               <Home className="h-5 w-5 text-timelexx-red" />
             </Button>
             
-            {isInstallable && (
+            {isInstallable && !isStandalone && (
               <Button
                 variant="outline"
                 size="sm"
