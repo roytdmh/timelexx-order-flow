@@ -22,7 +22,7 @@ const Landing = () => {
             <img
               src={timelexxLogo}
               alt="Timelexx Inn Logo"
-              className="h-24 sm:h-32 md:h-40 mx-auto object-contain mb-4 sm:mb-6 mix-blend-lighten opacity-90"
+              className="h-24 sm:h-32 md:h-40 mx-auto object-contain mb-4 sm:mb-6"
               style={{
                 filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.35)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25))'
               }}
