@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Home, Mail, Phone, ChevronDown, UtensilsCrossed, Briefcase, Info } from 'lucide-react';
+import { Home, Mail, Phone, ChevronDown, UtensilsCrossed, Briefcase, Info, Menu, Download } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { toast } from 'sonner';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -25,13 +26,44 @@ export const LandingNav = () => {
   const { isAuthenticated } = useAuth();
   const currentPath = location.pathname;
   const [showContactDialog, setShowContactDialog] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isInstallable, setIsInstallable] = useState(false);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setIsInstallable(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handler);
+
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) {
+      toast.info('App is already installed or not available for installation');
+      return;
+    }
+
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    
+    if (outcome === 'accepted') {
+      toast.success('App installed successfully!');
+    }
+    
+    setDeferredPrompt(null);
+    setIsInstallable(false);
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-timelexx-yellow shadow-premium-sm">
       <div className="container mx-auto px-2 sm:px-4 py-2 sm:py-3">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0">
-          {/* Top Row: Home button */}
-          <div className="flex items-center w-full sm:w-auto">
+          {/* Top Row: Home button and Menu */}
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <Button
               variant="ghost"
               size="icon"
@@ -40,6 +72,29 @@ export const LandingNav = () => {
             >
               <Home className="h-5 w-5 text-timelexx-red" />
             </Button>
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hover:bg-timelexx-yellow/20"
+                >
+                  <Menu className="h-5 w-5 text-timelexx-red" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-white/95 backdrop-blur-md border-timelexx-yellow shadow-premium-lg z-[100]">
+                {isInstallable && (
+                  <DropdownMenuItem 
+                    onClick={handleInstallClick}
+                    className="cursor-pointer hover:bg-timelexx-yellow/20 focus:bg-timelexx-yellow/20"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Install App
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Center Section - Dropdowns */}
