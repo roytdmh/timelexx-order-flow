@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Notification } from '@/types';
 import { toast } from '@/hooks/use-toast';
+import { showPushNotification, checkNotificationPermission } from '@/utils/pushNotifications';
 
 export const useNotifications = (userId: string | undefined, userRole: string | null) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -70,12 +71,28 @@ export const useNotifications = (userId: string | undefined, userRole: string | 
           setNotifications(prev => [newNotification, ...prev]);
           setUnreadCount(prev => prev + 1);
           
-          // Play sound and show toast
+          // Play sound
           playNotificationSound();
+          
+          // Show in-app toast
           toast({
             title: newNotification.title,
             description: newNotification.message,
           });
+
+          // Show push notification if permission granted
+          const permission = checkNotificationPermission();
+          if (permission === 'granted') {
+            showPushNotification(newNotification.title, {
+              body: newNotification.message,
+              tag: `notification-${newNotification.id}`,
+              data: {
+                url: '/',
+                notificationId: newNotification.id,
+                orderId: newNotification.orderId
+              }
+            });
+          }
         }
       )
       .subscribe();

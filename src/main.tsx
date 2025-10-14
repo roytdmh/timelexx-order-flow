@@ -10,6 +10,11 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js')
       .then((registration) => {
         console.log('SW registered: ', registration);
+        
+        // Check notification permission after service worker is ready
+        if ('Notification' in window && Notification.permission === 'default') {
+          console.log('Notification permission is default - user will be prompted');
+        }
       })
       .catch((registrationError) => {
         console.log('SW registration failed: ', registrationError);
