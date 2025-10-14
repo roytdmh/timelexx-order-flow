@@ -259,9 +259,6 @@ const Auth = () => {
             src={timelexxLogo}
             alt="Timelexx Inn Logo"
             className="h-24 mx-auto object-contain mb-2"
-            style={{
-              filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))'
-            }}
           />
           <CardTitle className="text-2xl">
             {role === 'customer' ? 'Customer' : role === 'admin' ? 'Admin' : 'Rider'} Portal
