@@ -260,7 +260,7 @@ const Auth = () => {
             alt="Timelexx Inn Logo"
             className="h-24 mx-auto object-contain mb-2"
             style={{
-              filter: 'drop-shadow(0 8px 16px rgba(0, 0, 0, 0.6)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 20px rgba(255, 255, 255, 0.3))'
+              filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))'
             }}
           />
           <CardTitle className="text-2xl">
