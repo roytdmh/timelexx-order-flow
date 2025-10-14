@@ -154,9 +154,9 @@ export const downloadReportAsPDF = (summary: DailySummary, orders: Order[], admi
   const reportContent = generateDailyReport(summary, orders, adminUsername);
   const doc = new jsPDF();
   
-  // Set font to courier for better character support and monospacing
-  doc.setFont('courier');
-  doc.setFontSize(9);
+  // Set font to Times New Roman
+  doc.setFont('times');
+  doc.setFontSize(10);
   
   // Split content into lines and add to PDF
   const lines = reportContent.split('\n');
