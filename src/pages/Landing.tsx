@@ -23,6 +23,9 @@ const Landing = () => {
               src={timelexxLogo}
               alt="Timelexx Inn Logo"
               className="h-24 sm:h-32 md:h-40 mx-auto object-contain mb-4 sm:mb-6"
+              style={{
+                filter: 'brightness(1.1) contrast(1.2) saturate(1.3)'
+              }}
             />
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 sm:mb-4 px-4">
               Welcome to Timelexx Inn
