@@ -83,14 +83,14 @@ export const LandingNav = () => {
                   <Menu className="h-5 w-5 text-timelexx-red" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="min-w-[180px] bg-white/95 backdrop-blur-md border-timelexx-yellow shadow-premium-lg z-[100]">
+              <DropdownMenuContent className="bg-white/95 backdrop-blur-md border-timelexx-yellow shadow-premium-lg z-[100]">
                 {isInstallable && (
                   <DropdownMenuItem 
                     onClick={handleInstallClick}
-                    className="cursor-pointer hover:bg-timelexx-yellow/20 focus:bg-timelexx-yellow/20 px-4 py-2"
+                    className="cursor-pointer hover:bg-timelexx-yellow/20 focus:bg-timelexx-yellow/20"
                   >
                     <Download className="h-4 w-4 mr-2" />
-                    <span>Install App</span>
+                    Install App
                   </DropdownMenuItem>
                 )}
               </DropdownMenuContent>
