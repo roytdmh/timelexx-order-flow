@@ -18,9 +18,9 @@ const Header = () => {
               <img
                 src={timelexxLogo}
                 alt="Timelexx Inn Logo"
-                className="h-20 sm:h-24 md:h-32 lg:h-40 object-contain mix-blend-lighten"
+                className="h-20 sm:h-24 md:h-32 lg:h-40 object-contain"
                 style={{
-                  filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))'
+                  filter: 'drop-shadow(0 8px 16px rgba(0, 0, 0, 0.6)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 20px rgba(255, 255, 255, 0.3))'
                 }}
               />
               <p className="text-sm sm:text-lg md:text-xl italic -mt-1 sm:-mt-2 md:-mt-4 tracking-wide font-serif">
