@@ -17,16 +17,16 @@ const Landing = () => {
       <div className="pt-24 pb-12 px-4">
         <div className="container mx-auto">
           {/* Header Section */}
-          <div className="text-center mb-12 animate-fade-in">
+          <div className="text-center mb-8 sm:mb-12 animate-fade-in">
             <img
               src="/lovable-uploads/3b434d95-7b2c-4d7d-a0c2-8458f1f0999c.png"
               alt="Timelexx Inn Logo"
-              className="h-32 sm:h-40 mx-auto object-contain mb-6 mix-blend-lighten opacity-90"
+              className="h-24 sm:h-32 md:h-40 mx-auto object-contain mb-4 sm:mb-6 mix-blend-lighten opacity-90"
             />
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 sm:mb-4 px-4">
               Welcome to Timelexx Inn
             </h1>
-            <p className="text-xl sm:text-2xl text-white/90 italic font-serif">
+            <p className="text-lg sm:text-xl md:text-2xl text-white/90 italic font-serif px-4">
               Eat good, Feel good
             </p>
           </div>
@@ -41,24 +41,24 @@ const Landing = () => {
               </div>
 
               {/* Menu Section */}
-              <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              <div className="animate-fade-in px-4" style={{ animationDelay: '0.2s' }}>
                 <div className="relative max-w-4xl mx-auto">
-                  {/* Decorative Veggie Icons */}
+                  {/* Decorative Veggie Icons - Hide on small mobile */}
                   <Carrot 
-                    className="absolute -top-4 -left-8 w-10 h-10 text-timelexx-red animate-pulse z-10"
+                    className="hidden sm:block absolute -top-4 -left-8 w-8 h-8 sm:w-10 sm:h-10 text-timelexx-red animate-pulse z-10"
                     style={{ transform: 'rotate(-25deg)' }}
                   />
                   <Leaf 
-                    className="absolute top-1/3 -right-6 w-12 h-12 text-green-500 animate-pulse z-10"
+                    className="hidden sm:block absolute top-1/3 -right-6 w-10 h-10 sm:w-12 sm:h-12 text-green-500 animate-pulse z-10"
                     style={{ transform: 'rotate(15deg)', animationDelay: '0.5s' }}
                   />
                   <Apple 
-                    className="absolute -bottom-6 left-1/4 w-10 h-10 text-timelexx-red animate-pulse z-10"
+                    className="hidden sm:block absolute -bottom-6 left-1/4 w-8 h-8 sm:w-10 sm:h-10 text-timelexx-red animate-pulse z-10"
                     style={{ transform: 'rotate(45deg)', animationDelay: '1s' }}
                   />
                   
                   {/* Menu Image with Blended Edges */}
-                  <div className="relative rounded-2xl overflow-hidden shadow-premium-lg">
+                  <div className="relative rounded-xl sm:rounded-2xl overflow-hidden shadow-premium-lg">
                     <img
                       src={timelexxMenu}
                       alt="Timelexx Inn Menu"
@@ -73,11 +73,11 @@ const Landing = () => {
               </div>
 
               {/* CTA Section */}
-              <div className="text-center animate-fade-in" style={{ animationDelay: '0.4s' }}>
-                <p className="text-white text-lg mb-4">
+              <div className="text-center animate-fade-in px-4" style={{ animationDelay: '0.4s' }}>
+                <p className="text-white text-base sm:text-lg mb-3 sm:mb-4">
                   Select your role above to get started
                 </p>
-                <div className="flex flex-wrap justify-center gap-4 text-white/80 text-sm">
+                <div className="flex flex-wrap justify-center gap-3 sm:gap-4 text-white/80 text-xs sm:text-sm">
                   <span>🍽️ Fresh Food</span>
                   <span>🚀 Fast Delivery</span>
                   <span>⭐ Quality Service</span>
@@ -85,12 +85,12 @@ const Landing = () => {
               </div>
             </TabsContent>
 
-            <TabsContent value="info" className="space-y-8">
+            <TabsContent value="info" className="space-y-6 sm:space-y-8 px-4">
               {/* Bio Section */}
               <Card className="bg-white/10 backdrop-blur-sm border-white/20 animate-fade-in">
-                <CardContent className="pt-6">
-                  <h2 className="text-3xl font-bold text-white mb-4 text-center">About Us</h2>
-                  <p className="text-white/90 text-lg leading-relaxed text-center max-w-3xl mx-auto">
+                <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3 sm:mb-4 text-center">About Us</h2>
+                  <p className="text-white/90 text-base sm:text-lg leading-relaxed text-center max-w-3xl mx-auto">
                     Timelexx Inn is a hub for great food and cool vibes. Based in Nungua, Timelexx Inn captures the life and taste of the Neighbourhood, offering the best in foods, drinks, service and soul. Welcome to Timelexx Inn!
                   </p>
                 </CardContent>
@@ -98,12 +98,12 @@ const Landing = () => {
 
               {/* Map Section */}
               <Card className="bg-white/10 backdrop-blur-sm border-white/20 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-                <CardContent className="pt-6">
-                  <div className="flex items-center justify-center gap-2 mb-4">
-                    <MapPin className="h-6 w-6 text-timelexx-red" />
-                    <h2 className="text-2xl font-bold text-white">Find Us</h2>
+                <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
+                  <div className="flex items-center justify-center gap-2 mb-3 sm:mb-4">
+                    <MapPin className="h-5 w-5 sm:h-6 sm:w-6 text-timelexx-red" />
+                    <h2 className="text-xl sm:text-2xl font-bold text-white">Find Us</h2>
                   </div>
-                  <div className="relative w-full h-[400px] rounded-lg overflow-hidden shadow-premium-lg">
+                  <div className="relative w-full h-[300px] sm:h-[400px] rounded-lg overflow-hidden shadow-premium-lg">
                     <iframe
                       src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3970.8982895847396!2d-0.07468519999999999!3d5.6044812!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfdf87003d1cf659%3A0x31d171072b5e2cc6!2sTimelexx%20Inn!5e0!3m2!1sen!2s!4v1234567890!5m2!1sen!2s"
                       width="100%"
@@ -115,7 +115,7 @@ const Landing = () => {
                       title="Timelexx Inn Location"
                     />
                   </div>
-                  <p className="text-white/80 text-center mt-4">
+                  <p className="text-white/80 text-center mt-3 sm:mt-4 text-sm sm:text-base">
                     Nungua, Accra, Ghana
                   </p>
                 </CardContent>

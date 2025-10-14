@@ -21,47 +21,36 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, allowed
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'reports', label: 'Reports', icon: FileText },
   ];
-  const tabs = allowedTabs ? allTabs.filter(t => allowedTabs.includes(t.id)) : allTabs;
+  const filteredTabs = allowedTabs ? allTabs.filter(t => allowedTabs.includes(t.id)) : allTabs;
 
   return (
-    <nav className="bg-white border-b-2 border-timelexx-yellow p-3 sm:p-4 shadow-premium-sm">
-      <div className="container mx-auto">
-        <div className="flex flex-wrap gap-1 sm:gap-2 justify-center">
-          {tabs.map(tab => {
-            const Icon = tab.icon;
-            const showBadge = (tab.id === 'tracker' && orderCount > 0) || (tab.id === 'riders' && riderOrderCount > 0);
-            const badgeCount = tab.id === 'tracker' ? orderCount : riderOrderCount;
-            
-            return (
-              <Button
-                key={tab.id}
-                variant={activeTab === tab.id ? "default" : "outline"}
-                onClick={() => onTabChange(tab.id)}
-                size="sm"
-                className={`
-                  relative min-h-[44px] px-2 sm:px-4 touch-manipulation
-                  ${activeTab === tab.id 
-                    ? "bg-timelexx-red hover:bg-timelexx-red/90 text-white text-xs sm:text-sm" 
-                    : "border-timelexx-yellow hover:bg-timelexx-yellow hover:text-timelexx-dark text-xs sm:text-sm"
-                  }
-                `}
-              >
-                <Icon className="w-4 h-4 sm:mr-2 flex-shrink-0" />
-                <span className="hidden sm:inline whitespace-nowrap">{tab.label}</span>
-                <span className="sm:hidden text-[10px] leading-tight">{tab.label.split(' ')[0]}</span>
-                {showBadge && (
-                  <Badge 
-                    variant="destructive" 
-                    className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
-                  >
-                    {badgeCount > 9 ? '9+' : badgeCount}
-                  </Badge>
-                )}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
+    <nav className="flex gap-1 sm:gap-2 overflow-x-auto pb-1 sm:pb-2 -mx-2 px-2 sm:mx-0 sm:px-0">
+      {filteredTabs.map((tab) => (
+        <Button
+          key={tab.id}
+          onClick={() => onTabChange(tab.id)}
+          variant={activeTab === tab.id ? 'default' : 'outline'}
+          size="sm"
+          className={`whitespace-nowrap text-xs sm:text-sm min-h-[36px] sm:min-h-[40px] relative ${
+            activeTab === tab.id
+              ? 'bg-timelexx-red hover:bg-timelexx-red/90'
+              : 'border-timelexx-yellow hover:bg-timelexx-yellow hover:text-timelexx-dark'
+          }`}
+        >
+          <tab.icon className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+          <span className="hidden sm:inline">{tab.label}</span>
+          {tab.id === 'tracker' && orderCount > 0 && (
+            <Badge variant="destructive" className="ml-1 sm:ml-2 bg-red-500 text-[10px] sm:text-xs px-1 sm:px-2">
+              {orderCount}
+            </Badge>
+          )}
+          {tab.id === 'riders' && riderOrderCount > 0 && (
+            <Badge variant="destructive" className="ml-1 sm:ml-2 bg-red-500 text-[10px] sm:text-xs px-1 sm:px-2">
+              {riderOrderCount}
+            </Badge>
+          )}
+        </Button>
+      ))}
     </nav>
   );
 };

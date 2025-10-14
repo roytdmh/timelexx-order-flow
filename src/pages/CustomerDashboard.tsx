@@ -132,21 +132,25 @@ const CustomerDashboard = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <div className="border-b-2 border-timelexx-yellow bg-white">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <h1 className="text-xl font-bold text-timelexx-red">My Menu & Orders</h1>
-          <div className="flex items-center gap-4">
-            {profile?.full_name && (
-              <span className="text-sm font-medium">Hi, {profile.full_name}!</span>
-            )}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={signOut}
-              className="border-timelexx-red text-timelexx-red hover:bg-timelexx-red hover:text-white"
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
-            </Button>
+        <div className="container mx-auto px-2 sm:px-4 py-2 sm:py-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-4">
+            <h1 className="text-lg sm:text-xl font-bold text-timelexx-red">My Menu & Orders</h1>
+            <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-4">
+              {profile?.full_name && (
+                <span className="text-xs sm:text-sm font-medium truncate max-w-[150px] sm:max-w-none">
+                  Hi, {profile.full_name}!
+                </span>
+              )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={signOut}
+                className="border-timelexx-red text-timelexx-red hover:bg-timelexx-red hover:text-white shrink-0"
+              >
+                <LogOut className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Sign Out</span>
+              </Button>
+            </div>
           </div>
         </div>
       </div>

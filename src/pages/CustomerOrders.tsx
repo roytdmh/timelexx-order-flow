@@ -143,23 +143,23 @@ export const CustomerOrders = () => {
           : ''
       } ${isHistory ? 'opacity-80 bg-muted/30' : ''}`}
     >
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">
+      <CardHeader className="p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <CardTitle className="text-base sm:text-lg">
             Order #{order.id.slice(0, 8).toUpperCase()}
           </CardTitle>
           {getStatusBadge(order.status)}
         </div>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-xs sm:text-sm text-muted-foreground">
           {formatDistanceToNow(order.timestamp, { addSuffix: true })}
         </p>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6">
         <div>
-          <h4 className="font-medium mb-2">Items:</h4>
+          <h4 className="font-medium mb-2 text-sm sm:text-base">Items:</h4>
           <ul className="space-y-1">
             {order.items.map((item, idx) => (
-              <li key={idx} className="text-sm">
+              <li key={idx} className="text-xs sm:text-sm">
                 {item.quantity}x {item.menuItem.name} - GH₵{(item.quantity * item.menuItem.price).toFixed(2)}
               </li>
             ))}
@@ -167,35 +167,35 @@ export const CustomerOrders = () => {
         </div>
 
         <div className="flex justify-between items-center pt-2 border-t">
-          <span className="font-semibold">Total:</span>
-          <span className="font-semibold text-lg">GH₵{order.total.toFixed(2)}</span>
+          <span className="font-semibold text-sm sm:text-base">Total:</span>
+          <span className="font-semibold text-base sm:text-lg">GH₵{order.total.toFixed(2)}</span>
         </div>
 
         {!isHistory && order.status === 'confirmed' && order.estimatedReadyTime && (
-          <div className="bg-green-50 dark:bg-green-950 p-3 rounded-lg">
-            <p className="text-sm font-medium text-green-900 dark:text-green-100">
+          <div className="bg-green-50 dark:bg-green-950 p-2 sm:p-3 rounded-lg">
+            <p className="text-xs sm:text-sm font-medium text-green-900 dark:text-green-100">
               {getTimeRemaining(order.estimatedReadyTime)}
             </p>
-            <p className="text-xs text-green-700 dark:text-green-300 mt-1">
+            <p className="text-[10px] sm:text-xs text-green-700 dark:text-green-300 mt-1">
               Your order will be ready in approximately 30 minutes
             </p>
           </div>
         )}
 
         {!isHistory && order.orderType === 'delivery' && order.riderNumber && (order.status === 'confirmed' || order.status === 'preparing') && (
-          <div className="flex items-center gap-2 p-3 bg-accent rounded-lg">
-            <Phone className="w-4 h-4" />
-            <div className="text-sm">
+          <div className="flex items-center gap-2 p-2 sm:p-3 bg-accent rounded-lg">
+            <Phone className="w-3 h-3 sm:w-4 sm:h-4" />
+            <div className="text-xs sm:text-sm">
               <p className="font-medium">Rider Contact:</p>
               <p className="text-muted-foreground">{order.riderNumber}</p>
             </div>
           </div>
         )}
 
-        <div className="text-xs text-muted-foreground">
+        <div className="text-[10px] sm:text-xs text-muted-foreground">
           <p>Type: {order.orderType === 'pickup' ? 'Pickup' : 'Delivery'}</p>
           {order.customerLocation && (
-            <p>Location: {order.customerLocation.address}</p>
+            <p className="truncate">Location: {order.customerLocation.address}</p>
           )}
         </div>
       </CardContent>

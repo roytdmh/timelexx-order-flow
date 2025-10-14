@@ -8,7 +8,7 @@ const Header = () => {
   const showNotifications = user && (role === 'admin' || role === 'rider' || role === 'customer');
 
   return (
-    <header className="timelexx-gradient text-white p-4 sm:p-6 shadow-premium-lg">
+    <header className="timelexx-gradient text-white p-3 sm:p-4 md:p-6 shadow-premium-lg">
       <div className="container mx-auto">
         <div className="flex justify-between items-start">
           <div className="flex-1" />
@@ -16,9 +16,9 @@ const Header = () => {
             <img
               src="/lovable-uploads/3b434d95-7b2c-4d7d-a0c2-8458f1f0999c.png"
               alt="Timelexx Inn Logo"
-              className="h-24 sm:h-32 md:h-40 object-contain mix-blend-lighten"
+              className="h-20 sm:h-24 md:h-32 lg:h-40 object-contain mix-blend-lighten"
             />
-            <p className="text-lg sm:text-xl italic -mt-2 sm:-mt-4 tracking-wide font-serif">
+            <p className="text-sm sm:text-lg md:text-xl italic -mt-1 sm:-mt-2 md:-mt-4 tracking-wide font-serif">
               Eat good, Feel good
             </p>
           </div>

@@ -54,45 +54,45 @@ const Reports: React.FC<ReportsProps> = ({ summary, onDownloadReport, adminUsern
       </Card>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
         <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-sm font-medium">
-              <ShoppingBag className="w-4 h-4" />
+          <CardHeader className="pb-2 sm:pb-3 p-4 sm:p-6">
+            <CardTitle className="flex items-center gap-2 text-xs sm:text-sm font-medium">
+              <ShoppingBag className="w-3 h-3 sm:w-4 sm:h-4" />
               Total Orders
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold text-timelexx-red">{summary.totalOrders}</p>
-            <p className="text-xs text-muted-foreground mt-1">Delivered orders today</p>
+          <CardContent className="p-4 sm:p-6">
+            <p className="text-xl sm:text-2xl font-bold text-timelexx-red">{summary.totalOrders}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">Delivered orders today</p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-sm font-medium">
-              <DollarSign className="w-4 h-4" />
+          <CardHeader className="pb-2 sm:pb-3 p-4 sm:p-6">
+            <CardTitle className="flex items-center gap-2 text-xs sm:text-sm font-medium">
+              <DollarSign className="w-3 h-3 sm:w-4 sm:h-4" />
               Total Revenue
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold text-timelexx-yellow">₵{summary.totalRevenue}</p>
-            <p className="text-xs text-muted-foreground mt-1">Total earnings today</p>
+          <CardContent className="p-4 sm:p-6">
+            <p className="text-xl sm:text-2xl font-bold text-timelexx-yellow">₵{summary.totalRevenue}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">Total earnings today</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-sm font-medium">
-              <TrendingUp className="w-4 h-4" />
+        <Card className="sm:col-span-2 md:col-span-1">
+          <CardHeader className="pb-2 sm:pb-3 p-4 sm:p-6">
+            <CardTitle className="flex items-center gap-2 text-xs sm:text-sm font-medium">
+              <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
               Average Order
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold text-green-500">
+          <CardContent className="p-4 sm:p-6">
+            <p className="text-xl sm:text-2xl font-bold text-green-500">
               ₵{summary.totalOrders > 0 ? Math.round(summary.totalRevenue / summary.totalOrders) : 0}
             </p>
-            <p className="text-xs text-muted-foreground mt-1">Per order value</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">Per order value</p>
           </CardContent>
         </Card>
       </div>
