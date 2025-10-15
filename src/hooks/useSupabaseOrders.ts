@@ -89,41 +89,13 @@ export const useSupabaseOrders = () => {
     const channel = supabase
       .channel(channelId)
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, (payload: any) => {
-        const o = payload?.new as any;
-        // Only notify admin when new order is placed, not riders yet
-        if (role === 'admin') {
-          toast({ title: 'New Order', description: `Order #${String(o?.id || '').slice(-6)} received` });
-        } else if (role === 'customer' && o?.customer_user_id === user?.id) {
-          toast({ title: 'Order Placed', description: 'Your order has been received' });
-        }
+        console.log('New order detected, refreshing orders list');
+        // Don't show toast here - the notification system will handle it
         fetchOrders();
       })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders' }, (payload: any) => {
-        const prevStatus = payload?.old?.status;
-        const next = payload?.new as any;
-        const nextStatus = next?.status;
-        if (prevStatus !== nextStatus) {
-          // Notify rider when admin confirms a delivery order
-          if (role === 'rider' && nextStatus === 'confirmed' && next?.order_type === 'delivery') {
-            toast({ title: 'New Delivery', description: `Order #${String(next?.id || '').slice(-6)} assigned to you` });
-          }
-          
-          // Play sound and show notification when order is delivered (for admin and customer)
-          if (nextStatus === 'delivered') {
-            if (role === 'admin' || (role === 'customer' && next?.customer_user_id === user?.id)) {
-              playNotificationSound();
-              const paymentInfo = next?.payment_method ? ` (Payment: ${next.payment_method})` : '';
-              toast({ 
-                title: '🎉 Order Delivered!', 
-                description: `Order #${String(next?.id || '').slice(-6)} has been delivered${paymentInfo}`,
-                duration: 5000,
-              });
-            }
-          } else {
-            const msg = nextStatus === 'cancelled' ? 'Order cancelled' : 'Order updated';
-            toast({ title: 'Order Update', description: `${msg} #${String(next?.id || '').slice(-6)}` });
-          }
-        }
+        console.log('Order updated, refreshing orders list');
+        // Don't show toast here - the notification system will handle it
         fetchOrders();
       })
       .subscribe();

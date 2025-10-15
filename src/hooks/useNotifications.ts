@@ -3,16 +3,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { Notification } from '@/types';
 import { toast } from '@/hooks/use-toast';
 import { showPushNotification, checkNotificationPermission } from '@/utils/pushNotifications';
+import { playNotificationSound } from '@/utils/notificationSound';
 
 export const useNotifications = (userId: string | undefined, userRole: string | null) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
-
-  // Play notification sound
-  const playNotificationSound = () => {
-    const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZURE');
-    audio.play().catch(e => console.error('Could not play notification sound:', e));
-  };
 
   useEffect(() => {
     if (!userId) return;

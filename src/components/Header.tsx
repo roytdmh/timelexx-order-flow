@@ -2,6 +2,7 @@ import React from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { NotificationBadge } from '@/components/NotificationBadge';
 import NotificationPermissionPrompt from '@/components/NotificationPermissionPrompt';
+import { RealtimeConnectionStatus } from '@/components/RealtimeConnectionStatus';
 import timelexxLogo from '@/assets/timelexx-logo.png';
 
 const Header = () => {
@@ -36,6 +37,7 @@ const Header = () => {
         </div>
       </header>
       {showNotifications && <NotificationPermissionPrompt userRole={role} />}
+      {showNotifications && <RealtimeConnectionStatus />}
     </>
   );
 };
