@@ -8,13 +8,23 @@ import { useSupabaseOrders } from '@/hooks/useSupabaseOrders';
 import { useAuth } from '@/hooks/useAuth';
 import { MenuItem, OrderItem } from '@/types';
 import { Button } from '@/components/ui/button';
-import { LogOut } from 'lucide-react';
+import { LogOut, Phone, Mail } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogFooter,
+  AlertDialogCancel,
+} from '@/components/ui/alert-dialog';
 
 const CustomerDashboard = () => {
   const navigate = useNavigate();
   const { user, role, profile, loading: authLoading, signOut } = useAuth();
   const [currentOrder, setCurrentOrder] = useState<OrderItem[]>([]);
+  const [showContactDialog, setShowContactDialog] = useState(false);
   
   const { orders, addOrder } = useSupabaseOrders();
 
@@ -146,6 +156,14 @@ const CustomerDashboard = () => {
               )}
               <Button
                 variant="outline"
+                size="icon"
+                onClick={() => setShowContactDialog(true)}
+                className="border-timelexx-red text-timelexx-red hover:bg-timelexx-red hover:text-white shrink-0"
+              >
+                <Phone className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={signOut}
                 className="border-timelexx-red text-timelexx-red hover:bg-timelexx-red hover:text-white shrink-0"
@@ -181,6 +199,48 @@ const CustomerDashboard = () => {
           <CustomerOrders orders={userOrders} />
         </div>
       </main>
+
+      {/* Contact Us Dialog */}
+      <AlertDialog open={showContactDialog} onOpenChange={setShowContactDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-2xl text-timelexx-red">Contact Us</AlertDialogTitle>
+            <AlertDialogDescription className="space-y-4 pt-4">
+              <div className="flex items-center gap-3 text-base">
+                <Phone className="h-5 w-5 text-timelexx-red" />
+                <div>
+                  <p className="font-semibold text-foreground">Customer Service</p>
+                  <a 
+                    href="tel:+233553695569" 
+                    className="text-timelexx-red hover:underline"
+                  >
+                    +233 55 369 5569
+                  </a>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 text-base">
+                <Mail className="h-5 w-5 text-timelexx-red" />
+                <div>
+                  <p className="font-semibold text-foreground">Follow us on TikTok</p>
+                  <a 
+                    href="https://www.tiktok.com/@timelexxinn" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-timelexx-red hover:underline"
+                  >
+                    TimelexxInn on TikTok
+                  </a>
+                </div>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-timelexx-red text-white hover:bg-timelexx-red/90">
+              Close
+            </AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
