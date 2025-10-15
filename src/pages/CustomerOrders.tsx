@@ -105,7 +105,15 @@ export const CustomerOrders = ({ orders }: CustomerOrdersProps) => {
             <Phone className="w-3 h-3 sm:w-4 sm:h-4" />
             <div className="text-xs sm:text-sm">
               <p className="font-medium">Rider Contact:</p>
-              <p className="text-muted-foreground">{order.riderNumber}</p>
+              <p className="text-muted-foreground">
+                <a 
+                  href="tel:+233553695569"
+                  className="text-timelexx-red hover:underline font-medium"
+                >
+                  +233 55 369 5569
+                </a>
+                {" - "}{order.riderNumber}
+              </p>
             </div>
           </div>
         )}
