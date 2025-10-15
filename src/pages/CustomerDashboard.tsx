@@ -16,7 +16,10 @@ const CustomerDashboard = () => {
   const { user, role, profile, loading: authLoading, signOut } = useAuth();
   const [currentOrder, setCurrentOrder] = useState<OrderItem[]>([]);
   
-  const { addOrder } = useSupabaseOrders();
+  const { orders, addOrder } = useSupabaseOrders();
+
+  // Filter orders for current user
+  const userOrders = orders.filter(order => order.customerUserId === user?.id);
 
   // Redirect if not authenticated or not a customer
   useEffect(() => {
@@ -175,7 +178,7 @@ const CustomerDashboard = () => {
 
         {/* Order History Section */}
         <div className="mt-8">
-          <CustomerOrders />
+          <CustomerOrders orders={userOrders} />
         </div>
       </main>
     </div>

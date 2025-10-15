@@ -1,91 +1,18 @@
-import { useEffect, useState } from 'react';
-import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+import { useState } from 'react';
 import { Order } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Clock, Package, CheckCircle, XCircle, Phone, ChevronDown, ChevronUp } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Button } from '@/components/ui/button';
 
-export const CustomerOrders = () => {
-  const { user } = useAuth();
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
+interface CustomerOrdersProps {
+  orders: Order[];
+}
+
+export const CustomerOrders = ({ orders }: CustomerOrdersProps) => {
   const [historyOpen, setHistoryOpen] = useState(false);
-
-  useEffect(() => {
-    if (!user) return;
-
-    const fetchOrders = async () => {
-      const { data: ordersData, error } = await supabase
-        .from('orders')
-        .select(`
-          *,
-          order_items (
-            *,
-            menu_item:menu_items (*)
-          )
-        `)
-        .eq('customer_user_id', user.id)
-        .order('created_at', { ascending: false });
-
-      if (!error && ordersData) {
-        const mappedOrders: Order[] = ordersData.map((order: any) => ({
-          id: order.id,
-          items: order.order_items.map((item: any) => ({
-            menuItem: {
-              id: item.menu_item.id,
-              name: item.menu_item.name,
-              price: parseFloat(item.menu_item.price),
-              icon: item.menu_item.icon,
-              category: item.menu_item.category,
-              description: item.menu_item.description,
-            },
-            quantity: item.quantity,
-          })),
-          total: parseFloat(order.total),
-          orderType: order.order_type,
-          riderNumber: order.rider_number,
-          status: order.status,
-          timestamp: new Date(order.created_at),
-          customerName: order.customer_name,
-          customerNumber: order.customer_number,
-          customerUserId: order.customer_user_id,
-          paymentMethod: order.payment_method,
-          confirmedAt: order.confirmed_at ? new Date(order.confirmed_at) : undefined,
-          estimatedReadyTime: order.estimated_ready_time ? new Date(order.estimated_ready_time) : undefined,
-        }));
-        setOrders(mappedOrders);
-      }
-      setLoading(false);
-    };
-
-    fetchOrders();
-
-    // Real-time subscription
-    const channel = supabase
-      .channel('customer-orders')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'orders',
-          filter: `customer_user_id=eq.${user.id}`
-        },
-        () => {
-          fetchOrders();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [user]);
 
   const getStatusBadge = (status: Order['status']) => {
     const statusConfig = {
@@ -124,15 +51,6 @@ export const CustomerOrders = () => {
   const orderHistory = orders.filter(order => 
     ['delivered', 'cancelled'].includes(order.status)
   );
-
-  if (loading) {
-    return (
-      <div className="space-y-4">
-        <Skeleton className="h-32 w-full" />
-        <Skeleton className="h-32 w-full" />
-      </div>
-    );
-  }
 
   const renderOrderCard = (order: Order, isHistory: boolean = false) => (
     <Card 
