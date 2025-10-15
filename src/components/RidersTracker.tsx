@@ -52,12 +52,7 @@ const RidersTracker: React.FC<RidersTrackerProps> = ({ orders, onUpdateStatus, o
   
   const todaysDeliveryOrders = deliveryOrders.filter(order => isToday(order.timestamp));
   
-  // For riders: new orders are those confirmed by admin (status: confirmed)
-  // For admin: show pending/preparing orders (orders in progress)
-  const newDeliveryOrders = role === 'rider' 
-    ? todaysDeliveryOrders.filter(order => order.status === 'confirmed')
-    : [];
-  
+  // Active delivery orders include pending, confirmed, and preparing statuses
   const activeDeliveryOrders = todaysDeliveryOrders.filter(order => 
     order.status === 'pending' || order.status === 'confirmed' || order.status === 'preparing'
   );
@@ -66,33 +61,6 @@ const RidersTracker: React.FC<RidersTrackerProps> = ({ orders, onUpdateStatus, o
 
   return (
     <div className="space-y-6 relative">
-      {/* New Delivery Orders - Only for riders (confirmed by admin) */}
-      {role === 'rider' && newDeliveryOrders.length > 0 && (
-        <Card className="border-2 border-blue-500">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-blue-600">
-              <Clock className="w-5 h-5" />
-              New Delivery Orders ({newDeliveryOrders.length})
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {newDeliveryOrders.map(order => (
-                <PendingOrderCard
-                  key={order.id}
-                  order={order}
-                  selectedPaymentMethod={selectedPaymentMethods[order.id]}
-                  onPaymentMethodChange={handlePaymentMethodChange}
-                  onMarkAsDelivered={handleMarkAsDelivered}
-                  onUpdateStatus={onUpdateStatus}
-                  manageEnabled={true}
-                />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
       {/* Pending/Active Delivery Orders - For both admin and riders */}
       <Card className="border-2 border-timelexx-red">
         <CardHeader>
