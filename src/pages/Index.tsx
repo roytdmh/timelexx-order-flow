@@ -47,9 +47,13 @@ const Index = () => {
     ? orders.filter(order => order.orderType === 'delivery' && order.riderNumber === profile?.full_name)
     : orders;
 
-  // Count new orders for badges
-  const newOrdersCount = orders.filter(order => order.status === 'placed').length;
-  const newRiderOrdersCount = orders.filter(order => order.status === 'placed' && order.orderType === 'delivery').length;
+  // Count new orders for badges - use today's orders to match OrderTracker display
+  const todaysOrders = getTodaysOrders();
+  const newOrdersCount = todaysOrders.filter(order => order.status === 'placed').length;
+  const newRiderOrdersCount = todaysOrders.filter(order => order.status === 'placed' && order.orderType === 'delivery').length;
+  
+  // Log badge counts for debugging
+  console.log('📊 Badge counts:', { newOrdersCount, newRiderOrdersCount, totalTodayOrders: todaysOrders.length });
 
   const handleAddToOrder = (menuItem: MenuItem) => {
     setCurrentOrder(prev => {
@@ -210,6 +214,7 @@ const Index = () => {
                 <h1 className="text-lg sm:text-xl font-bold text-timelexx-red whitespace-nowrap">Delivery Tracker</h1>
               ) : (
                 <Navigation 
+                  key={`nav-${newOrdersCount}-${newRiderOrdersCount}`}
                   activeTab={activeTab} 
                   onTabChange={(tab) => availableTabs.includes(tab) && setActiveTab(tab)} 
                   allowedTabs={availableTabs}

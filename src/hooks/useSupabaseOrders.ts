@@ -88,17 +88,21 @@ export const useSupabaseOrders = () => {
     
     const channel = supabase
       .channel(channelId)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, (payload: any) => {
-        console.log('New order detected, refreshing orders list');
-        // Don't show toast here - the notification system will handle it
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (payload: any) => {
+        console.log('🔔 Order event detected:', payload.eventType, 'Order ID:', payload.new?.id || payload.old?.id);
+        // Refresh orders list for any change (INSERT, UPDATE, DELETE)
         fetchOrders();
       })
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders' }, (payload: any) => {
-        console.log('Order updated, refreshing orders list');
-        // Don't show toast here - the notification system will handle it
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'order_items' }, (payload: any) => {
+        console.log('🔔 Order items event detected:', payload.eventType);
+        // Refresh when order items change (affects totals, etc.)
         fetchOrders();
       })
-      .subscribe();
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          console.log('✅ Real-time subscription active for orders');
+        }
+      });
 
     return () => {
       supabase.removeChannel(channel);
