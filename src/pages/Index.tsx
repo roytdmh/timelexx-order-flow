@@ -83,7 +83,7 @@ const Index = () => {
     setCurrentOrder(prev => prev.filter(item => item.menuItem.id !== itemId));
   };
 
-  const handleSubmitOrder = (
+  const handleSubmitOrder = async (
     orderType: 'pickup' | 'delivery', 
     riderNumber?: string, 
     customerName?: string,
@@ -106,7 +106,7 @@ const Index = () => {
       finalRiderNumber = riders[Math.floor(Math.random() * riders.length)];
     }
     
-    addOrder({
+    const newOrder = {
       items: [...currentOrder],
       total,
       orderType,
@@ -114,15 +114,25 @@ const Index = () => {
       customerName: finalCustomerName,
       customerNumber: finalCustomerNumber,
       customerLocation: finalCustomerLocation,
-      status: 'placed',
+      status: 'placed' as const,
       customerUserId: role === 'customer' ? user?.id : undefined,
-    });
+      timestamp: new Date().toISOString(),
+      id: crypto.randomUUID(),
+    };
+
+    addOrder(newOrder);
+
+    // Print order if admin
+    if (role === 'admin') {
+      const { printOrderReceipt } = await import('@/utils/thermalPrinter');
+      await printOrderReceipt(newOrder as any, 'placed');
+    }
 
     setCurrentOrder([]);
     if (role === 'customer') {
-      setActiveTab('orders'); // Switch to orders tab to see the order status
+      setActiveTab('orders');
     } else {
-      setActiveTab('tracker'); // Switch to tracker after placing order (admin only)
+      setActiveTab('tracker');
     }
   };
 
