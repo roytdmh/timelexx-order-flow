@@ -8,6 +8,7 @@ import { Order } from '@/types';
 import { getRiderDisplayName } from '@/data/riders';
 import PaymentMethodSelector from './PaymentMethodSelector';
 import OrderActionButtons from './OrderActionButtons';
+import { printOrderReceipt } from '@/utils/thermalPrinter';
 
 interface PendingOrderCardProps {
   order: Order;
@@ -73,6 +74,11 @@ const PendingOrderCard: React.FC<PendingOrderCardProps> = ({
     onUpdateStatus(orderId, 'cancelled');
   };
 
+  const handleAcceptOrder = async () => {
+    await printOrderReceipt(order, 'accepted');
+    onUpdateStatus(order.id, 'confirmed');
+  };
+
   return (
     <Card className={`${getStatusColor(order)} transition-all duration-200 shadow-premium-sm`}>
       <CardContent className="p-3 sm:p-4">
@@ -127,7 +133,7 @@ const PendingOrderCard: React.FC<PendingOrderCardProps> = ({
             {showAcceptButton && order.status === 'placed' && (
               <div className="mb-3">
                 <Button
-                  onClick={() => onUpdateStatus(order.id, 'confirmed')}
+                  onClick={handleAcceptOrder}
                   className="w-full bg-green-600 hover:bg-green-700"
                 >
                   Accept Order
