@@ -1,4 +1,5 @@
-import { Order } from '@/types';
+import { Order, DailySummary } from '@/types';
+import { generateDailyReport } from './reportGenerator';
 
 // ESC/POS commands for thermal printers
 const ESC = '\x1B';
@@ -143,5 +144,109 @@ export const connectPrinter = async (): Promise<void> => {
     console.log('Printer paired:', device.name);
   } catch (error) {
     console.log('Printer pairing cancelled or failed');
+  }
+};
+
+export const printDailyReport = async (summary: DailySummary, orders: Order[], adminUsername?: string): Promise<void> => {
+  try {
+    // Check if Web Bluetooth API is available
+    const nav = navigator as any;
+    if (!nav.bluetooth) {
+      console.log('Web Bluetooth not available - print skipped');
+      return;
+    }
+
+    // Try to get already paired devices first
+    let device: any;
+    try {
+      const devices = await nav.bluetooth.getDevices();
+      device = devices.find((d: any) => d.name?.toLowerCase().includes('printer')) || devices[0];
+      
+      if (!device) {
+        console.log('No paired printer found - print skipped');
+        return;
+      }
+    } catch (e) {
+      console.log('No printer available - print skipped');
+      return;
+    }
+
+    // Connect to the device
+    const server = await device.gatt?.connect();
+    if (!server) return;
+
+    const services = await server.getPrimaryServices();
+    if (services.length === 0) return;
+    
+    const service = services[0];
+    const characteristics = await service.getCharacteristics();
+    if (characteristics.length === 0) return;
+    
+    const characteristic = characteristics[0];
+
+    // Generate the full text report
+    const reportText = generateDailyReport(summary, orders, adminUsername);
+    
+    // Build ESC/POS commands
+    let commands = '';
+
+    // Initialize printer
+    commands += ESC + '@'; // Initialize
+    commands += ESC + 'a' + '\x01'; // Center align
+    commands += ESC + 'E' + '\x01'; // Bold on
+    commands += GS + '!' + '\x11'; // Double size
+    commands += 'TIMELEXX INN\n';
+    commands += 'DAILY SALES REPORT\n';
+    commands += GS + '!' + '\x00'; // Normal size
+    commands += ESC + 'E' + '\x00'; // Bold off
+    commands += ESC + 'a' + '\x00'; // Left align
+    commands += '================================\n\n';
+
+    // Process report lines
+    const lines = reportText.split('\n');
+    for (const line of lines) {
+      // Skip the header lines we already printed
+      if (line.includes('TIMELEXX INN') || line.includes('DAILY SALES REPORT')) {
+        continue;
+      }
+      
+      // Check if line is a section header (all caps, not too long)
+      const isSectionHeader = line.match(/^[A-Z\s]+$/) && 
+                             line.trim().length > 0 && 
+                             line.trim().length < 40 &&
+                             !line.includes('=');
+      
+      if (isSectionHeader) {
+        commands += ESC + 'E' + '\x01'; // Bold on
+        commands += line + '\n';
+        commands += ESC + 'E' + '\x00'; // Bold off
+      } else {
+        commands += line + '\n';
+      }
+    }
+
+    // Footer
+    commands += '\n================================\n';
+    commands += ESC + 'a' + '\x01'; // Center align
+    commands += '\nThank you!\n\n\n';
+    commands += GS + 'V' + '\x00'; // Cut paper
+
+    // Send to printer in chunks to avoid buffer overflow
+    const encoder = new TextEncoder();
+    const data = encoder.encode(commands);
+    const chunkSize = 512;
+    
+    for (let i = 0; i < data.length; i += chunkSize) {
+      const chunk = data.slice(i, Math.min(i + chunkSize, data.length));
+      await characteristic.writeValue(chunk);
+      // Small delay between chunks
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+
+    console.log('Daily report printed successfully');
+
+  } catch (error) {
+    // Silent fail - don't show errors to user
+    console.log('Print skipped:', error);
   }
 };

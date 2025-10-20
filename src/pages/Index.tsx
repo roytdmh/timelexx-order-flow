@@ -297,6 +297,7 @@ const Index = () => {
             summary={summary}
             onDownloadReport={handleDownloadReport}
             adminUsername={role === 'admin' ? localStorage.getItem('adminName') || undefined : undefined}
+            orders={orders}
           />
         )}
       </main>

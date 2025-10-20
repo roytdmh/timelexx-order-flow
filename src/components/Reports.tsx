@@ -5,27 +5,35 @@ import { Button } from '@/components/ui/button';
 import { Download, FileText, TrendingUp, DollarSign, ShoppingBag, Loader2 } from 'lucide-react';
 import { DailySummary } from '@/types';
 import { toast } from '@/hooks/use-toast';
+import { printDailyReport } from '@/utils/thermalPrinter';
+import type { Order } from '@/types';
 
 interface ReportsProps {
   summary: DailySummary;
   onDownloadReport: () => Promise<void>;
   adminUsername?: string;
+  orders: Order[];
 }
 
-const Reports: React.FC<ReportsProps> = ({ summary, onDownloadReport, adminUsername }) => {
+const Reports: React.FC<ReportsProps> = ({ summary, onDownloadReport, adminUsername, orders }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleDownloadReport = async () => {
     setIsLoading(true);
     try {
+      // Download PDF
       await onDownloadReport();
+      
+      // Print to thermal printer (silently fails if not connected)
+      await printDailyReport(summary, orders, adminUsername);
+      
       toast({
-        title: "Report Downloaded Successfully",
+        title: "Report Generated Successfully",
         description: "Daily summary report has been downloaded as a PDF file",
       });
     } catch (error) {
       toast({
-        title: "Failed to Download Report",
+        title: "Failed to Generate Report",
         description: "There was an error generating the PDF report. Please try again.",
         variant: "destructive",
       });
