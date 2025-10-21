@@ -45,24 +45,14 @@ const RiderAuth = () => {
         throw new Error('Invalid rider selection');
       }
 
-      // Validate access code via edge function
-      const { data: validationData, error: validationError } = await supabase.functions.invoke(
-        'validate-access-code',
-        { body: { accessCode: password } }
-      );
-
-      if (validationError || !validationData?.valid) {
+      // Check predetermined code
+      if (password !== 'TimelexxInn00233') {
         throw new Error('Invalid access code');
       }
 
-      // Ensure staff account exists and is configured server-side
-      await supabase.functions.invoke('bootstrap-staff-account', {
-        body: { role: 'rider', name: rider.name }
-      });
-
       // Use master rider account for authentication
       const masterEmail = 'rider@timelexx.com';
-      const masterPassword = password;
+      const masterPassword = 'TimelexxInn00233';
       
       let authUser = null as typeof supabase.auth.getUser extends any ? any : any;
 

@@ -43,27 +43,17 @@ const AdminAuth = () => {
         throw new Error('Please enter a valid name (2-50 characters)');
       }
 
-      // Validate access code via edge function
-      const { data: validationData, error: validationError } = await supabase.functions.invoke(
-        'validate-access-code',
-        { body: { accessCode: password } }
-      );
-
-      if (validationError || !validationData?.valid) {
+      // Check predetermined code
+      if (password !== 'TimelexxInn00233') {
         throw new Error('Invalid access code');
       }
 
       // Store admin name in localStorage for report generation
       localStorage.setItem('adminName', username.trim());
 
-      // Ensure staff account exists and is configured server-side
-      await supabase.functions.invoke('bootstrap-staff-account', {
-        body: { role: 'admin', name: username.trim() }
-      });
-
       // Use a master admin account for authentication (bootstrap if missing)
       const masterEmail = 'admin@timelexx.admin';
-      const masterPassword = password;
+      const masterPassword = 'TimelexxInn00233';
 
       let authUser = null as typeof supabase.auth.getUser extends any ? any : any;
 
