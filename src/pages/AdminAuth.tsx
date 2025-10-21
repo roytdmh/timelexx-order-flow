@@ -43,8 +43,13 @@ const AdminAuth = () => {
         throw new Error('Please enter a valid name (2-50 characters)');
       }
 
-      // Check predetermined code
-      if (password !== 'TimelexxInn00233') {
+      // Validate access code via edge function
+      const { data: validationData, error: validationError } = await supabase.functions.invoke(
+        'validate-access-code',
+        { body: { accessCode: password } }
+      );
+
+      if (validationError || !validationData?.valid) {
         throw new Error('Invalid access code');
       }
 
@@ -53,7 +58,7 @@ const AdminAuth = () => {
 
       // Use a master admin account for authentication (bootstrap if missing)
       const masterEmail = 'admin@timelexx.admin';
-      const masterPassword = 'TimelexxInn00233';
+      const masterPassword = password;
 
       let authUser = null as typeof supabase.auth.getUser extends any ? any : any;
 
