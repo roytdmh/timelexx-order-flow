@@ -55,6 +55,11 @@ const RiderAuth = () => {
         throw new Error('Invalid access code');
       }
 
+      // Ensure staff account exists and is configured server-side
+      await supabase.functions.invoke('bootstrap-staff-account', {
+        body: { role: 'rider', name: rider.name }
+      });
+
       // Use master rider account for authentication
       const masterEmail = 'rider@timelexx.com';
       const masterPassword = password;

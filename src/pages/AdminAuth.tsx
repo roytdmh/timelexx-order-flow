@@ -56,6 +56,11 @@ const AdminAuth = () => {
       // Store admin name in localStorage for report generation
       localStorage.setItem('adminName', username.trim());
 
+      // Ensure staff account exists and is configured server-side
+      await supabase.functions.invoke('bootstrap-staff-account', {
+        body: { role: 'admin', name: username.trim() }
+      });
+
       // Use a master admin account for authentication (bootstrap if missing)
       const masterEmail = 'admin@timelexx.admin';
       const masterPassword = password;
