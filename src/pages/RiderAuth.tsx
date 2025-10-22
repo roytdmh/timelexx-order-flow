@@ -45,8 +45,12 @@ const RiderAuth = () => {
         throw new Error('Invalid rider selection');
       }
 
-      // Check predetermined code
-      if (password !== 'TimelexxInn00233') {
+      // Validate access code via edge function
+      const { data: validationData, error: validationError } = await supabase.functions.invoke('validate-access-code', {
+        body: { accessCode: password }
+      });
+
+      if (validationError || !validationData?.valid) {
         throw new Error('Invalid access code');
       }
 
