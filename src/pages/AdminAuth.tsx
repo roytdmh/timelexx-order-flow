@@ -38,7 +38,7 @@ const AdminAuth = () => {
     setIsLoading(true);
 
     try {
-      // Validate username format (alphanumeric, spaces, and underscore only)
+      // Validate username format
       if (!username.trim() || username.length < 2 || username.length > 50) {
         throw new Error('Please enter a valid name (2-50 characters)');
       }
@@ -52,82 +52,27 @@ const AdminAuth = () => {
         throw new Error('Invalid access code');
       }
 
+      // Bootstrap the admin account (creates/updates with correct password)
+      const { data: bootstrapData, error: bootstrapError } = await supabase.functions.invoke('bootstrap-staff-account', {
+        body: { role: 'admin', name: username.trim(), accessCode: password }
+      });
+
+      if (bootstrapError || !bootstrapData?.ok) {
+        throw new Error('Failed to initialize admin account');
+      }
+
       // Store admin name in localStorage for report generation
       localStorage.setItem('adminName', username.trim());
 
-      // Use a master admin account for authentication (bootstrap if missing)
+      // Sign in with the master admin account
       const masterEmail = 'admin@timelexx.admin';
-      // Use the provided code (already validated server-side) as the password
-      const masterPassword = password;
-
-      let authUser = null as typeof supabase.auth.getUser extends any ? any : any;
-
-      // 1) Try sign in
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
         email: masterEmail,
-        password: masterPassword,
+        password: password,
       });
 
       if (signInError) {
-        // 2) If invalid credentials/user not found, try to create the master account
-        const redirectUrl = `${window.location.origin}/`;
-        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-          email: masterEmail,
-          password: masterPassword,
-          options: { emailRedirectTo: redirectUrl },
-        });
-
-        if (signUpError && (signUpError as any).status !== 422) {
-          // 422 means already exists; anything else is a real error
-          throw signUpError;
-        }
-
-        if (signUpData?.user) {
-          authUser = signUpData.user;
-        } else {
-          // If already exists, retry sign in
-          const { data: retryData, error: retryError } = await supabase.auth.signInWithPassword({
-            email: masterEmail,
-            password: masterPassword,
-          });
-          if (retryError) throw retryError;
-          authUser = retryData.user;
-        }
-      } else {
-        authUser = signInData.user;
-      }
-
-      // Ensure admin role exists for the master account
-      if (authUser) {
-        const { data: roleData } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', authUser.id)
-          .maybeSingle();
-
-        if (!roleData || roleData.role !== 'admin') {
-          const { error: roleInsertError } = await supabase.from('user_roles').insert({
-            user_id: authUser.id,
-            role: 'admin',
-          });
-          if (roleInsertError) {
-            console.error('Role assignment error:', roleInsertError);
-            // Proceed anyway; master account is authenticated
-          }
-        }
-
-        // Update profile with the actual admin name
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .upsert({
-            user_id: authUser.id,
-            email: masterEmail,
-            full_name: username.trim(),
-          }, { onConflict: 'user_id' });
-
-        if (profileError) {
-          console.error('Profile update error:', profileError);
-        }
+        throw new Error('Sign in failed: ' + signInError.message);
       }
       
       toast.success(`Welcome ${username.trim()}!`);
