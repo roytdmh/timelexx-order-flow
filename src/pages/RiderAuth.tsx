@@ -45,36 +45,86 @@ const RiderAuth = () => {
         throw new Error('Invalid rider selection');
       }
 
-      // Validate access code via edge function
-      const { data: validationData, error: validationError } = await supabase.functions.invoke('validate-access-code', {
-        body: { accessCode: password }
-      });
-
-      if (validationError || !validationData?.valid) {
+      // Check predetermined code
+      if (password !== 'TimelexxInn00233') {
         throw new Error('Invalid access code');
       }
 
-      // Bootstrap the rider account (creates/updates with correct password)
-      const { data: bootstrapData, error: bootstrapError } = await supabase.functions.invoke('bootstrap-staff-account', {
-        body: { role: 'rider', name: rider.name, accessCode: password }
-      });
-
-      if (bootstrapError || !bootstrapData?.ok) {
-        throw new Error('Failed to initialize rider account');
-      }
-
-      // Store rider name for later use
-      localStorage.setItem('riderName', rider.name);
-
-      // Sign in with the master rider account
+      // Use master rider account for authentication
       const masterEmail = 'rider@timelexx.com';
+      const masterPassword = 'TimelexxInn00233';
+      
+      let authUser = null as typeof supabase.auth.getUser extends any ? any : any;
+
+      // 1) Try sign in
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
         email: masterEmail,
-        password: password,
+        password: masterPassword,
       });
 
       if (signInError) {
-        throw new Error('Sign in failed: ' + signInError.message);
+        // 2) If invalid credentials/user not found, create the master rider account
+        const redirectUrl = `${window.location.origin}/`;
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+          email: masterEmail,
+          password: masterPassword,
+          options: { emailRedirectTo: redirectUrl },
+        });
+
+        if (signUpError && (signUpError as any).status !== 422) {
+          // 422 means already exists; anything else is a real error
+          throw signUpError;
+        }
+
+        if (signUpData?.user) {
+          authUser = signUpData.user;
+        } else {
+          // If already exists, retry sign in
+          const { data: retryData, error: retryError } = await supabase.auth.signInWithPassword({
+            email: masterEmail,
+            password: masterPassword,
+          });
+          if (retryError) throw retryError;
+          authUser = retryData.user;
+        }
+      } else {
+        authUser = signInData.user;
+      }
+      
+      // Verify rider role exists (create if missing)
+      if (authUser) {
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', authUser.id)
+          .maybeSingle();
+        
+        if (!roleData || roleData.role !== 'rider') {
+          const { error: roleInsertError } = await supabase.from('user_roles').insert({
+            user_id: authUser.id,
+            role: 'rider',
+          });
+          if (roleInsertError) {
+            console.error('Role assignment error:', roleInsertError);
+            // proceed anyway
+          }
+        }
+        
+        // Update profile with the actual rider name
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .upsert({
+            user_id: authUser.id,
+            email: masterEmail,
+            full_name: rider.name,
+          }, { onConflict: 'user_id' });
+
+        if (profileError) {
+          console.error('Profile update error:', profileError);
+        }
+        
+        // Store rider name in localStorage for tracking
+        localStorage.setItem('riderName', rider.name);
       }
       
       toast.success(`Welcome ${rider.name}!`);
