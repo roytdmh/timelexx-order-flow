@@ -56,7 +56,8 @@ const RiderAuth = () => {
 
       // Use master rider account for authentication
       const masterEmail = 'rider@timelexx.com';
-      const masterPassword = 'TimelexxInn00233';
+      // Use the provided code (already validated server-side) as the password
+      const masterPassword = password;
       
       let authUser = null as typeof supabase.auth.getUser extends any ? any : any;
 

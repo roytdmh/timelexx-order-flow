@@ -1,4 +1,5 @@
 project_id = "seznzhtgkjzvfrznpljt"
 
-[functions.validate-access-code]
-verify_jwt = false
+[functions]
+  [functions.validate-access-code]
+  verify_jwt = false

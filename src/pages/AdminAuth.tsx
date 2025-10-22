@@ -57,7 +57,8 @@ const AdminAuth = () => {
 
       // Use a master admin account for authentication (bootstrap if missing)
       const masterEmail = 'admin@timelexx.admin';
-      const masterPassword = 'TimelexxInn00233';
+      // Use the provided code (already validated server-side) as the password
+      const masterPassword = password;
 
       let authUser = null as typeof supabase.auth.getUser extends any ? any : any;
 
