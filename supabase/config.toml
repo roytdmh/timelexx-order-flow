@@ -1,1 +1,8 @@
 project_id = "seznzhtgkjzvfrznpljt"
+
+[functions]
+  [functions.validate-access-code]
+  verify_jwt = false
+
+  [functions.bootstrap-staff-account]
+  verify_jwt = false
