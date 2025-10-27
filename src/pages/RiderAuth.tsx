@@ -70,25 +70,20 @@ const RiderAuth = () => {
       
       // Verify rider role exists (create if missing)
       if (authUser) {
-        // First, check and upsert role
-        const { data: existingRole, error: roleCheckError } = await supabase
+        // Check if rider role already exists for this user
+        const { data: riderRole, error: roleCheckError } = await supabase
           .from('user_roles')
           .select('role')
           .eq('user_id', authUser.id)
+          .eq('role', 'rider')
           .maybeSingle();
         
         if (roleCheckError) {
           console.error('Role check error:', roleCheckError);
         }
 
-        if (!existingRole || existingRole.role !== 'rider') {
-          // Delete any existing role first to avoid conflicts
-          await supabase
-            .from('user_roles')
-            .delete()
-            .eq('user_id', authUser.id);
-
-          // Insert new rider role
+        if (!riderRole) {
+          // Insert rider role if missing (no delete/upsert to avoid RLS conflicts)
           const { error: roleInsertError } = await supabase
             .from('user_roles')
             .insert({
@@ -98,9 +93,7 @@ const RiderAuth = () => {
           
           if (roleInsertError) {
             console.error('Role assignment error:', roleInsertError);
-            toast.error('Failed to assign rider role. Please try again.');
-            setIsLoading(false);
-            return;
+            // Don't block sign-in; continue
           }
         }
         
@@ -120,8 +113,8 @@ const RiderAuth = () => {
         // Store rider name in localStorage for tracking
         localStorage.setItem('riderName', rider.name);
 
-        // Wait a moment to ensure role is committed
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // Brief delay to let role/profile be readable via RLS
+        await new Promise(resolve => setTimeout(resolve, 300));
       }
       
       toast.success(`Welcome ${rider.name}!`);
