@@ -57,40 +57,17 @@ const AdminAuth = () => {
 
       let authUser = null as typeof supabase.auth.getUser extends any ? any : any;
 
-      // 1) Try sign in
+      // 1) Sign in using hardcoded master credentials ONLY
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
         email: masterEmail,
         password: masterPassword,
       });
 
-      if (signInError) {
-        // 2) If invalid credentials/user not found, try to create the master account
-        const redirectUrl = `${window.location.origin}/`;
-        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-          email: masterEmail,
-          password: masterPassword,
-          options: { emailRedirectTo: redirectUrl },
-        });
-
-        if (signUpError && (signUpError as any).status !== 422) {
-          // 422 means already exists; anything else is a real error
-          throw signUpError;
-        }
-
-        if (signUpData?.user) {
-          authUser = signUpData.user;
-        } else {
-          // If already exists, retry sign in
-          const { data: retryData, error: retryError } = await supabase.auth.signInWithPassword({
-            email: masterEmail,
-            password: masterPassword,
-          });
-          if (retryError) throw retryError;
-          authUser = retryData.user;
-        }
-      } else {
-        authUser = signInData.user;
+      if (signInError || !signInData?.user || !signInData?.session) {
+        throw new Error('Invalid credentials');
       }
+
+      authUser = signInData.user;
 
       // Ensure admin role exists for the master account
       if (authUser) {
