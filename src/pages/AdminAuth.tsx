@@ -94,20 +94,37 @@ const AdminAuth = () => {
 
       // Ensure admin role exists for the master account
       if (authUser) {
-        const { data: roleData } = await supabase
+        // First, check and upsert role
+        const { data: existingRole, error: roleCheckError } = await supabase
           .from('user_roles')
           .select('role')
           .eq('user_id', authUser.id)
           .maybeSingle();
 
-        if (!roleData || roleData.role !== 'admin') {
-          const { error: roleInsertError } = await supabase.from('user_roles').insert({
-            user_id: authUser.id,
-            role: 'admin',
-          });
+        if (roleCheckError) {
+          console.error('Role check error:', roleCheckError);
+        }
+
+        if (!existingRole || existingRole.role !== 'admin') {
+          // Delete any existing role first to avoid conflicts
+          await supabase
+            .from('user_roles')
+            .delete()
+            .eq('user_id', authUser.id);
+
+          // Insert new admin role
+          const { error: roleInsertError } = await supabase
+            .from('user_roles')
+            .insert({
+              user_id: authUser.id,
+              role: 'admin',
+            });
+          
           if (roleInsertError) {
             console.error('Role assignment error:', roleInsertError);
-            // Proceed anyway; master account is authenticated
+            toast.error('Failed to assign admin role. Please try again.');
+            setIsLoading(false);
+            return;
           }
         }
 
@@ -123,6 +140,9 @@ const AdminAuth = () => {
         if (profileError) {
           console.error('Profile update error:', profileError);
         }
+
+        // Wait a moment to ensure role is committed
+        await new Promise(resolve => setTimeout(resolve, 500));
       }
       
       toast.success(`Welcome ${username.trim()}!`);
