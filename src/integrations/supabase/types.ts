@@ -44,6 +44,33 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_sessions: {
+        Row: {
+          active: boolean
+          admin_name: string
+          ended_at: string | null
+          id: string
+          started_at: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          admin_name: string
+          ended_at?: string | null
+          id?: string
+          started_at?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          admin_name?: string
+          ended_at?: string | null
+          id?: string
+          started_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       budgets: {
         Row: {
           created_at: string
@@ -290,6 +317,7 @@ export type Database = {
           admin_notified: boolean | null
           assigned_rider_id: string | null
           confirmed_at: string | null
+          confirmed_by_session_id: string | null
           created_at: string
           customer_address: string | null
           customer_coordinates: Json | null
@@ -312,6 +340,7 @@ export type Database = {
           admin_notified?: boolean | null
           assigned_rider_id?: string | null
           confirmed_at?: string | null
+          confirmed_by_session_id?: string | null
           created_at?: string
           customer_address?: string | null
           customer_coordinates?: Json | null
@@ -334,6 +363,7 @@ export type Database = {
           admin_notified?: boolean | null
           assigned_rider_id?: string | null
           confirmed_at?: string | null
+          confirmed_by_session_id?: string | null
           created_at?: string
           customer_address?: string | null
           customer_coordinates?: Json | null
@@ -352,7 +382,15 @@ export type Database = {
           updated_at?: string
           waiter_user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "orders_confirmed_by_session_id_fkey"
+            columns: ["confirmed_by_session_id"]
+            isOneToOne: false
+            referencedRelation: "admin_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       price_data: {
         Row: {
@@ -449,34 +487,28 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_order_statistics: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
+      get_order_statistics: { Args: never; Returns: Json }
       get_user_role: {
         Args: { user_uuid?: string }
         Returns: Database["public"]["Enums"]["app_role"]
       }
-      has_role: {
-        Args:
-          | {
-              _role: Database["public"]["Enums"]["app_role_new"]
-              _user_id: string
-            }
-          | {
+      has_role:
+        | {
+            Args: {
               required_role: Database["public"]["Enums"]["app_role"]
               user_uuid?: string
             }
-        Returns: boolean
-      }
-      reset_all_orders: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      reset_todays_orders: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+            Returns: boolean
+          }
+        | {
+            Args: {
+              _role: Database["public"]["Enums"]["app_role_new"]
+              _user_id: string
+            }
+            Returns: boolean
+          }
+      reset_all_orders: { Args: never; Returns: undefined }
+      reset_todays_orders: { Args: never; Returns: undefined }
     }
     Enums: {
       app_role: "timelexx_kitchen" | "customer_hub" | "timelexx_riders"

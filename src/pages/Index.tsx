@@ -141,16 +141,59 @@ const Index = () => {
   };
 
   const handleDownloadReport = async (): Promise<void> => {
-    const summary = getDailySummary();
-    const todaysOrders = getTodaysOrders();
+    // Get admin name and session ID from localStorage
+    const adminName = localStorage.getItem('adminName') || undefined;
+    const sessionId = localStorage.getItem('adminSessionId');
     
-    // Get admin name from localStorage (set during admin sign-in)
-    let adminUsername: string | undefined;
-    if (role === 'admin') {
-      adminUsername = localStorage.getItem('adminName') || undefined;
-    }
+    // Filter orders for this admin's session only
+    const sessionOrders = sessionId 
+      ? getTodaysOrders().filter(order => 
+          order.status === 'delivered' && 
+          order.confirmedBySessionId === sessionId
+        )
+      : getTodaysOrders().filter(order => order.status === 'delivered');
     
-    downloadReportAsPDF(summary, todaysOrders, adminUsername);
+    // Calculate summary for this admin's session
+    const totalOrders = sessionOrders.length;
+    const totalRevenue = sessionOrders.reduce((sum, order) => sum + order.total, 0);
+    
+    const ordersByMeal: Record<string, number> = {};
+    const revenueByMeal: Record<string, number> = {};
+    
+    sessionOrders.forEach(order => {
+      order.items.forEach(item => {
+        const mealName = item.menuItem.name;
+        ordersByMeal[mealName] = (ordersByMeal[mealName] || 0) + item.quantity;
+        revenueByMeal[mealName] = (revenueByMeal[mealName] || 0) + (item.quantity * item.menuItem.price);
+      });
+    });
+    
+    const sortedMeals = Object.entries(ordersByMeal).sort(([,a], [,b]) => b - a);
+    const bestSelling = sortedMeals.length > 0 ? { 
+      name: sortedMeals[0][0], 
+      price: 0, 
+      id: '', 
+      icon: '',
+      category: 'Mains' as const
+    } : null;
+    const worstSelling = sortedMeals.length > 0 ? { 
+      name: sortedMeals[sortedMeals.length - 1][0], 
+      price: 0, 
+      id: '', 
+      icon: '',
+      category: 'Mains' as const
+    } : null;
+    
+    const sessionSummary = {
+      totalOrders,
+      totalRevenue,
+      bestSelling,
+      worstSelling,
+      ordersByMeal,
+      revenueByMeal
+    };
+    
+    downloadReportAsPDF(sessionSummary, sessionOrders, adminName);
   };
 
   // Set initial tab based on role - MUST be before any early returns

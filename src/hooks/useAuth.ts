@@ -86,14 +86,28 @@ export const useAuth = () => {
   }, []);
 
   const signOut = async () => {
+    // End active admin session if exists
+    const sessionId = localStorage.getItem('adminSessionId');
+    if (sessionId && role === 'admin') {
+      try {
+        await supabase
+          .from('admin_sessions')
+          .update({ ended_at: new Date().toISOString(), active: false })
+          .eq('id', sessionId);
+      } catch (error) {
+        console.error('Error ending session:', error);
+      }
+    }
+
     await supabase.auth.signOut();
     setUser(null);
     setSession(null);
     setRole(null);
     setProfile(null);
-    // Clear stored names from localStorage
+    // Clear stored names and session from localStorage
     localStorage.removeItem('adminName');
     localStorage.removeItem('riderName');
+    localStorage.removeItem('adminSessionId');
     navigate('/');
   };
 

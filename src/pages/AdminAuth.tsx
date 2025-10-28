@@ -48,9 +48,6 @@ const AdminAuth = () => {
         throw new Error('Invalid access code');
       }
 
-      // Store admin name in localStorage for report generation
-      localStorage.setItem('adminName', username.trim());
-
       // Use a master admin account for authentication (bootstrap if missing)
       const masterEmail = 'admin@timelexx.admin';
       const masterPassword = 'TimelexxInn00233';
@@ -113,6 +110,25 @@ const AdminAuth = () => {
 
         // Brief delay to let role/profile be readable via RLS
         await new Promise(resolve => setTimeout(resolve, 300));
+
+        // Create new admin session for tracking this admin's orders/analytics
+        const { data: newSession, error: sessionError } = await supabase
+          .from('admin_sessions')
+          .insert({
+            user_id: authUser.id,
+            admin_name: username.trim(),
+            active: true
+          })
+          .select()
+          .single();
+
+        if (sessionError) {
+          console.error('Session creation error:', sessionError);
+        } else {
+          // Store session ID in localStorage for order tracking
+          localStorage.setItem('adminSessionId', newSession.id);
+          localStorage.setItem('adminName', username.trim());
+        }
       }
       
       toast.success(`Welcome ${username.trim()}!`);

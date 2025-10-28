@@ -32,6 +32,16 @@ export interface Order {
   confirmedAt?: Date;
   estimatedReadyTime?: Date;
   riderAcceptedAt?: Date;
+  confirmedBySessionId?: string;
+}
+
+export interface AdminSession {
+  id: string;
+  userId: string;
+  adminName: string;
+  startedAt: Date;
+  endedAt?: Date;
+  active: boolean;
 }
 
 export interface Notification {

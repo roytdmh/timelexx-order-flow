@@ -118,6 +118,8 @@ const RiderAuth = () => {
       }
       
       toast.success(`Welcome ${rider.name}!`);
+      // Wait additional time to ensure database is ready before navigating
+      await new Promise(resolve => setTimeout(resolve, 200));
       navigate('/dashboard');
     } catch (error: any) {
       toast.error(error.message || 'Sign in failed');

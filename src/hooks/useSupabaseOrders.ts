@@ -59,7 +59,8 @@ export const useSupabaseOrders = () => {
         customerUserId: order.customer_user_id,
         confirmedAt: order.confirmed_at ? new Date(order.confirmed_at) : undefined,
         estimatedReadyTime: order.estimated_ready_time ? new Date(order.estimated_ready_time) : undefined,
-        riderAcceptedAt: order.rider_accepted_at ? new Date(order.rider_accepted_at) : undefined
+        riderAcceptedAt: order.rider_accepted_at ? new Date(order.rider_accepted_at) : undefined,
+        confirmedBySessionId: order.confirmed_by_session_id
       })) || [];
 
       setOrders(transformedOrders);
@@ -236,6 +237,12 @@ export const useSupabaseOrders = () => {
         const estimatedTime = new Date();
         estimatedTime.setMinutes(estimatedTime.getMinutes() + 30);
         updateData.estimated_ready_time = estimatedTime.toISOString();
+        
+        // Tie this confirmation to current admin session if exists
+        const sessionId = localStorage.getItem('adminSessionId');
+        if (sessionId && role === 'admin') {
+          updateData.confirmed_by_session_id = sessionId;
+        }
       }
       
       // When rider or admin marks as pending (in progress)
