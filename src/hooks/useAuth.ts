@@ -49,13 +49,18 @@ export const useAuth = () => {
   };
 
   useEffect(() => {
-    // Set up auth state listener
+    // Track whether we've received an auth event to avoid race conditions
+    let eventReceived = false;
+
+    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      (_event, session) => {
+        eventReceived = true;
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
+          // Defer any Supabase calls to avoid deadlocks in the callback
           setTimeout(() => {
             fetchUserRole(session.user.id);
             fetchUserProfile(session.user.id);
@@ -65,11 +70,12 @@ export const useAuth = () => {
           setProfile(null);
         }
         
+        // We have a definitive auth state now
         setLoading(false);
       }
     );
 
-    // Check for existing session (do not flip loading here to avoid flicker)
+    // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
@@ -77,15 +83,19 @@ export const useAuth = () => {
       if (session?.user) {
         fetchUserRole(session.user.id);
         fetchUserProfile(session.user.id);
+      } else {
+        setRole(null);
+        setProfile(null);
+      }
+
+      // If no auth event fired yet, conclude initialization here
+      if (!eventReceived) {
+        setLoading(false);
       }
     });
 
-    // Fallback: ensure loading eventually ends if no auth event fires
-    const loadingTimeout = setTimeout(() => setLoading(false), 800);
-
     return () => {
       subscription.unsubscribe();
-      clearTimeout(loadingTimeout);
     };
   }, []);
 
