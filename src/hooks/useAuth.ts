@@ -69,7 +69,7 @@ export const useAuth = () => {
       }
     );
 
-    // Check for existing session
+    // Check for existing session (do not flip loading here to avoid flicker)
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
@@ -78,11 +78,15 @@ export const useAuth = () => {
         fetchUserRole(session.user.id);
         fetchUserProfile(session.user.id);
       }
-      
-      setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    // Fallback: ensure loading eventually ends if no auth event fires
+    const loadingTimeout = setTimeout(() => setLoading(false), 800);
+
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(loadingTimeout);
+    };
   }, []);
 
   const signOut = async () => {

@@ -132,6 +132,8 @@ const AdminAuth = () => {
       }
       
       toast.success(`Welcome ${username.trim()}!`);
+      // Small delay to let auth listener propagate to dashboard before route change
+      await new Promise(resolve => setTimeout(resolve, 200));
       navigate('/dashboard');
     } catch (error: any) {
       toast.error(error.message || 'Invalid name or access code');
