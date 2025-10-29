@@ -77,8 +77,13 @@ export const useSupabaseOrders = () => {
   };
 
   useEffect(() => {
-    fetchOrders();
-  }, []);
+    // Only fetch orders if user is authenticated
+    if (user) {
+      fetchOrders();
+    } else {
+      setLoading(false);
+    }
+  }, [user]); // Re-fetch when user auth state changes
 
   // Realtime notifications and sync with unique channel per user
   useEffect(() => {

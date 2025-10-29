@@ -504,21 +504,13 @@ export type Database = {
         Args: { user_uuid?: string }
         Returns: Database["public"]["Enums"]["app_role"]
       }
-      has_role:
-        | {
-            Args: {
-              required_role: Database["public"]["Enums"]["app_role"]
-              user_uuid?: string
-            }
-            Returns: boolean
-          }
-        | {
-            Args: {
-              _role: Database["public"]["Enums"]["app_role_new"]
-              _user_id: string
-            }
-            Returns: boolean
-          }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role_new"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       reset_all_orders: { Args: never; Returns: undefined }
       reset_todays_orders: { Args: never; Returns: undefined }
     }
