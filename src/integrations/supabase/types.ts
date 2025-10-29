@@ -203,6 +203,7 @@ export type Database = {
           description: string | null
           icon: string
           id: string
+          is_public: boolean
           name: string
           price: number
           updated_at: string
@@ -213,6 +214,7 @@ export type Database = {
           description?: string | null
           icon: string
           id?: string
+          is_public?: boolean
           name: string
           price: number
           updated_at?: string
@@ -223,6 +225,7 @@ export type Database = {
           description?: string | null
           icon?: string
           id?: string
+          is_public?: boolean
           name?: string
           price?: number
           updated_at?: string
@@ -487,7 +490,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_update_order_for_dashboard_user: {
+        Args: {
+          new_row: Database["public"]["Tables"]["orders"]["Row"]
+          old_row: Database["public"]["Tables"]["orders"]["Row"]
+        }
+        Returns: boolean
+      }
+      current_auth_uid: { Args: never; Returns: string }
       get_order_statistics: { Args: never; Returns: Json }
+      get_requester_user_role: { Args: never; Returns: string }
       get_user_role: {
         Args: { user_uuid?: string }
         Returns: Database["public"]["Enums"]["app_role"]
