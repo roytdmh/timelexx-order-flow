@@ -2,7 +2,7 @@ import { LandingNav } from '@/components/LandingNav';
 import { ImageCarousel } from '@/components/ImageCarousel';
 import timelexxMenu from '@/assets/timelexx-menu.jpeg';
 import timelexxLogo from '@/assets/timelexx-logo.png';
-import { Carrot, Apple, Leaf, MapPin, Cherry, Banana, Grape, Pizza, Salad } from 'lucide-react';
+import { Carrot, Apple, Leaf, MapPin, Cherry, CircleDot, Grape, Pizza, Salad } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import { useSearchParams } from 'react-router-dom';
@@ -54,8 +54,8 @@ const Landing = () => {
               className="absolute top-40 left-32 w-12 h-12 text-red-500 opacity-20 animate-pulse pointer-events-none hidden md:block"
               style={{ transform: 'rotate(15deg)', animationDelay: '0.3s' }}
             />
-            <Banana 
-              className="absolute top-20 right-24 w-16 h-16 text-yellow-400 opacity-15 animate-pulse pointer-events-none hidden lg:block"
+            <CircleDot 
+              className="absolute top-20 right-24 w-16 h-16 text-amber-700 opacity-15 animate-pulse pointer-events-none hidden lg:block"
               style={{ transform: 'rotate(-40deg)', animationDelay: '1.8s' }}
             />
             <Grape 
@@ -86,8 +86,8 @@ const Landing = () => {
               className="absolute bottom-40 left-40 w-14 h-14 text-red-400 opacity-15 animate-pulse pointer-events-none hidden md:block"
               style={{ transform: 'rotate(-35deg)', animationDelay: '1.7s' }}
             />
-            <Banana 
-              className="absolute bottom-20 right-36 w-14 h-14 text-yellow-400 opacity-20 animate-pulse pointer-events-none hidden lg:block"
+            <CircleDot 
+              className="absolute bottom-20 right-36 w-14 h-14 text-amber-700 opacity-20 animate-pulse pointer-events-none hidden lg:block"
               style={{ transform: 'rotate(50deg)', animationDelay: '2.5s' }}
             />
 
