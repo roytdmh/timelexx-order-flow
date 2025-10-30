@@ -36,7 +36,32 @@ const Landing = () => {
           </div>
 
           {/* Tabs Section */}
-          <Tabs value={activeTab} className="w-full max-w-6xl mx-auto">
+          <Tabs value={activeTab} className="w-full max-w-6xl mx-auto relative">
+            {/* Background Decorative Veggie Icons */}
+            <Carrot 
+              className="absolute top-10 left-8 w-16 h-16 text-timelexx-red opacity-20 animate-pulse pointer-events-none"
+              style={{ transform: 'rotate(-15deg)' }}
+            />
+            <Apple 
+              className="absolute top-32 right-12 w-14 h-14 text-timelexx-red opacity-15 animate-pulse pointer-events-none"
+              style={{ transform: 'rotate(25deg)', animationDelay: '0.8s' }}
+            />
+            <Leaf 
+              className="absolute top-64 left-16 w-20 h-20 text-green-500 opacity-20 animate-pulse pointer-events-none"
+              style={{ transform: 'rotate(-30deg)', animationDelay: '1.5s' }}
+            />
+            <Carrot 
+              className="absolute bottom-48 right-20 w-18 h-18 text-timelexx-red opacity-15 animate-pulse pointer-events-none"
+              style={{ transform: 'rotate(45deg)', animationDelay: '2s' }}
+            />
+            <Apple 
+              className="absolute bottom-96 left-24 w-12 h-12 text-timelexx-red opacity-20 animate-pulse pointer-events-none"
+              style={{ transform: 'rotate(-20deg)', animationDelay: '1.2s' }}
+            />
+            <Leaf 
+              className="absolute bottom-32 right-16 w-16 h-16 text-green-500 opacity-15 animate-pulse pointer-events-none"
+              style={{ transform: 'rotate(35deg)', animationDelay: '0.5s' }}
+            />
 
             <TabsContent value="home" className="space-y-12">
               {/* Carousel Section */}

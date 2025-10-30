@@ -6,6 +6,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
+import Autoplay from 'embla-carousel-autoplay';
 import timelexxSign from '@/assets/timelexx-sign.webp';
 import timelexxExterior from '@/assets/timelexx-exterior.webp';
 import timelexxPackaging from '@/assets/timelexx-packaging.webp';
@@ -26,11 +27,17 @@ export const ImageCarousel = () => {
           align: "center",
           loop: true,
         }}
+        plugins={[
+          Autoplay({
+            delay: 5000,
+            stopOnInteraction: true,
+          }),
+        ]}
         className="w-full"
       >
-        <CarouselContent className="-ml-2 md:-ml-4">
+        <CarouselContent>
           {images.map((image, index) => (
-            <CarouselItem key={index} className="pl-2 md:pl-4 basis-4/5 md:basis-3/4">
+            <CarouselItem key={index} className="basis-full">
               <div className="p-1">
                 <Card className="border-none shadow-premium-lg overflow-hidden transform transition-all duration-500 hover:scale-105">
                   <div className="aspect-[4/3] overflow-hidden">
