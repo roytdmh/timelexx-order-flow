@@ -2,7 +2,7 @@ import { LandingNav } from '@/components/LandingNav';
 import { ImageCarousel } from '@/components/ImageCarousel';
 import timelexxMenu from '@/assets/timelexx-menu.jpeg';
 import timelexxLogo from '@/assets/timelexx-logo.png';
-import { Carrot, Apple, Leaf, MapPin } from 'lucide-react';
+import { Carrot, Apple, Leaf, MapPin, Cherry, Banana, Grape, Pizza, Salad } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import { useSearchParams } from 'react-router-dom';
@@ -37,30 +37,58 @@ const Landing = () => {
 
           {/* Tabs Section */}
           <Tabs value={activeTab} className="w-full max-w-6xl mx-auto relative">
-            {/* Background Decorative Veggie Icons */}
+            {/* Background Decorative Food Icons - More Variety */}
             <Carrot 
-              className="absolute top-10 left-8 w-16 h-16 text-timelexx-red opacity-20 animate-pulse pointer-events-none"
+              className="absolute top-10 left-8 w-16 h-16 text-timelexx-red opacity-20 animate-pulse pointer-events-none hidden md:block"
               style={{ transform: 'rotate(-15deg)' }}
             />
             <Apple 
-              className="absolute top-32 right-12 w-14 h-14 text-timelexx-red opacity-15 animate-pulse pointer-events-none"
+              className="absolute top-32 right-12 w-14 h-14 text-timelexx-red opacity-15 animate-pulse pointer-events-none hidden sm:block"
               style={{ transform: 'rotate(25deg)', animationDelay: '0.8s' }}
             />
             <Leaf 
-              className="absolute top-64 left-16 w-20 h-20 text-green-500 opacity-20 animate-pulse pointer-events-none"
+              className="absolute top-64 left-16 w-20 h-20 text-green-500 opacity-20 animate-pulse pointer-events-none hidden lg:block"
               style={{ transform: 'rotate(-30deg)', animationDelay: '1.5s' }}
             />
+            <Cherry 
+              className="absolute top-40 left-32 w-12 h-12 text-red-500 opacity-20 animate-pulse pointer-events-none hidden md:block"
+              style={{ transform: 'rotate(15deg)', animationDelay: '0.3s' }}
+            />
+            <Banana 
+              className="absolute top-20 right-24 w-16 h-16 text-yellow-400 opacity-15 animate-pulse pointer-events-none hidden lg:block"
+              style={{ transform: 'rotate(-40deg)', animationDelay: '1.8s' }}
+            />
+            <Grape 
+              className="absolute top-56 right-32 w-14 h-14 text-purple-500 opacity-20 animate-pulse pointer-events-none hidden md:block"
+              style={{ transform: 'rotate(20deg)', animationDelay: '2.3s' }}
+            />
+            <Pizza 
+              className="absolute bottom-64 left-12 w-18 h-18 text-timelexx-red opacity-15 animate-pulse pointer-events-none hidden sm:block"
+              style={{ transform: 'rotate(-25deg)', animationDelay: '1s' }}
+            />
+            <Salad 
+              className="absolute bottom-80 right-16 w-16 h-16 text-green-400 opacity-20 animate-pulse pointer-events-none hidden lg:block"
+              style={{ transform: 'rotate(30deg)', animationDelay: '0.6s' }}
+            />
             <Carrot 
-              className="absolute bottom-48 right-20 w-18 h-18 text-timelexx-red opacity-15 animate-pulse pointer-events-none"
+              className="absolute bottom-48 right-20 w-18 h-18 text-timelexx-red opacity-15 animate-pulse pointer-events-none hidden md:block"
               style={{ transform: 'rotate(45deg)', animationDelay: '2s' }}
             />
             <Apple 
-              className="absolute bottom-96 left-24 w-12 h-12 text-timelexx-red opacity-20 animate-pulse pointer-events-none"
+              className="absolute bottom-96 left-24 w-12 h-12 text-timelexx-red opacity-20 animate-pulse pointer-events-none hidden sm:block"
               style={{ transform: 'rotate(-20deg)', animationDelay: '1.2s' }}
             />
             <Leaf 
-              className="absolute bottom-32 right-16 w-16 h-16 text-green-500 opacity-15 animate-pulse pointer-events-none"
+              className="absolute bottom-32 right-16 w-16 h-16 text-green-500 opacity-15 animate-pulse pointer-events-none hidden lg:block"
               style={{ transform: 'rotate(35deg)', animationDelay: '0.5s' }}
+            />
+            <Cherry 
+              className="absolute bottom-40 left-40 w-14 h-14 text-red-400 opacity-15 animate-pulse pointer-events-none hidden md:block"
+              style={{ transform: 'rotate(-35deg)', animationDelay: '1.7s' }}
+            />
+            <Banana 
+              className="absolute bottom-20 right-36 w-14 h-14 text-yellow-400 opacity-20 animate-pulse pointer-events-none hidden lg:block"
+              style={{ transform: 'rotate(50deg)', animationDelay: '2.5s' }}
             />
 
             <TabsContent value="home" className="space-y-12">

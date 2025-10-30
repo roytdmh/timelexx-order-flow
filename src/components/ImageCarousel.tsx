@@ -26,10 +26,11 @@ export const ImageCarousel = () => {
         opts={{
           align: "center",
           loop: true,
+          duration: 30,
         }}
         plugins={[
           Autoplay({
-            delay: 5000,
+            delay: 10000,
             stopOnInteraction: true,
           }),
         ]}
@@ -39,12 +40,12 @@ export const ImageCarousel = () => {
           {images.map((image, index) => (
             <CarouselItem key={index} className="basis-full">
               <div className="p-1">
-                <Card className="border-none shadow-premium-lg overflow-hidden transform transition-all duration-500 hover:scale-105">
+                <Card className="border-none shadow-premium-lg overflow-hidden">
                   <div className="aspect-[4/3] overflow-hidden">
                     <img
                       src={image.src}
                       alt={image.alt}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-opacity duration-1000"
                     />
                   </div>
                 </Card>
