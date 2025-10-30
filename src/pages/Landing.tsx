@@ -93,7 +93,20 @@ const Landing = () => {
 
             <TabsContent value="home" className="space-y-12">
               {/* Carousel Section */}
-              <div className="animate-fade-in">
+              <div className="animate-fade-in relative">
+                {/* Left side veggie decorations */}
+                <Grape 
+                  className="absolute top-12 -left-4 sm:left-4 w-14 h-14 text-purple-400 opacity-25 animate-pulse pointer-events-none hidden sm:block z-10"
+                  style={{ transform: 'rotate(-20deg)', animationDelay: '0.4s' }}
+                />
+                <Leaf 
+                  className="absolute top-1/2 -left-2 sm:left-6 w-16 h-16 text-green-400 opacity-20 animate-pulse pointer-events-none hidden sm:block z-10"
+                  style={{ transform: 'rotate(25deg)', animationDelay: '1.1s' }}
+                />
+                <Apple 
+                  className="absolute bottom-16 -left-3 sm:left-5 w-12 h-12 text-red-400 opacity-25 animate-pulse pointer-events-none hidden sm:block z-10"
+                  style={{ transform: 'rotate(-30deg)', animationDelay: '1.9s' }}
+                />
                 <ImageCarousel />
               </div>
 
