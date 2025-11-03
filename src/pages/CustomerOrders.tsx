@@ -44,13 +44,40 @@ export const CustomerOrders = ({ orders }: CustomerOrdersProps) => {
     return `Ready in ${minutes} minutes`;
   };
 
-  // Split orders into active and history
+  // Split orders into active and history (limit history to 10 most recent)
   const activeOrders = orders.filter(order => 
     ['placed', 'pending', 'confirmed', 'preparing'].includes(order.status)
   );
-  const orderHistory = orders.filter(order => 
-    ['delivered', 'cancelled'].includes(order.status)
-  );
+  const allOrderHistory = orders
+    .filter(order => ['delivered', 'cancelled'].includes(order.status))
+    .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+  const orderHistory = allOrderHistory.slice(0, 10);
+
+  // Calculate favorite meal from order history
+  const getFavoriteMeal = () => {
+    if (orderHistory.length === 0) return null;
+    
+    const itemFrequency: Record<string, { count: number; item: any }> = {};
+    
+    orderHistory.forEach(order => {
+      order.items.forEach(orderItem => {
+        const itemId = orderItem.menuItem.id;
+        if (itemFrequency[itemId]) {
+          itemFrequency[itemId].count += orderItem.quantity;
+        } else {
+          itemFrequency[itemId] = {
+            count: orderItem.quantity,
+            item: orderItem.menuItem
+          };
+        }
+      });
+    });
+
+    const sortedItems = Object.values(itemFrequency).sort((a, b) => b.count - a.count);
+    return sortedItems.length > 0 ? sortedItems[0] : null;
+  };
+
+  const favoriteMeal = getFavoriteMeal();
 
   const renderOrderCard = (order: Order, isHistory: boolean = false) => (
     <Card 
@@ -172,6 +199,20 @@ export const CustomerOrders = ({ orders }: CustomerOrdersProps) => {
             </CardHeader>
             <CollapsibleContent>
               <CardContent className="space-y-4 pt-0">
+                {/* Favorite Meal Suggestion */}
+                {favoriteMeal && (
+                  <div className="bg-accent/30 border border-accent rounded-lg p-3 mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="text-3xl flex-shrink-0">{favoriteMeal.item.icon}</div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-muted-foreground mb-1">Your Favorite</p>
+                        <p className="font-medium text-sm truncate">{favoriteMeal.item.name}</p>
+                        <p className="text-xs text-muted-foreground">Ordered {favoriteMeal.count} times</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
                 {orderHistory.map(order => renderOrderCard(order, true))}
               </CardContent>
             </CollapsibleContent>
