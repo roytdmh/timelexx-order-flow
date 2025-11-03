@@ -38,7 +38,7 @@ const AdminAuth = () => {
     setIsLoading(true);
 
     try {
-      // Validate username format (alphanumeric, spaces, and underscore only)
+      // Validate username format
       if (!username.trim() || username.length < 2 || username.length > 50) {
         throw new Error('Please enter a valid name (2-50 characters)');
       }
@@ -48,23 +48,54 @@ const AdminAuth = () => {
         throw new Error('Invalid access code');
       }
 
-      // Use a master admin account for authentication (bootstrap if missing)
-      const masterEmail = 'admin@timelexx.admin';
-      const masterPassword = 'TimelexxInn00233';
+      // Create unique email based on admin name to avoid session conflicts
+      const sanitizedName = username.trim().toLowerCase().replace(/\s+/g, '');
+      const adminEmail = `${sanitizedName}@timelexx.admin`;
+      const adminPassword = 'TimelexxInn00233';
 
       let authUser = null as typeof supabase.auth.getUser extends any ? any : any;
 
-      // 1) Sign in using hardcoded master credentials ONLY
+      // Try to sign in first
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-        email: masterEmail,
-        password: masterPassword,
+        email: adminEmail,
+        password: adminPassword,
       });
 
-      if (signInError || !signInData?.user || !signInData?.session) {
-        throw new Error('Invalid credentials');
+      if (signInError) {
+        // If sign in fails, create the account
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+          email: adminEmail,
+          password: adminPassword,
+          options: {
+            emailRedirectTo: `${window.location.origin}/dashboard`,
+            data: {
+              full_name: username.trim(),
+            }
+          }
+        });
+
+        if (signUpError) {
+          throw new Error('Failed to create admin account');
+        }
+
+        // Now sign in with the newly created account
+        const { data: newSignInData, error: newSignInError } = await supabase.auth.signInWithPassword({
+          email: adminEmail,
+          password: adminPassword,
+        });
+
+        if (newSignInError || !newSignInData?.user) {
+          throw new Error('Failed to sign in after account creation');
+        }
+
+        authUser = newSignInData.user;
+      } else {
+        authUser = signInData?.user;
       }
 
-      authUser = signInData.user;
+      if (!authUser) {
+        throw new Error('Authentication failed');
+      }
 
       // Ensure admin role exists for the master account
       if (authUser) {
@@ -100,7 +131,7 @@ const AdminAuth = () => {
           .from('profiles')
           .upsert({
             user_id: authUser.id,
-            email: masterEmail,
+            email: adminEmail,
             full_name: username.trim(),
           }, { onConflict: 'user_id' });
 

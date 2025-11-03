@@ -50,23 +50,54 @@ const RiderAuth = () => {
         throw new Error('Invalid access code');
       }
 
-      // Use master rider account for authentication
-      const masterEmail = 'rider@timelexx.com';
-      const masterPassword = 'TimelexxInn00233';
+      // Create unique email based on rider name to avoid session conflicts
+      const sanitizedName = rider.name.toLowerCase().replace(/\s+/g, '');
+      const riderEmail = `${sanitizedName}@timelexx.rider`;
+      const riderPassword = 'TimelexxInn00233';
       
       let authUser = null as typeof supabase.auth.getUser extends any ? any : any;
 
-      // 1) Sign in using hardcoded master credentials ONLY
+      // Try to sign in first
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-        email: masterEmail,
-        password: masterPassword,
+        email: riderEmail,
+        password: riderPassword,
       });
 
-      if (signInError || !signInData?.user || !signInData?.session) {
-        throw new Error('Invalid credentials');
+      if (signInError) {
+        // If sign in fails, create the account
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+          email: riderEmail,
+          password: riderPassword,
+          options: {
+            emailRedirectTo: `${window.location.origin}/dashboard`,
+            data: {
+              full_name: rider.name,
+            }
+          }
+        });
+
+        if (signUpError) {
+          throw new Error('Failed to create rider account');
+        }
+
+        // Now sign in with the newly created account
+        const { data: newSignInData, error: newSignInError } = await supabase.auth.signInWithPassword({
+          email: riderEmail,
+          password: riderPassword,
+        });
+
+        if (newSignInError || !newSignInData?.user) {
+          throw new Error('Failed to sign in after account creation');
+        }
+
+        authUser = newSignInData.user;
+      } else {
+        authUser = signInData?.user;
       }
 
-      authUser = signInData.user;
+      if (!authUser) {
+        throw new Error('Authentication failed');
+      }
       
       // Verify rider role exists (create if missing)
       if (authUser) {
@@ -102,7 +133,7 @@ const RiderAuth = () => {
           .from('profiles')
           .upsert({
             user_id: authUser.id,
-            email: masterEmail,
+            email: riderEmail,
             full_name: rider.name,
           }, { onConflict: 'user_id' });
 
