@@ -31,7 +31,7 @@ const deobfuscate = (obfuscated: string): string => {
 
 // Pre-obfuscated access code
 // Original: TimelexxInn00233
-const OBFUSCATED_ACCESS_CODE = '6653qqL{{hoholpW';
+const OBFUSCATED_ACCESS_CODE = '6653qqL{{hohlpW';
 
 /**
  * Validate if the provided access code matches the expected code
