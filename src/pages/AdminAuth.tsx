@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { toast } from 'sonner';
 import { LandingNav } from '@/components/LandingNav';
 import { ShieldCheck } from 'lucide-react';
+import { validateAccessCode, getAccessCode } from '@/utils/accessCodeValidator';
 
 const AdminAuth = () => {
   const navigate = useNavigate();
@@ -44,14 +45,14 @@ const AdminAuth = () => {
       }
 
       // Check predetermined code
-      if (password !== 'TimelexxInn00233') {
+      if (!validateAccessCode(password)) {
         throw new Error('Invalid access code');
       }
 
       // Create unique email based on admin name to avoid session conflicts
       const sanitizedName = username.trim().toLowerCase().replace(/\s+/g, '');
       const adminEmail = `${sanitizedName}@timelexx.admin`;
-      const adminPassword = 'TimelexxInn00233';
+      const adminPassword = getAccessCode();
 
       let authUser = null as typeof supabase.auth.getUser extends any ? any : any;
 

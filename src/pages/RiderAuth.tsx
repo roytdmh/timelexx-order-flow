@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { LandingNav } from '@/components/LandingNav';
 import { Bike } from 'lucide-react';
 import { RIDERS } from '@/data/riders';
+import { validateAccessCode, getAccessCode } from '@/utils/accessCodeValidator';
 
 const RiderAuth = () => {
   const navigate = useNavigate();
@@ -46,14 +47,14 @@ const RiderAuth = () => {
       }
 
       // Check predetermined code
-      if (password !== 'TimelexxInn00233') {
+      if (!validateAccessCode(password)) {
         throw new Error('Invalid access code');
       }
 
       // Create unique email based on rider name to avoid session conflicts
       const sanitizedName = rider.name.toLowerCase().replace(/\s+/g, '');
       const riderEmail = `${sanitizedName}@timelexx.rider`;
-      const riderPassword = 'TimelexxInn00233';
+      const riderPassword = getAccessCode();
       
       let authUser = null as typeof supabase.auth.getUser extends any ? any : any;
 
