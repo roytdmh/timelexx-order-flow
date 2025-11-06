@@ -96,15 +96,15 @@ export const LandingNav = () => {
             )}
           </div>
 
-          {/* Center Section - Dropdowns */}
-          <div className="flex gap-2 w-full sm:w-auto justify-center items-center">
+          {/* Center Section - Order Dropdown */}
+          <div className="flex justify-center items-center sm:absolute sm:left-1/2 sm:-translate-x-1/2">
             {/* Order Your Food Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
                   size="sm"
-                  className="flex-1 sm:flex-none text-xs sm:text-sm border-timelexx-yellow hover:bg-timelexx-yellow hover:text-timelexx-dark"
+                  className="text-xs sm:text-sm border-timelexx-yellow hover:bg-timelexx-yellow hover:text-timelexx-dark"
                 >
                   <UtensilsCrossed className="h-4 w-4 mr-1 sm:mr-2" />
                   <span className="hidden sm:inline">Order Your Food</span>
@@ -121,7 +121,6 @@ export const LandingNav = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-
           </div>
 
           {/* Right Section - Info and Contact */}
