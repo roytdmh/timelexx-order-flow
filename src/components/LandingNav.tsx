@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Home, Mail, Phone, ChevronDown, UtensilsCrossed, Briefcase, Info, Menu, Download } from 'lucide-react';
+import { Home, Mail, Phone, ChevronDown, UtensilsCrossed, Info, Menu, Download } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
@@ -122,35 +122,6 @@ export const LandingNav = () => {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Work With Timelexx Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1 sm:flex-none text-xs sm:text-sm border-timelexx-yellow hover:bg-timelexx-yellow hover:text-timelexx-dark"
-                >
-                  <Briefcase className="h-4 w-4 mr-1 sm:mr-2" />
-                  <span className="hidden sm:inline">Work With Timelexx</span>
-                  <span className="sm:hidden">Work</span>
-                  <ChevronDown className="h-3 w-3 ml-1" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-white/95 backdrop-blur-md border-timelexx-yellow shadow-premium-lg z-[100]">
-                <DropdownMenuItem 
-                  onClick={() => navigate('/admin-auth')}
-                  className="cursor-pointer hover:bg-timelexx-yellow/20 focus:bg-timelexx-yellow/20"
-                >
-                  Kitchen
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={() => navigate('/rider-auth')}
-                  className="cursor-pointer hover:bg-timelexx-yellow/20 focus:bg-timelexx-yellow/20"
-                >
-                  Riders
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
           </div>
 
           {/* Right Section - Info and Contact */}
