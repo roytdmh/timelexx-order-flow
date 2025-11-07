@@ -15,7 +15,7 @@ const Landing = () => {
     <div className="min-h-screen timelexx-gradient">
       <LandingNav />
       
-      <div className="pt-32 sm:pt-24 pb-12 px-4">
+      <div className="pt-40 sm:pt-24 pb-12 px-4">
         <div className="container mx-auto">
           {/* Header Section */}
           <div className="text-center mb-8 sm:mb-12 animate-fade-in">
