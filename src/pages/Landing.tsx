@@ -15,14 +15,14 @@ const Landing = () => {
     <div className="min-h-screen timelexx-gradient">
       <LandingNav />
       
-      <div className="pt-24 pb-12 px-4">
+      <div className="pt-32 sm:pt-24 pb-12 px-4">
         <div className="container mx-auto">
           {/* Header Section */}
           <div className="text-center mb-8 sm:mb-12 animate-fade-in">
             <img
               src={timelexxLogo}
               alt="Timelexx Inn Logo"
-              className="h-24 sm:h-32 md:h-40 mx-auto object-contain mb-4 sm:mb-6"
+              className="h-20 sm:h-24 md:h-32 lg:h-40 mx-auto object-contain mb-4 sm:mb-6"
               style={{
                 filter: 'brightness(1.1) contrast(1.2) saturate(1.3)'
               }}
