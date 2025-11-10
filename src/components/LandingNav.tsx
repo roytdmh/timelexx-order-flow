@@ -25,6 +25,9 @@ export const LandingNav = () => {
   const location = useLocation();
   const { isAuthenticated } = useAuth();
   const currentPath = location.pathname;
+  
+  // Only show "Work With Timelexx" on landing, admin-auth, and rider-auth pages
+  const showWorkWithTimelexx = ['/', '/admin-auth', '/rider-auth'].includes(currentPath);
   const [showContactDialog, setShowContactDialog] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isInstallable, setIsInstallable] = useState(false);
@@ -122,35 +125,37 @@ export const LandingNav = () => {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Work With Timelexx Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="text-xs sm:text-sm border-timelexx-red hover:bg-timelexx-red hover:text-white bg-white sm:bg-transparent shadow-md sm:shadow-none min-w-[44px] min-h-[44px]"
-                >
-                  <Menu className="h-4 w-4 mr-1 sm:mr-2" />
-                  <span className="hidden sm:inline">Work With Timelexx</span>
-                  <span className="sm:hidden">Work</span>
-                  <ChevronDown className="h-3 w-3 ml-1" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-white/95 backdrop-blur-md border-timelexx-red shadow-premium-lg z-[100]">
-                <DropdownMenuItem 
-                  onClick={() => navigate('/admin-auth')}
-                  className="cursor-pointer hover:bg-timelexx-red/20 focus:bg-timelexx-red/20"
-                >
-                  Admin Login
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={() => navigate('/rider-auth')}
-                  className="cursor-pointer hover:bg-timelexx-red/20 focus:bg-timelexx-red/20"
-                >
-                  Rider Login
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {/* Work With Timelexx Dropdown - Conditionally rendered */}
+            {showWorkWithTimelexx && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-xs sm:text-sm border-timelexx-red hover:bg-timelexx-red hover:text-white bg-white sm:bg-transparent shadow-md sm:shadow-none min-w-[44px] min-h-[44px]"
+                  >
+                    <Menu className="h-4 w-4 mr-1 sm:mr-2" />
+                    <span className="hidden sm:inline">Work With Timelexx</span>
+                    <span className="sm:hidden">Work</span>
+                    <ChevronDown className="h-3 w-3 ml-1" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-white/95 backdrop-blur-md border-timelexx-red shadow-premium-lg z-[100]">
+                  <DropdownMenuItem 
+                    onClick={() => navigate('/admin-auth')}
+                    className="cursor-pointer hover:bg-timelexx-red/20 focus:bg-timelexx-red/20"
+                  >
+                    Admin Login
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => navigate('/rider-auth')}
+                    className="cursor-pointer hover:bg-timelexx-red/20 focus:bg-timelexx-red/20"
+                  >
+                    Rider Login
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
 
           {/* Right Section - Info and Contact */}
