@@ -26,7 +26,8 @@ export const LandingNav = () => {
   const { isAuthenticated } = useAuth();
   const currentPath = location.pathname;
   
-  // Only show "Work With Timelexx" on landing, admin-auth, and rider-auth pages
+  // Show "Work With Timelexx" only on landing, admin-auth, and rider-auth pages
+  // Customer auth page should only show "Order Your Food"
   const showWorkWithTimelexx = ['/', '/admin-auth', '/rider-auth'].includes(currentPath);
   const [showContactDialog, setShowContactDialog] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
