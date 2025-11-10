@@ -96,8 +96,8 @@ export const LandingNav = () => {
             )}
           </div>
 
-          {/* Center Section - Order Dropdown */}
-          <div className="flex justify-center items-center sm:absolute sm:left-1/2 sm:-translate-x-1/2">
+          {/* Center Section - Order & Work Dropdowns */}
+          <div className="flex justify-center items-center gap-2 sm:absolute sm:left-1/2 sm:-translate-x-1/2">
             {/* Order Your Food Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -118,6 +118,36 @@ export const LandingNav = () => {
                   className="cursor-pointer hover:bg-timelexx-yellow/20 focus:bg-timelexx-yellow/20"
                 >
                   Customer Log in
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Work With Timelexx Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-xs sm:text-sm border-timelexx-red hover:bg-timelexx-red hover:text-white bg-white sm:bg-transparent shadow-md sm:shadow-none min-w-[44px] min-h-[44px]"
+                >
+                  <Menu className="h-4 w-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">Work With Timelexx</span>
+                  <span className="sm:hidden">Work</span>
+                  <ChevronDown className="h-3 w-3 ml-1" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-white/95 backdrop-blur-md border-timelexx-red shadow-premium-lg z-[100]">
+                <DropdownMenuItem 
+                  onClick={() => navigate('/admin-auth')}
+                  className="cursor-pointer hover:bg-timelexx-red/20 focus:bg-timelexx-red/20"
+                >
+                  Admin Login
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => navigate('/rider-auth')}
+                  className="cursor-pointer hover:bg-timelexx-red/20 focus:bg-timelexx-red/20"
+                >
+                  Rider Login
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
