@@ -11,9 +11,6 @@ import { LandingNav } from '@/components/LandingNav';
 import { Bike } from 'lucide-react';
 import { RIDERS } from '@/data/riders';
 import { validateAccessCode, getAccessCode } from '@/utils/accessCodeValidator';
-import { ImageCarousel } from '@/components/ImageCarousel';
-import timelexxMenu from '@/assets/timelexx-menu.jpeg';
-import timelexxLogo from '@/assets/timelexx-logo.png';
 
 const RiderAuth = () => {
   const navigate = useNavigate();
@@ -167,96 +164,51 @@ const RiderAuth = () => {
     <div className="min-h-screen timelexx-gradient">
       <LandingNav />
       
-      <div className="pt-40 sm:pt-24 pb-12 px-4">
-        <div className="container mx-auto">
-          {/* Header Section */}
-          <div className="text-center mb-8 sm:mb-12 animate-fade-in">
-            <img
-              src={timelexxLogo}
-              alt="Timelexx Inn Logo"
-              className="h-20 sm:h-24 md:h-32 lg:h-40 mx-auto object-contain mb-4 sm:mb-6"
-              style={{
-                filter: 'brightness(1.1) contrast(1.2) saturate(1.3)'
-              }}
-            />
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 sm:mb-4 px-4">
-              Welcome to Timelexx Inn
-            </h1>
-            <p className="text-lg sm:text-xl md:text-2xl text-white/90 italic font-serif px-4">
-              Eat good, Feel good
-            </p>
-          </div>
-
-          {/* Rider Login Card */}
-          <div className="flex items-center justify-center mb-8">
-            <Card className="w-full max-w-md shadow-premium-lg">
-              <CardHeader className="text-center">
-                <Bike className="w-16 h-16 text-timelexx-red mx-auto mb-4" />
-                <CardTitle className="text-2xl">Rider Portal</CardTitle>
-                <CardDescription>Select your name and enter access code to sign in</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSignIn} className="space-y-4">
-                  <div>
-                    <Label htmlFor="rider-name">Rider Name</Label>
-                    <Select value={riderName} onValueChange={setRiderName} required>
-                      <SelectTrigger className="bg-white">
-                        <SelectValue placeholder="Select your name" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white z-50">
-                        {RIDERS.map((rider) => (
-                          <SelectItem key={rider.id} value={rider.name}>
-                            {rider.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="rider-password">Access Code</Label>
-                    <Input
-                      id="rider-password"
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Enter access code"
-                      required
-                    />
-                  </div>
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-timelexx-red hover:bg-timelexx-red/90"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? 'Signing in...' : 'Sign In as Rider'}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Carousel Section */}
-          <div className="mb-12 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            <ImageCarousel />
-          </div>
-
-          {/* Menu Section */}
-          <div className="animate-fade-in px-4" style={{ animationDelay: '0.4s' }}>
-            <div className="relative max-w-4xl mx-auto">
-              <div className="relative rounded-xl sm:rounded-2xl overflow-hidden shadow-premium-lg">
-                <img
-                  src={timelexxMenu}
-                  alt="Timelexx Inn Menu"
-                  className="w-full h-auto"
-                  style={{
-                    maskImage: 'linear-gradient(to bottom, rgba(0,0,0,0.9) 10%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 70%, rgba(0,0,0,0.9) 90%)',
-                    WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,0.9) 10%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 70%, rgba(0,0,0,0.9) 90%)',
-                  }}
+      <div className="pt-24 pb-12 px-4 flex items-center justify-center">
+        <Card className="w-full max-w-md shadow-premium-lg">
+          <CardHeader className="text-center">
+            <Bike className="w-16 h-16 text-timelexx-red mx-auto mb-4" />
+            <CardTitle className="text-2xl">Rider Portal</CardTitle>
+            <CardDescription>Select your name and enter access code to sign in</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSignIn} className="space-y-4">
+              <div>
+                <Label htmlFor="rider-name">Rider Name</Label>
+                <Select value={riderName} onValueChange={setRiderName} required>
+                  <SelectTrigger className="bg-white">
+                    <SelectValue placeholder="Select your name" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white z-50">
+                    {RIDERS.map((rider) => (
+                      <SelectItem key={rider.id} value={rider.name}>
+                        {rider.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="rider-password">Access Code</Label>
+                <Input
+                  id="rider-password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter access code"
+                  required
                 />
               </div>
-            </div>
-          </div>
-        </div>
+              <Button 
+                type="submit" 
+                className="w-full bg-timelexx-red hover:bg-timelexx-red/90"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Signing in...' : 'Sign In as Rider'}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
