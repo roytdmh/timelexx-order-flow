@@ -10,6 +10,7 @@ import { MenuItem, OrderItem } from '@/types';
 import { Button } from '@/components/ui/button';
 import { LogOut, Phone, Mail } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { supabase } from '@/integrations/supabase/client';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -72,7 +73,7 @@ const CustomerDashboard = () => {
     setCurrentOrder(prev => prev.filter(item => item.menuItem.id !== itemId));
   };
 
-  const handleSubmitOrder = (
+  const handleSubmitOrder = async (
     orderType: 'pickup' | 'delivery', 
     riderNumber?: string, 
     customerName?: string,
@@ -91,9 +92,20 @@ const CustomerDashboard = () => {
 
     // Random rider assignment for delivery orders
     let finalRiderNumber = riderNumber;
+    let assignedRiderId: string | undefined = undefined;
+    
     if (orderType === 'delivery') {
       const riders = ['Sabolia', 'Awaga', 'Joe Lee'];
       finalRiderNumber = riders[Math.floor(Math.random() * riders.length)];
+      
+      // Look up rider's UUID from profiles table
+      const { data: riderProfile } = await supabase
+        .from('profiles')
+        .select('user_id')
+        .eq('full_name', finalRiderNumber)
+        .single();
+      
+      assignedRiderId = riderProfile?.user_id;
     }
     
     addOrder({
@@ -101,6 +113,7 @@ const CustomerDashboard = () => {
       total,
       orderType,
       riderNumber: finalRiderNumber,
+      assignedRiderId,
       customerName: finalCustomerName,
       customerNumber: finalCustomerNumber,
       customerLocation: finalCustomerLocation,

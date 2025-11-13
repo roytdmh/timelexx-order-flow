@@ -19,6 +19,7 @@ export interface Order {
   total: number;
   orderType: 'pickup' | 'delivery';
   riderNumber?: string;
+  assignedRiderId?: string;
   status: 'placed' | 'pending' | 'confirmed' | 'preparing' | 'delivered' | 'cancelled';
   timestamp: Date;
   customerName?: string;
