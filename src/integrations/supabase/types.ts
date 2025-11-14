@@ -196,6 +196,56 @@ export type Database = {
           },
         ]
       }
+      financial_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          metadata: Json | null
+          new_status: string | null
+          notes: string | null
+          order_id: string
+          payment_method: string | null
+          previous_status: string | null
+          recorded_by: string | null
+          transaction_type: Database["public"]["Enums"]["transaction_type"]
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          new_status?: string | null
+          notes?: string | null
+          order_id: string
+          payment_method?: string | null
+          previous_status?: string | null
+          recorded_by?: string | null
+          transaction_type: Database["public"]["Enums"]["transaction_type"]
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          new_status?: string | null
+          notes?: string | null
+          order_id?: string
+          payment_method?: string | null
+          previous_status?: string | null
+          recorded_by?: string | null
+          transaction_type?: Database["public"]["Enums"]["transaction_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_transactions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       menu_items: {
         Row: {
           category: string
@@ -266,6 +316,44 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "notifications_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_history: {
+        Row: {
+          change_type: string
+          changed_by: string | null
+          created_at: string
+          id: string
+          new_values: Json | null
+          old_values: Json | null
+          order_id: string
+        }
+        Insert: {
+          change_type: string
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          new_values?: Json | null
+          old_values?: Json | null
+          order_id: string
+        }
+        Update: {
+          change_type?: string
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          new_values?: Json | null
+          old_values?: Json | null
+          order_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_history_order_id_fkey"
             columns: ["order_id"]
             isOneToOne: false
             referencedRelation: "orders"
@@ -517,6 +605,13 @@ export type Database = {
     Enums: {
       app_role: "timelexx_kitchen" | "customer_hub" | "timelexx_riders"
       app_role_new: "customer" | "admin" | "rider"
+      transaction_type:
+        | "order_created"
+        | "payment_received"
+        | "payment_verified"
+        | "status_change"
+        | "refund"
+        | "adjustment"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -646,6 +741,14 @@ export const Constants = {
     Enums: {
       app_role: ["timelexx_kitchen", "customer_hub", "timelexx_riders"],
       app_role_new: ["customer", "admin", "rider"],
+      transaction_type: [
+        "order_created",
+        "payment_received",
+        "payment_verified",
+        "status_change",
+        "refund",
+        "adjustment",
+      ],
     },
   },
 } as const
