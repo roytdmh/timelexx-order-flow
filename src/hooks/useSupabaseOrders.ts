@@ -164,6 +164,20 @@ export const useSupabaseOrders = () => {
       // Determine initial status - customers place orders with "placed" status
       const initialStatus = role === 'customer' ? 'placed' : (orderData.status || 'pending');
       
+      // Look up rider's user_id from profiles if rider_number is provided
+      let assignedRiderId = orderData.assignedRiderId || null;
+      if (orderData.riderNumber && !assignedRiderId) {
+        const { data: riderProfile } = await supabase
+          .from('profiles')
+          .select('user_id')
+          .eq('full_name', orderData.riderNumber)
+          .maybeSingle();
+        
+        if (riderProfile) {
+          assignedRiderId = riderProfile.user_id;
+        }
+      }
+      
       // Create the order
       const { data: newOrder, error: orderError } = await supabase
         .from('orders')
@@ -171,7 +185,7 @@ export const useSupabaseOrders = () => {
           total: orderData.total,
           order_type: orderData.orderType,
           rider_number: orderData.riderNumber || null,
-          assigned_rider_id: orderData.assignedRiderId || null,
+          assigned_rider_id: assignedRiderId,
           status: initialStatus,
           customer_name: orderData.customerName || null,
           customer_number: orderData.customerNumber || null,
