@@ -167,14 +167,23 @@ export const useSupabaseOrders = () => {
       // Look up rider's user_id from profiles if rider_number is provided
       let assignedRiderId = orderData.assignedRiderId || null;
       if (orderData.riderNumber && !assignedRiderId) {
-        const { data: riderProfile } = await supabase
+        const { data: riderProfile, error: riderError } = await supabase
           .from('profiles')
           .select('user_id')
           .eq('full_name', orderData.riderNumber)
           .maybeSingle();
         
-        if (riderProfile) {
+        if (riderError) {
+          console.error('Error looking up rider profile:', riderError);
+          toast({
+            title: "Warning",
+            description: `Could not find rider profile for ${orderData.riderNumber}. Order will use name-based assignment.`,
+            variant: "destructive"
+          });
+        } else if (riderProfile) {
           assignedRiderId = riderProfile.user_id;
+        } else {
+          console.warn(`No profile found for rider: ${orderData.riderNumber}`);
         }
       }
       

@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { CheckCircle } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface PaymentMethodSelectorProps {
   orderId: string;
@@ -19,6 +20,18 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
   onMarkAsDelivered,
   reportDeliveryMode = false,
 }) => {
+  const { toast } = useToast();
+
+  const handleDeliveryReport = () => {
+    onMarkAsDelivered(orderId);
+    if (reportDeliveryMode) {
+      toast({
+        title: "Delivery Reported",
+        description: "Your delivery report has been submitted. Admin will verify and confirm shortly.",
+      });
+    }
+  };
+
   return (
     <div className="space-y-3 mb-3">
       <div className="p-3 bg-gray-50 rounded-lg">
@@ -40,7 +53,7 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
       </div>
       
       <Button 
-        onClick={() => onMarkAsDelivered(orderId)}
+        onClick={handleDeliveryReport}
         disabled={!selectedPaymentMethod}
         className="w-full bg-green-600 hover:bg-green-700"
       >
