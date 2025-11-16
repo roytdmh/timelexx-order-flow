@@ -43,12 +43,15 @@ const RidersTracker: React.FC<RidersTrackerProps> = ({ orders, onUpdateStatus, o
     return timestamp.toDateString() === today.toDateString();
   };
 
-  // For riders: show only their delivery orders using assigned_rider_id
+  // For riders: show only their delivery orders using assigned_rider_id (preferred) or rider_number (fallback)
   // For admin: show ALL delivery orders
   const { user } = useAuth();
   const deliveryOrders = role === 'admin' 
     ? orders.filter(order => order.orderType === 'delivery')
-    : orders.filter(order => order.orderType === 'delivery' && order.assignedRiderId === user?.id);
+    : orders.filter(order => 
+        order.orderType === 'delivery' && 
+        (order.assignedRiderId === user?.id || order.riderNumber === profile?.full_name)
+      );
   
   const todaysDeliveryOrders = deliveryOrders.filter(order => isToday(order.timestamp));
   
