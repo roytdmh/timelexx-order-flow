@@ -9,6 +9,7 @@ import { getRiderDisplayName } from '@/data/riders';
 import PaymentMethodSelector from './PaymentMethodSelector';
 import OrderActionButtons from './OrderActionButtons';
 import { printOrderReceipt } from '@/utils/thermalPrinter';
+import { useToast } from '@/hooks/use-toast';
 
 interface PendingOrderCardProps {
   order: Order;
@@ -33,6 +34,7 @@ const PendingOrderCard: React.FC<PendingOrderCardProps> = ({
   showConfirmButton = false,
   reportDeliveryMode = false,
 }) => {
+  const { toast } = useToast();
   const getTimePending = (order: Order) => {
     const now = new Date();
     const timeDiff = now.getTime() - order.timestamp.getTime();

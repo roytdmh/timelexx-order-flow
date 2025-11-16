@@ -6,6 +6,7 @@ import { Order } from '@/types';
 import PendingOrderCard from './OrderTracker/PendingOrderCard';
 import RecentOrderCard from './OrderTracker/RecentOrderCard';
 import ResetOrdersButton from './OrderTracker/ResetOrdersButton';
+import AwaitingConfirmationAlert from './OrderTracker/AwaitingConfirmationAlert';
 
 interface OrderTrackerProps {
   orders: Order[];
@@ -51,6 +52,9 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onR
 
   return (
     <div className="space-y-6 relative">
+      {/* Alert for orders awaiting confirmation for too long */}
+      <AwaitingConfirmationAlert orders={awaitingConfirmation} />
+      
       {/* New Orders - Placed by Customers */}
       {placedOrders.length > 0 && (
         <Card className="border-2 border-blue-500">
