@@ -24,11 +24,11 @@ const RidersTracker: React.FC<RidersTrackerProps> = ({ orders, onUpdateStatus, o
     }));
   };
 
-  const handleMarkAsDelivered = (orderId: string) => {
+  const handleReportDeliveryComplete = (orderId: string) => {
     const paymentMethod = selectedPaymentMethods[orderId];
     if (paymentMethod) {
-      onUpdateStatus(orderId, 'delivered', paymentMethod);
-      // Clear the selected payment method after marking as delivered
+      onUpdateStatus(orderId, 'awaiting_confirmation', paymentMethod);
+      // Clear the selected payment method after reporting delivery
       setSelectedPaymentMethods(prev => {
         const newState = { ...prev };
         delete newState[orderId];
@@ -80,9 +80,10 @@ const RidersTracker: React.FC<RidersTrackerProps> = ({ orders, onUpdateStatus, o
                   order={order}
                   selectedPaymentMethod={selectedPaymentMethods[order.id]}
                   onPaymentMethodChange={handlePaymentMethodChange}
-                  onMarkAsDelivered={handleMarkAsDelivered}
+                  onMarkAsDelivered={handleReportDeliveryComplete}
                   onUpdateStatus={onUpdateStatus}
                   manageEnabled={true}
+                  reportDeliveryMode={true}
                 />
               ))}
             </div>
