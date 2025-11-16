@@ -18,6 +18,8 @@ interface PendingOrderCardProps {
   onUpdateStatus: (orderId: string, status: Order['status']) => void;
   manageEnabled?: boolean;
   showAcceptButton?: boolean;
+  showConfirmButton?: boolean;
+  reportDeliveryMode?: boolean;
 }
 
 const PendingOrderCard: React.FC<PendingOrderCardProps> = ({
@@ -27,7 +29,9 @@ const PendingOrderCard: React.FC<PendingOrderCardProps> = ({
   onMarkAsDelivered,
   onUpdateStatus,
   manageEnabled = true,
-  showAcceptButton = false
+  showAcceptButton = false,
+  showConfirmButton = false,
+  reportDeliveryMode = false,
 }) => {
   const getTimePending = (order: Order) => {
     const now = new Date();
@@ -56,6 +60,8 @@ const PendingOrderCard: React.FC<PendingOrderCardProps> = ({
         return <Badge className="bg-green-500"><CheckCircle className="w-4 h-4 mr-1" />Confirmed</Badge>;
       case 'preparing':
         return <Badge className="bg-purple-500"><Clock className="w-4 h-4 mr-1" />Preparing</Badge>;
+      case 'awaiting_confirmation':
+        return <Badge className="bg-orange-500"><Clock className="w-4 h-4 mr-1" />Awaiting Verification</Badge>;
       case 'delivered':
         return <Badge className="bg-gray-500"><CheckCircle className="w-4 h-4 mr-1" />Delivered</Badge>;
       case 'cancelled':
@@ -140,20 +146,33 @@ const PendingOrderCard: React.FC<PendingOrderCardProps> = ({
                 </Button>
               </div>
             )}
-            {(order.status === 'pending' || order.status === 'confirmed' || order.status === 'preparing') && (
-              <>
-                <PaymentMethodSelector
-                  orderId={order.id}
-                  selectedPaymentMethod={selectedPaymentMethod}
-                  onPaymentMethodChange={onPaymentMethodChange}
-                />
-                <OrderActionButtons
-                  orderId={order.id}
-                  selectedPaymentMethod={selectedPaymentMethod}
-                  onMarkAsDelivered={onMarkAsDelivered}
-                  onCancel={handleCancel}
-                />
-              </>
+            
+            {showConfirmButton && order.status === 'awaiting_confirmation' && (
+              <Button 
+                onClick={() => onUpdateStatus(order.id, 'delivered')}
+                className="w-full bg-green-600 hover:bg-green-700 mb-3"
+              >
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Confirm Delivery & Payment
+              </Button>
+            )}
+            
+            {!showConfirmButton && order.orderType === 'delivery' && (order.status === 'pending' || order.status === 'confirmed' || order.status === 'preparing') && (
+              <PaymentMethodSelector
+                orderId={order.id}
+                selectedPaymentMethod={selectedPaymentMethod}
+                onPaymentMethodChange={onPaymentMethodChange}
+                onMarkAsDelivered={onMarkAsDelivered}
+                reportDeliveryMode={reportDeliveryMode}
+              />
+            )}
+            
+            {!showConfirmButton && order.status !== 'awaiting_confirmation' && order.status !== 'cancelled' && (
+              <OrderActionButtons 
+                order={order}
+                onUpdateStatus={onUpdateStatus}
+                onCancel={handleCancel}
+              />
             )}
           </>
         )}

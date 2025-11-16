@@ -46,6 +46,7 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onR
   const todaysOrders = orders.filter(order => isToday(order.timestamp));
   const placedOrders = todaysOrders.filter(order => order.status === 'placed');
   const pendingOrders = todaysOrders.filter(order => order.status === 'pending' || order.status === 'confirmed' || order.status === 'preparing');
+  const awaitingConfirmation = todaysOrders.filter(order => order.status === 'awaiting_confirmation');
   const recentOrders = todaysOrders.slice(0, 10);
 
   return (
@@ -70,6 +71,33 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onR
                   onMarkAsDelivered={handleMarkAsDelivered}
                   onUpdateStatus={onUpdateStatus}
                   showAcceptButton={true}
+                />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Pending Verification - Rider Reported Delivery */}
+      {awaitingConfirmation.length > 0 && (
+        <Card className="border-2 border-orange-500">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-orange-600">
+              <Clock className="w-5 h-5" />
+              Pending Verification ({awaitingConfirmation.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {awaitingConfirmation.map(order => (
+                <PendingOrderCard
+                  key={order.id}
+                  order={order}
+                  selectedPaymentMethod={selectedPaymentMethods[order.id]}
+                  onPaymentMethodChange={handlePaymentMethodChange}
+                  onMarkAsDelivered={handleMarkAsDelivered}
+                  onUpdateStatus={onUpdateStatus}
+                  showConfirmButton={true}
                 />
               ))}
             </div>

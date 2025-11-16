@@ -1,32 +1,31 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { Order } from '@/types';
 
 interface OrderActionButtonsProps {
-  orderId: string;
-  selectedPaymentMethod?: 'Cash' | 'MoMo';
-  onMarkAsDelivered: (orderId: string) => void;
+  order: Order;
+  onUpdateStatus: (orderId: string, status: Order['status']) => void;
   onCancel: (orderId: string) => void;
 }
 
 const OrderActionButtons: React.FC<OrderActionButtonsProps> = ({
-  orderId,
-  selectedPaymentMethod,
-  onMarkAsDelivered,
+  order,
+  onUpdateStatus,
   onCancel
 }) => {
   return (
     <div className="flex gap-2">
+      {order.status === 'confirmed' && (
+        <Button
+          onClick={() => onUpdateStatus(order.id, 'preparing')}
+          className="bg-purple-500 hover:bg-purple-600 text-white flex-1"
+          size="sm"
+        >
+          Start Preparing
+        </Button>
+      )}
       <Button
-        onClick={() => onMarkAsDelivered(orderId)}
-        className="bg-green-500 hover:bg-green-600 text-white"
-        size="sm"
-        disabled={!selectedPaymentMethod}
-      >
-        Mark Delivered
-      </Button>
-      <Button
-        onClick={() => onCancel(orderId)}
+        onClick={() => onCancel(order.id)}
         variant="destructive"
         size="sm"
       >
