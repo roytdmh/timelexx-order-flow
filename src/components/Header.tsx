@@ -6,7 +6,7 @@ import { RealtimeConnectionStatus } from '@/components/RealtimeConnectionStatus'
 import timelexxLogo from '@/assets/timelexx-logo.png';
 
 const Header = () => {
-  const { user, role } = useAuth();
+  const { user, role, profile } = useAuth();
   const showNotifications = user && (role === 'admin' || role === 'rider' || role === 'customer');
 
   return (
@@ -28,7 +28,12 @@ const Header = () => {
                 Eat good, Feel good
               </p>
             </div>
-            <div className="flex-1 flex justify-end">
+            <div className="flex-1 flex justify-end items-start gap-3">
+              {user && profile?.full_name && (
+                <p className="text-sm sm:text-base font-medium">
+                  Hi {profile.full_name}
+                </p>
+              )}
               {showNotifications && user && role && (
                 <NotificationBadge userId={user.id} userRole={role} />
               )}
