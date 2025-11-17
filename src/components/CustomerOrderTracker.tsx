@@ -17,8 +17,6 @@ const CustomerOrderTracker: React.FC<CustomerOrderTrackerProps> = ({ orders }) =
         return Clock;
       case 'confirmed':
         return CheckCircle;
-      case 'preparing':
-        return Package;
       case 'awaiting_confirmation':
         return Package;
       case 'delivered':
@@ -35,8 +33,6 @@ const CustomerOrderTracker: React.FC<CustomerOrderTrackerProps> = ({ orders }) =
         return 'bg-yellow-100 text-yellow-800 border-yellow-300';
       case 'confirmed':
         return 'bg-blue-100 text-blue-800 border-blue-300';
-      case 'preparing':
-        return 'bg-purple-100 text-purple-800 border-purple-300';
       case 'awaiting_confirmation':
         return 'bg-orange-100 text-orange-800 border-orange-300';
       case 'delivered':
@@ -49,8 +45,7 @@ const CustomerOrderTracker: React.FC<CustomerOrderTrackerProps> = ({ orders }) =
   const activeOrders = orders.filter(o => 
     o.status === 'placed' || 
     o.status === 'pending' || 
-    o.status === 'confirmed' || 
-    o.status === 'preparing' ||
+    o.status === 'confirmed' ||
     o.status === 'awaiting_confirmation'
   );
   
