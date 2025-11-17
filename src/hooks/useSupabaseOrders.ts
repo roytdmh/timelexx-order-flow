@@ -255,14 +255,18 @@ export const useSupabaseOrders = () => {
 
   const updateOrderStatus = async (orderId: string, status: Order['status'], paymentMethod?: 'Cash' | 'MoMo') => {
     try {
+      console.log('🔄 updateOrderStatus called:', { orderId, status, paymentMethod, currentRole: role, currentUserId: user?.id });
+      
       const updateData: any = { status };
       
       // Get current order to check for rider assignment
-      const { data: currentOrder } = await supabase
+      const { data: currentOrder, error: fetchError } = await supabase
         .from('orders')
-        .select('rider_number, assigned_rider_id')
+        .select('rider_number, assigned_rider_id, status, order_type')
         .eq('id', orderId)
         .single();
+      
+      console.log('📦 Current order data:', currentOrder, 'Fetch error:', fetchError);
       
       // If order has rider_number but no assigned_rider_id, look up the rider's user_id
       if (currentOrder?.rider_number && !currentOrder.assigned_rider_id) {
@@ -303,7 +307,8 @@ export const useSupabaseOrders = () => {
         updateData.payment_method = paymentMethod;
       }
 
-      console.log('Updating order:', orderId, 'with data:', updateData);
+      console.log('💾 About to update order:', orderId, 'with data:', updateData);
+      console.log('🔐 Current user:', user?.id, 'Role:', role);
 
       const { data, error } = await supabase
         .from('orders')
@@ -312,11 +317,12 @@ export const useSupabaseOrders = () => {
         .select();
 
       if (error) {
-        console.error('Update error:', error);
+        console.error('❌ Update error:', error);
+        console.error('❌ Error details:', JSON.stringify(error, null, 2));
         throw error;
       }
 
-      console.log('Update successful:', data);
+      console.log('✅ Update successful:', data);
 
         const statusMessages: Record<Order['status'], string> = {
         placed: "Order placed",
