@@ -46,7 +46,7 @@ const OrderTracker: React.FC<OrderTrackerProps> = ({ orders, onUpdateStatus, onR
   // Filter to today's orders only
   const todaysOrders = orders.filter(order => isToday(order.timestamp));
   const placedOrders = todaysOrders.filter(order => order.status === 'placed');
-  const pendingOrders = todaysOrders.filter(order => order.status === 'pending' || order.status === 'confirmed' || order.status === 'preparing');
+  const pendingOrders = todaysOrders.filter(order => order.status === 'confirmed' || order.status === 'pending');
   const awaitingConfirmation = todaysOrders.filter(order => order.status === 'awaiting_confirmation');
   const recentOrders = todaysOrders.slice(0, 10);
 

@@ -44,10 +44,12 @@ const Index = () => {
   const filteredOrders = role === 'customer' 
     ? orders.filter(order => order.customerUserId === user?.id)
     : role === 'rider'
-    ? orders.filter(order => 
-        order.orderType === 'delivery' && 
-        (order.assignedRiderId === user?.id || order.riderNumber === profile?.full_name)
-      )
+    ? orders.filter(order => {
+        const isAssigned = order.orderType === 'delivery' && 
+          (order.assignedRiderId === user?.id || order.riderNumber === profile?.full_name);
+        console.log('🔍 Rider filter:', order.id.slice(-6), 'assigned_rider_id:', order.assignedRiderId, 'user?.id:', user?.id, 'match:', isAssigned);
+        return isAssigned;
+      })
     : orders;
 
   // Count new orders for badges - use today's orders to match OrderTracker display

@@ -159,7 +159,7 @@ const PendingOrderCard: React.FC<PendingOrderCardProps> = ({
               </Button>
             )}
             
-            {!showConfirmButton && order.orderType === 'delivery' && (order.status === 'pending' || order.status === 'confirmed' || order.status === 'preparing') && (
+            {!showConfirmButton && order.orderType === 'delivery' && (order.status === 'pending' || order.status === 'confirmed') && (
               <PaymentMethodSelector
                 orderId={order.id}
                 selectedPaymentMethod={selectedPaymentMethod}
