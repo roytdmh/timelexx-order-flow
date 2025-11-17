@@ -173,6 +173,16 @@ const PendingOrderCard: React.FC<PendingOrderCardProps> = ({
                 reportDeliveryMode={reportDeliveryMode}
               />
             )}
+
+            {!showConfirmButton && order.orderType === 'pickup' && (order.status === 'pending' || order.status === 'confirmed') && (
+              <Button 
+                onClick={() => onUpdateStatus(order.id, 'delivered')}
+                className="w-full bg-green-600 hover:bg-green-700 mb-3"
+              >
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Mark as Delivered
+              </Button>
+            )}
             
             {!showConfirmButton && order.status !== 'awaiting_confirmation' && order.status !== 'cancelled' && (
               <OrderActionButtons 
