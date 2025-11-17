@@ -55,9 +55,9 @@ const RidersTracker: React.FC<RidersTrackerProps> = ({ orders, onUpdateStatus, o
   
   const todaysDeliveryOrders = deliveryOrders.filter(order => isToday(order.timestamp));
   
-  // Active delivery orders include confirmed and pending statuses
+  // Active delivery orders include confirmed, pending, and awaiting_confirmation statuses
   const activeDeliveryOrders = todaysDeliveryOrders.filter(order => 
-    order.status === 'confirmed' || order.status === 'pending'
+    order.status === 'confirmed' || order.status === 'pending' || order.status === 'awaiting_confirmation'
   );
   
   const deliveredOrders = todaysDeliveryOrders.filter(order => order.status === 'delivered');
@@ -86,7 +86,8 @@ const RidersTracker: React.FC<RidersTrackerProps> = ({ orders, onUpdateStatus, o
                   onMarkAsDelivered={handleReportDeliveryComplete}
                   onUpdateStatus={onUpdateStatus}
                   manageEnabled={true}
-                  reportDeliveryMode={true}
+                  reportDeliveryMode={role === 'rider'}
+                  showConfirmButton={role === 'admin' && order.status === 'awaiting_confirmation'}
                 />
               ))}
             </div>
