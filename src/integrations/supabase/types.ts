@@ -602,12 +602,12 @@ export type Database = {
           total: number
           updated_at: string
           waiter_user_id: string | null
-        }
+        }[]
         SetofOptions: {
           from: "*"
           to: "orders"
-          isOneToOne: true
-          isSetofReturn: false
+          isOneToOne: false
+          isSetofReturn: true
         }
       }
       can_update_order_for_dashboard_user: {
@@ -657,12 +657,12 @@ export type Database = {
           total: number
           updated_at: string
           waiter_user_id: string | null
-        }
+        }[]
         SetofOptions: {
           from: "*"
           to: "orders"
-          isOneToOne: true
-          isSetofReturn: false
+          isOneToOne: false
+          isSetofReturn: true
         }
       }
     }

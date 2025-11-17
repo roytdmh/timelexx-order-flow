@@ -263,7 +263,7 @@ export const useSupabaseOrders = () => {
         const { data, error } = await supabase.rpc('rider_report_delivery', {
           order_id: orderId,
           payment_method: paymentMethod || null
-        });
+        }).single();
 
         if (error) {
           console.error('❌ RPC rider_report_delivery error:', error);
@@ -285,7 +285,7 @@ export const useSupabaseOrders = () => {
         console.log('✅ Admin confirming delivery via RPC');
         const { data, error } = await supabase.rpc('admin_confirm_delivery', {
           order_id: orderId
-        });
+        }).single();
 
         if (error) {
           console.error('❌ RPC admin_confirm_delivery error:', error);
