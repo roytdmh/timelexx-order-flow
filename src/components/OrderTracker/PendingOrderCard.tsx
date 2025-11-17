@@ -43,6 +43,7 @@ const PendingOrderCard: React.FC<PendingOrderCardProps> = ({
   };
 
   const getStatusColor = (order: Order) => {
+    if (order.status === 'awaiting_confirmation') return 'order-card-awaiting-confirmation';
     if (order.status !== 'pending') return '';
     
     const minutes = getTimePending(order);
@@ -133,6 +134,12 @@ const PendingOrderCard: React.FC<PendingOrderCardProps> = ({
           </div>
           <span className="font-bold text-sm sm:text-base">Total: ₵{order.total}</span>
         </div>
+
+        {order.status === 'awaiting_confirmation' && order.paymentMethod && (
+          <div className="mb-3 p-2 bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded text-sm">
+            <strong>Payment Method Selected:</strong> {order.paymentMethod}
+          </div>
+        )}
 
         {manageEnabled && (
           <>
