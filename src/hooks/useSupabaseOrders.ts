@@ -9,6 +9,10 @@ export const useSupabaseOrders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastAlertTime, setLastAlertTime] = useState<Record<string, number>>({});
+  const [lastResetAt, setLastResetAt] = useState<Date>(() => {
+    const stored = localStorage.getItem('lastResetAt');
+    return stored ? new Date(stored) : new Date(new Date().setHours(0, 0, 0, 0));
+  });
   const { user, role } = useAuth();
 
   // Fetch orders from Supabase
@@ -381,11 +385,15 @@ export const useSupabaseOrders = () => {
 
       if (error) throw error;
 
+      // Record reset timestamp
+      const resetTime = new Date();
+      setLastResetAt(resetTime);
+      localStorage.setItem('lastResetAt', resetTime.toISOString());
       setLastAlertTime({});
       
       toast({
         title: "Orders Reset",
-        description: "Today's orders have been cleared",
+        description: "Orders and analytics have been cleared",
       });
 
       // Refresh orders after reset
@@ -401,13 +409,9 @@ export const useSupabaseOrders = () => {
   };
 
   const getTodaysOrders = (): Order[] => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
+    // Filter orders created after last reset
     return orders.filter(order => {
-      const orderDate = new Date(order.timestamp);
-      orderDate.setHours(0, 0, 0, 0);
-      return orderDate.getTime() === today.getTime();
+      return new Date(order.timestamp) > lastResetAt;
     });
   };
 
