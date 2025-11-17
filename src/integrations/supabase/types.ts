@@ -578,6 +578,38 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_confirm_delivery: {
+        Args: { order_id: string }
+        Returns: {
+          admin_notified: boolean | null
+          assigned_rider_id: string | null
+          confirmed_at: string | null
+          confirmed_by_session_id: string | null
+          created_at: string
+          customer_address: string | null
+          customer_coordinates: Json | null
+          customer_name: string | null
+          customer_number: string | null
+          customer_user_id: string | null
+          estimated_ready_time: string | null
+          id: string
+          order_type: string
+          payment_method: string | null
+          rider_accepted_at: string | null
+          rider_notified: boolean | null
+          rider_number: string | null
+          status: string
+          total: number
+          updated_at: string
+          waiter_user_id: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "orders"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       can_update_order_for_dashboard_user: {
         Args: {
           new_row: Database["public"]["Tables"]["orders"]["Row"]
@@ -601,6 +633,38 @@ export type Database = {
       }
       reset_all_orders: { Args: never; Returns: undefined }
       reset_todays_orders: { Args: never; Returns: undefined }
+      rider_report_delivery: {
+        Args: { order_id: string; payment_method?: string }
+        Returns: {
+          admin_notified: boolean | null
+          assigned_rider_id: string | null
+          confirmed_at: string | null
+          confirmed_by_session_id: string | null
+          created_at: string
+          customer_address: string | null
+          customer_coordinates: Json | null
+          customer_name: string | null
+          customer_number: string | null
+          customer_user_id: string | null
+          estimated_ready_time: string | null
+          id: string
+          order_type: string
+          payment_method: string | null
+          rider_accepted_at: string | null
+          rider_notified: boolean | null
+          rider_number: string | null
+          status: string
+          total: number
+          updated_at: string
+          waiter_user_id: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "orders"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
       app_role: "timelexx_kitchen" | "customer_hub" | "timelexx_riders"
