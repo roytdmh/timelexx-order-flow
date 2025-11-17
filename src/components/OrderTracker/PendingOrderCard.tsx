@@ -157,7 +157,7 @@ const PendingOrderCard: React.FC<PendingOrderCardProps> = ({
             {showConfirmButton && order.status === 'awaiting_confirmation' && (
               <Button 
                 onClick={() => onUpdateStatus(order.id, 'delivered')}
-                className="w-full bg-green-600 hover:bg-green-700 mb-3"
+                className="w-full bg-green-600 hover:bg-green-700 mb-3 animate-pulse"
               >
                 <CheckCircle className="w-4 h-4 mr-2" />
                 Confirm Delivery & Payment
