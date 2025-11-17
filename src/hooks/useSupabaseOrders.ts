@@ -261,6 +261,27 @@ export const useSupabaseOrders = () => {
     try {
       const updateData: any = { status };
       
+      // Get current order to check for rider assignment
+      const { data: currentOrder } = await supabase
+        .from('orders')
+        .select('rider_number, assigned_rider_id')
+        .eq('id', orderId)
+        .single();
+      
+      // If order has rider_number but no assigned_rider_id, look up the rider's user_id
+      if (currentOrder?.rider_number && !currentOrder.assigned_rider_id) {
+        const { data: riderProfile } = await supabase
+          .from('profiles')
+          .select('user_id')
+          .eq('full_name', currentOrder.rider_number)
+          .maybeSingle();
+        
+        if (riderProfile) {
+          updateData.assigned_rider_id = riderProfile.user_id;
+          console.log('Setting assigned_rider_id:', riderProfile.user_id, 'for rider:', currentOrder.rider_number);
+        }
+      }
+      
       // When admin accepts a placed order, change to confirmed status
       if (status === 'confirmed') {
         updateData.confirmed_at = new Date().toISOString();
