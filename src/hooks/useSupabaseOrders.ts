@@ -318,9 +318,9 @@ export const useSupabaseOrders = () => {
 
       console.log('Update successful:', data);
 
-      const statusMessages: Record<Order['status'], string> = {
+        const statusMessages: Record<Order['status'], string> = {
         placed: "Order placed",
-        pending: "Order accepted and being prepared",
+        pending: "Order accepted",
         confirmed: "Order confirmed - Ready in 30 minutes",
         preparing: "Order is being prepared",
         awaiting_confirmation: "Delivery reported - Awaiting admin verification",
