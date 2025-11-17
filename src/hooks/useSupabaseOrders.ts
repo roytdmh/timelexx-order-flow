@@ -175,15 +175,11 @@ export const useSupabaseOrders = () => {
         
         if (riderError) {
           console.error('Error looking up rider profile:', riderError);
-          toast({
-            title: "Warning",
-            description: `Could not find rider profile for ${orderData.riderNumber}. Order will use name-based assignment.`,
-            variant: "destructive"
-          });
         } else if (riderProfile) {
           assignedRiderId = riderProfile.user_id;
+          console.log('✅ Assigned rider_id:', assignedRiderId, 'for rider:', orderData.riderNumber);
         } else {
-          console.warn(`No profile found for rider: ${orderData.riderNumber}`);
+          console.warn(`⚠️ No profile found for rider: ${orderData.riderNumber}`);
         }
       }
       
