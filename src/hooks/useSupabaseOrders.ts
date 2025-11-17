@@ -364,11 +364,12 @@ export const useSupabaseOrders = () => {
 
       // Refresh orders immediately after successful update
       await fetchOrders();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating order:', error);
+      const message = error?.message || error?.hint || error?.details || 'Failed to update order';
       toast({
         title: "Error",
-        description: "Failed to update order",
+        description: message,
         variant: "destructive",
       });
     }
