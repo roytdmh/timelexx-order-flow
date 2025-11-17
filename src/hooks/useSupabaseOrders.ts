@@ -257,37 +257,54 @@ export const useSupabaseOrders = () => {
     try {
       console.log('🔄 updateOrderStatus called:', { orderId, status, paymentMethod, currentRole: role, currentUserId: user?.id });
       
-      const updateData: any = { status };
-      
-      // Get current order to check for rider assignment
-      const { data: currentOrder, error: fetchError } = await supabase
-        .from('orders')
-        .select('rider_number, assigned_rider_id, status, order_type')
-        .eq('id', orderId)
-        .single();
-      
-      console.log('📦 Current order data:', currentOrder, 'Fetch error:', fetchError);
-      
-      // CRITICAL: When rider reports delivery, ensure assigned_rider_id is set
-      if (status === 'awaiting_confirmation' && role === 'rider' && user?.id) {
-        // Always set the rider's user_id when they report delivery
-        updateData.assigned_rider_id = user.id;
-        console.log('✅ Rider reporting delivery - setting assigned_rider_id:', user.id);
-      }
-      
-      // Fallback: If order has rider_number but no assigned_rider_id, look up the rider's user_id
-      if (currentOrder?.rider_number && !currentOrder.assigned_rider_id && !updateData.assigned_rider_id) {
-        const { data: riderProfile } = await supabase
-          .from('profiles')
-          .select('user_id')
-          .eq('full_name', currentOrder.rider_number)
-          .maybeSingle();
-        
-        if (riderProfile) {
-          updateData.assigned_rider_id = riderProfile.user_id;
-          console.log('Setting assigned_rider_id from lookup:', riderProfile.user_id, 'for rider:', currentOrder.rider_number);
+      // Use secure RPC functions for rider delivery reporting and admin confirmation
+      if (status === 'awaiting_confirmation' && role === 'rider') {
+        console.log('🚴 Rider reporting delivery via RPC');
+        const { data, error } = await supabase.rpc('rider_report_delivery', {
+          order_id: orderId,
+          payment_method: paymentMethod || null
+        });
+
+        if (error) {
+          console.error('❌ RPC rider_report_delivery error:', error);
+          throw error;
         }
+
+        console.log('✅ Rider report successful:', data);
+        
+        toast({
+          title: "Delivery Reported",
+          description: "Delivery reported - Awaiting admin verification",
+        });
+
+        await fetchOrders();
+        return;
       }
+
+      if (status === 'delivered' && role === 'admin') {
+        console.log('✅ Admin confirming delivery via RPC');
+        const { data, error } = await supabase.rpc('admin_confirm_delivery', {
+          order_id: orderId
+        });
+
+        if (error) {
+          console.error('❌ RPC admin_confirm_delivery error:', error);
+          throw error;
+        }
+
+        console.log('✅ Admin confirm successful:', data);
+        
+        toast({
+          title: "Delivery Confirmed",
+          description: paymentMethod ? `Order delivered (Payment: ${paymentMethod})` : "Order delivered",
+        });
+
+        await fetchOrders();
+        return;
+      }
+
+      // For all other status updates, use the standard update logic
+      const updateData: any = { status };
       
       // When admin accepts a placed order, change to confirmed status
       if (status === 'confirmed') {
