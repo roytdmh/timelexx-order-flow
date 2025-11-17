@@ -20,7 +20,7 @@ export interface Order {
   orderType: 'pickup' | 'delivery';
   riderNumber?: string;
   assignedRiderId?: string;
-  status: 'placed' | 'pending' | 'confirmed' | 'preparing' | 'awaiting_confirmation' | 'delivered' | 'cancelled';
+  status: 'placed' | 'pending' | 'confirmed' | 'awaiting_confirmation' | 'delivered' | 'cancelled';
   timestamp: Date;
   customerName?: string;
   customerNumber?: string;

@@ -19,7 +19,7 @@ export const CustomerOrders = ({ orders }: CustomerOrdersProps) => {
       placed: { label: 'Placed', variant: 'outline' as const, icon: Package },
       pending: { label: 'Pending', variant: 'secondary' as const, icon: Clock },
       confirmed: { label: 'Confirmed', variant: 'default' as const, icon: CheckCircle },
-      preparing: { label: 'Preparing', variant: 'default' as const, icon: Clock },
+      awaiting_confirmation: { label: 'Awaiting Confirmation', variant: 'secondary' as const, icon: Clock },
       delivered: { label: 'Delivered', variant: 'default' as const, icon: CheckCircle },
       cancelled: { label: 'Cancelled', variant: 'destructive' as const, icon: XCircle },
     };
@@ -46,7 +46,7 @@ export const CustomerOrders = ({ orders }: CustomerOrdersProps) => {
 
   // Split orders into active and history (limit history to 10 most recent)
   const activeOrders = orders.filter(order => 
-    ['placed', 'pending', 'confirmed', 'preparing'].includes(order.status)
+    ['placed', 'pending', 'confirmed', 'awaiting_confirmation'].includes(order.status)
   );
   const allOrderHistory = orders
     .filter(order => ['delivered', 'cancelled'].includes(order.status))
@@ -127,7 +127,7 @@ export const CustomerOrders = ({ orders }: CustomerOrdersProps) => {
           </div>
         )}
 
-        {!isHistory && order.orderType === 'delivery' && order.riderNumber && (order.status === 'confirmed' || order.status === 'preparing') && (
+        {!isHistory && order.orderType === 'delivery' && order.riderNumber && order.status === 'confirmed' && (
           <div className="flex items-center gap-2 p-2 sm:p-3 bg-accent rounded-lg">
             <Phone className="w-3 h-3 sm:w-4 sm:h-4" />
             <div className="text-xs sm:text-sm">

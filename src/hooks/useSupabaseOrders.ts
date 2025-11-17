@@ -328,7 +328,6 @@ export const useSupabaseOrders = () => {
         placed: "Order placed",
         pending: "Order accepted",
         confirmed: "Order confirmed - Ready in 30 minutes",
-        preparing: "Order is being prepared",
         awaiting_confirmation: "Delivery reported - Awaiting admin verification",
         delivered: paymentMethod ? `Order marked as delivered (Payment: ${paymentMethod})` : "Order marked as delivered",
         cancelled: "Order has been cancelled"

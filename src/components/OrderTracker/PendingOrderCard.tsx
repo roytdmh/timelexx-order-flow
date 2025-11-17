@@ -60,8 +60,6 @@ const PendingOrderCard: React.FC<PendingOrderCardProps> = ({
         return <Badge className="bg-blue-500"><Clock className="w-4 h-4 mr-1" />New Order</Badge>;
       case 'confirmed':
         return <Badge className="bg-green-500"><CheckCircle className="w-4 h-4 mr-1" />Confirmed</Badge>;
-      case 'preparing':
-        return <Badge className="bg-purple-500"><Clock className="w-4 h-4 mr-1" />Preparing</Badge>;
       case 'awaiting_confirmation':
         return <Badge className="bg-orange-500"><Clock className="w-4 h-4 mr-1" />Awaiting Verification</Badge>;
       case 'delivered':

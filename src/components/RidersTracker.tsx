@@ -55,9 +55,9 @@ const RidersTracker: React.FC<RidersTrackerProps> = ({ orders, onUpdateStatus, o
   
   const todaysDeliveryOrders = deliveryOrders.filter(order => isToday(order.timestamp));
   
-  // Active delivery orders include confirmed, pending, and preparing statuses
+  // Active delivery orders include confirmed and pending statuses
   const activeDeliveryOrders = todaysDeliveryOrders.filter(order => 
-    order.status === 'confirmed' || order.status === 'pending' || order.status === 'preparing'
+    order.status === 'confirmed' || order.status === 'pending'
   );
   
   const deliveredOrders = todaysDeliveryOrders.filter(order => order.status === 'delivered');
