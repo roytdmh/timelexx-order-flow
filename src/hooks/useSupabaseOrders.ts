@@ -268,8 +268,15 @@ export const useSupabaseOrders = () => {
       
       console.log('📦 Current order data:', currentOrder, 'Fetch error:', fetchError);
       
-      // If order has rider_number but no assigned_rider_id, look up the rider's user_id
-      if (currentOrder?.rider_number && !currentOrder.assigned_rider_id) {
+      // CRITICAL: When rider reports delivery, ensure assigned_rider_id is set
+      if (status === 'awaiting_confirmation' && role === 'rider' && user?.id) {
+        // Always set the rider's user_id when they report delivery
+        updateData.assigned_rider_id = user.id;
+        console.log('✅ Rider reporting delivery - setting assigned_rider_id:', user.id);
+      }
+      
+      // Fallback: If order has rider_number but no assigned_rider_id, look up the rider's user_id
+      if (currentOrder?.rider_number && !currentOrder.assigned_rider_id && !updateData.assigned_rider_id) {
         const { data: riderProfile } = await supabase
           .from('profiles')
           .select('user_id')
@@ -278,7 +285,7 @@ export const useSupabaseOrders = () => {
         
         if (riderProfile) {
           updateData.assigned_rider_id = riderProfile.user_id;
-          console.log('Setting assigned_rider_id:', riderProfile.user_id, 'for rider:', currentOrder.rider_number);
+          console.log('Setting assigned_rider_id from lookup:', riderProfile.user_id, 'for rider:', currentOrder.rider_number);
         }
       }
       
