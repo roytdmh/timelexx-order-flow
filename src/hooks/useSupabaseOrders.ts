@@ -9,11 +9,34 @@ export const useSupabaseOrders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastAlertTime, setLastAlertTime] = useState<Record<string, number>>({});
-  const [lastResetAt, setLastResetAt] = useState<Date>(() => {
-    const stored = localStorage.getItem('lastResetAt');
-    return stored ? new Date(stored) : new Date(new Date().setHours(0, 0, 0, 0));
-  });
+  const [lastResetAt, setLastResetAt] = useState<Date>(new Date(new Date().setHours(0, 0, 0, 0)));
   const { user, role } = useAuth();
+
+  // Fetch last reset timestamp from database
+  const fetchLastResetAt = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('daily_resets')
+        .select('reset_at')
+        .order('reset_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+        console.error('Error fetching last reset:', error);
+        return;
+      }
+
+      if (data?.reset_at) {
+        setLastResetAt(new Date(data.reset_at));
+      } else {
+        // No reset found, use midnight today
+        setLastResetAt(new Date(new Date().setHours(0, 0, 0, 0)));
+      }
+    } catch (error) {
+      console.error('Error fetching last reset:', error);
+    }
+  };
 
   // Fetch orders from Supabase
   const fetchOrders = async () => {
@@ -385,10 +408,8 @@ export const useSupabaseOrders = () => {
 
       if (error) throw error;
 
-      // Record reset timestamp
-      const resetTime = new Date();
-      setLastResetAt(resetTime);
-      localStorage.setItem('lastResetAt', resetTime.toISOString());
+      // Fetch the new reset timestamp from database
+      await fetchLastResetAt();
       setLastAlertTime({});
       
       toast({
