@@ -22,6 +22,7 @@ interface OrderFormProps {
   ) => void;
   onClearOrder: () => void;
   isCustomer?: boolean;
+  isSubmitting?: boolean;
 }
 
 const OrderForm: React.FC<OrderFormProps> = ({
@@ -30,7 +31,8 @@ const OrderForm: React.FC<OrderFormProps> = ({
   onRemoveItem,
   onSubmitOrder,
   onClearOrder,
-  isCustomer = false
+  isCustomer = false,
+  isSubmitting = false
 }) => {
   const [orderType, setOrderType] = useState<'pickup' | 'delivery'>('pickup');
   const [riderNumber, setRiderNumber] = useState('');
@@ -115,6 +117,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
                 onClear={onClearOrder}
                 isDelivery={orderType === 'delivery'}
                 hasRider={isCustomer || !!riderNumber}
+                isSubmitting={isSubmitting}
               />
             </div>
           </>

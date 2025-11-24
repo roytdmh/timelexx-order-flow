@@ -22,6 +22,7 @@ const Index = () => {
   const { user, role, profile, loading: authLoading, signOut } = useAuth();
   const [activeTab, setActiveTab] = useState('menu');
   const [currentOrder, setCurrentOrder] = useState<OrderItem[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const { 
     orders, 
@@ -95,49 +96,57 @@ const Index = () => {
     customerNumber?: string,
     customerLocation?: { address: string; coordinates: [number, number] }
   ) => {
-    const total = currentOrder.reduce((sum, item) => sum + (item.menuItem.price * item.quantity), 0);
-    
-    // Auto-fill customer details for customer role
-    const finalCustomerName = role === 'customer' ? profile?.full_name || customerName : customerName;
-    const finalCustomerNumber = role === 'customer' ? profile?.phone_number || customerNumber : customerNumber;
-    const finalCustomerLocation = role === 'customer' 
-      ? { address: profile?.location || '', coordinates: [0, 0] as [number, number] }
-      : customerLocation;
+    // Prevent duplicate submissions
+    if (isSubmitting) return;
+    setIsSubmitting(true);
 
-    // Random rider assignment for customers ordering delivery
-    let finalRiderNumber = riderNumber;
-    if (role === 'customer' && orderType === 'delivery') {
-      const riders = ['Sabolia', 'Awaga', 'Joe Lee'];
-      finalRiderNumber = riders[Math.floor(Math.random() * riders.length)];
-    }
-    
-    const newOrder = {
-      items: [...currentOrder],
-      total,
-      orderType,
-      riderNumber: finalRiderNumber,
-      customerName: finalCustomerName,
-      customerNumber: finalCustomerNumber,
-      customerLocation: finalCustomerLocation,
-      status: 'placed' as const,
-      customerUserId: role === 'customer' ? user?.id : undefined,
-      timestamp: new Date().toISOString(),
-      id: crypto.randomUUID(),
-    };
+    try {
+      const total = currentOrder.reduce((sum, item) => sum + (item.menuItem.price * item.quantity), 0);
+      
+      // Auto-fill customer details for customer role
+      const finalCustomerName = role === 'customer' ? profile?.full_name || customerName : customerName;
+      const finalCustomerNumber = role === 'customer' ? profile?.phone_number || customerNumber : customerNumber;
+      const finalCustomerLocation = role === 'customer' 
+        ? { address: profile?.location || '', coordinates: [0, 0] as [number, number] }
+        : customerLocation;
 
-    addOrder(newOrder);
+      // Random rider assignment for customers ordering delivery
+      let finalRiderNumber = riderNumber;
+      if (role === 'customer' && orderType === 'delivery') {
+        const riders = ['Sabolia', 'Awaga', 'Joe Lee'];
+        finalRiderNumber = riders[Math.floor(Math.random() * riders.length)];
+      }
+      
+      const newOrder = {
+        items: [...currentOrder],
+        total,
+        orderType,
+        riderNumber: finalRiderNumber,
+        customerName: finalCustomerName,
+        customerNumber: finalCustomerNumber,
+        customerLocation: finalCustomerLocation,
+        status: 'placed' as const,
+        customerUserId: role === 'customer' ? user?.id : undefined,
+        timestamp: new Date().toISOString(),
+        id: crypto.randomUUID(),
+      };
 
-    // Print order if admin
-    if (role === 'admin') {
-      const { printOrderReceipt } = await import('@/utils/thermalPrinter');
-      await printOrderReceipt(newOrder as any, 'placed');
-    }
+      await addOrder(newOrder);
 
-    setCurrentOrder([]);
-    if (role === 'customer') {
-      setActiveTab('orders');
-    } else {
-      setActiveTab('tracker');
+      // Print order if admin
+      if (role === 'admin') {
+        const { printOrderReceipt } = await import('@/utils/thermalPrinter');
+        await printOrderReceipt(newOrder as any, 'placed');
+      }
+
+      setCurrentOrder([]);
+      if (role === 'customer') {
+        setActiveTab('orders');
+      } else {
+        setActiveTab('tracker');
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -315,6 +324,7 @@ const Index = () => {
                 onSubmitOrder={handleSubmitOrder}
                 onClearOrder={handleClearOrder}
                 isCustomer={false}
+                isSubmitting={isSubmitting}
               />
             </div>
           </div>

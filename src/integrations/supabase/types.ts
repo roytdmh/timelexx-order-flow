@@ -134,6 +134,27 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_resets: {
+        Row: {
+          created_at: string
+          id: string
+          reset_at: string
+          reset_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          reset_at?: string
+          reset_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          reset_at?: string
+          reset_by?: string | null
+        }
+        Relationships: []
+      }
       exchange_rates: {
         Row: {
           base_currency: string
@@ -634,7 +655,7 @@ export type Database = {
       reset_all_orders: { Args: never; Returns: undefined }
       reset_todays_orders: { Args: never; Returns: undefined }
       rider_report_delivery: {
-        Args: { order_id: string; payment_method?: string }
+        Args: { order_id: string; payment_method: string }
         Returns: {
           admin_notified: boolean | null
           assigned_rider_id: string | null

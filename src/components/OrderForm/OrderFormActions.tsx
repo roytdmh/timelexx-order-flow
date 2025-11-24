@@ -7,22 +7,24 @@ interface OrderFormActionsProps {
   onClear: () => void;
   isDelivery: boolean;
   hasRider: boolean;
+  isSubmitting?: boolean;
 }
 
 const OrderFormActions: React.FC<OrderFormActionsProps> = ({
   onSubmit,
   onClear,
   isDelivery,
-  hasRider
+  hasRider,
+  isSubmitting = false
 }) => {
   return (
     <div className="flex flex-col sm:flex-row gap-3 sm:gap-2">
       <Button
         onClick={onSubmit}
         className="flex-1 bg-timelexx-red hover:bg-timelexx-red/90 text-sm sm:text-base min-h-[48px] sm:min-h-[44px] touch-manipulation"
-        disabled={isDelivery && !hasRider}
+        disabled={(isDelivery && !hasRider) || isSubmitting}
       >
-        Place Order
+        {isSubmitting ? 'Placing Order...' : 'Place Order'}
       </Button>
       <Button
         onClick={onClear}
