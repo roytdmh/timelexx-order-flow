@@ -1,6 +1,4 @@
-
 export const RIDERS = [
-  { id: 'Sabolia', name: 'Sabolia' },
   { id: 'Awaga', name: 'Awaga' },
   { id: 'Joe Lee', name: 'Joe Lee' }
 ];
