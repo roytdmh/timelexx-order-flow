@@ -3,7 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { NotificationBadge } from '@/components/NotificationBadge';
 import NotificationPermissionPrompt from '@/components/NotificationPermissionPrompt';
 import { RealtimeConnectionStatus } from '@/components/RealtimeConnectionStatus';
-import timelexxLogo from '@/assets/timelexx-logo.png';
+import janysLogo from '@/assets/janys-logo.jpg';
 
 const Header = () => {
   const { user, role, profile } = useAuth();
@@ -17,15 +17,15 @@ const Header = () => {
             <div className="flex-1" />
             <div className="flex flex-col justify-center items-center flex-1">
               <img
-                src={timelexxLogo}
-                alt="Timelexx Inn Logo"
-                className="h-20 sm:h-24 md:h-32 lg:h-40 object-contain"
+                src={janysLogo}
+                alt="Jany's Cuisine Logo"
+                className="h-20 sm:h-24 md:h-32 lg:h-40 object-contain rounded-lg"
                 style={{
-                  filter: 'brightness(1.1) contrast(1.2) saturate(1.3)'
+                  filter: 'brightness(1.05) contrast(1.1) saturate(1.15)'
                 }}
               />
-              <p className="text-sm sm:text-lg md:text-xl italic -mt-1 sm:-mt-2 md:-mt-4 tracking-wide font-serif">
-                Eat good, Feel good
+              <p className="text-sm sm:text-lg md:text-xl italic mt-1 tracking-wide font-serif">
+                Where good food is found
               </p>
             </div>
             <div className="flex-1 flex justify-end items-start gap-3">

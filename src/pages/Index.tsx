@@ -113,8 +113,7 @@ const Index = () => {
       // Random rider assignment for customers ordering delivery
       let finalRiderNumber = riderNumber;
       if (role === 'customer' && orderType === 'delivery') {
-        const riders = ['Sabolia', 'Awaga', 'Joe Lee'];
-        finalRiderNumber = riders[Math.floor(Math.random() * riders.length)];
+        finalRiderNumber = 'Rider1';
       }
       
       const newOrder = {

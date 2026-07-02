@@ -13,13 +13,15 @@ interface MenuDisplayProps {
 const MenuDisplay: React.FC<MenuDisplayProps> = ({ onAddToOrder }) => {
   const { menuItems, loading } = useSupabaseMenu();
   
-  // Custom order for Mains category
+  // Custom order for Mains category (Jany's Cuisine)
   const mainsOrder = [
     "Jollof & Chicken",
-    "Chicken Shawarma", 
-    "Beef Shawarma",
-    "Chicken & Beef Shawarma",
-    "Loaded Fries"
+    "Fried Rice & Chicken",
+    "Chicken Wings & Chips",
+    "Chicken & Chips",
+    "Plain Rice & Stew",
+    "Banku & Fish",
+    "Spaghetti"
   ];
   
   const menuByCategory = menuItems.reduce((acc, item) => {

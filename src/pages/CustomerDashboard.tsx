@@ -95,8 +95,7 @@ const CustomerDashboard = () => {
     let assignedRiderId: string | undefined = undefined;
     
     if (orderType === 'delivery') {
-      const riders = ['Sabolia', 'Awaga', 'Joe Lee'];
-      finalRiderNumber = riders[Math.floor(Math.random() * riders.length)];
+      finalRiderNumber = 'Rider1';
       
       // Look up rider's UUID from profiles table
       const { data: riderProfile } = await supabase

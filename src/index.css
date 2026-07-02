@@ -7,7 +7,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 350 100% 96%;
     --foreground: 215 25% 27%;
 
     --card: 0 0% 100%;
@@ -16,32 +16,33 @@
     --popover: 0 0% 100%;
     --popover-foreground: 215 25% 27%;
 
-    --primary: 0 84% 60%;
+    --primary: 4 75% 52%;
     --primary-foreground: 0 0% 98%;
 
-    --secondary: 45 100% 51%;
+    --secondary: 22 95% 58%;
     --secondary-foreground: 215 25% 27%;
 
-    --muted: 210 40% 98%;
+    --muted: 350 60% 96%;
     --muted-foreground: 215 16% 47%;
 
-    --accent: 45 100% 51%;
+    --accent: 22 95% 58%;
     --accent-foreground: 215 25% 27%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 4 75% 52%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 0 84% 60%;
+    --border: 350 40% 88%;
+    --input: 350 40% 88%;
+    --ring: 4 75% 52%;
 
     --radius: 0.875rem;
 
-    /* Premium Color Palette */
-    --timelexx-red: 0 84% 60%;
-    --timelexx-yellow: 45 100% 51%;
-    --timelexx-white: 0 0% 100%;
-    --timelexx-dark: 215 25% 27%;
+    /* Jany's Cuisine Palette */
+    --timelexx-red: 4 75% 52%;
+    --timelexx-yellow: 22 95% 58%;
+    --timelexx-white: 350 100% 98%;
+    --timelexx-dark: 340 30% 22%;
+    --janys-pink: 350 100% 92%;
     
     /* Status Colors */
     --status-green: 142 76% 36%;
@@ -56,10 +57,10 @@
     --shadow-xl: 0 20px 25px -5px hsl(215 25% 27% / 0.1), 0 8px 10px -6px hsl(215 25% 27% / 0.1);
     --shadow-2xl: 0 25px 50px -12px hsl(215 25% 27% / 0.25);
 
-    /* Premium Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--timelexx-red)) 0%, hsl(var(--timelexx-yellow)) 100%);
-    --gradient-subtle: linear-gradient(135deg, hsl(210 40% 98%) 0%, hsl(0 0% 100%) 100%);
-    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(210 40% 99%) 100%);
+    /* Jany's Gradients — warm red/orange over pastel pink */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--timelexx-red)) 0%, hsl(var(--timelexx-yellow)) 60%, hsl(var(--janys-pink)) 100%);
+    --gradient-subtle: linear-gradient(135deg, hsl(var(--janys-pink)) 0%, hsl(350 100% 97%) 100%);
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(350 100% 98%) 100%);
   }
 }
 
