@@ -246,7 +246,7 @@ const Index = () => {
   // Show loading state while auth or role is loading
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <Header />
         <div className="container mx-auto p-6">
           <Skeleton className="h-12 w-full mb-4" />
@@ -259,7 +259,7 @@ const Index = () => {
   // If no role yet but authenticated, show loading
   if (!role && user) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <Header />
         <div className="container mx-auto p-6">
           <Skeleton className="h-12 w-full mb-4" />
@@ -270,7 +270,7 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Header />
       <div className="border-b-2 border-timelexx-yellow bg-white">
         <div className="container mx-auto px-2 sm:px-4 py-2 sm:py-3">
