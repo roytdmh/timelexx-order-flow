@@ -10,7 +10,7 @@ const Landing = () => {
     'https://www.google.com/maps?q=5.605139,-0.070750&hl=en&z=17&output=embed';
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen timelexx-gradient">
       <LandingNav />
 
       <div className="pt-40 sm:pt-24 pb-12 px-4">

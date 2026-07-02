@@ -161,7 +161,7 @@ const RiderAuth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen timelexx-gradient">
       <LandingNav />
       
       <div className="pt-24 pb-12 px-4 flex items-center justify-center">
