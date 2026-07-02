@@ -8,7 +8,7 @@ import { useSupabaseOrders } from '@/hooks/useSupabaseOrders';
 import { useAuth } from '@/hooks/useAuth';
 import { MenuItem, OrderItem } from '@/types';
 import { Button } from '@/components/ui/button';
-import { LogOut, Phone, Mail } from 'lucide-react';
+import { LogOut, Phone } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { supabase } from '@/integrations/supabase/client';
 import {
@@ -95,8 +95,7 @@ const CustomerDashboard = () => {
     let assignedRiderId: string | undefined = undefined;
     
     if (orderType === 'delivery') {
-      const riders = ['Sabolia', 'Awaga', 'Joe Lee'];
-      finalRiderNumber = riders[Math.floor(Math.random() * riders.length)];
+      finalRiderNumber = 'Rider1';
       
       // Look up rider's UUID from profiles table
       const { data: riderProfile } = await supabase
@@ -224,24 +223,17 @@ const CustomerDashboard = () => {
                 <div>
                   <p className="font-semibold text-foreground">Customer Service</p>
                   <a 
-                    href="tel:+233553695569" 
+                    href="tel:+233537481749" 
                     className="text-timelexx-red hover:underline"
                   >
-                    +233 55 369 5569
+                    0537 481 749
                   </a>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 text-base">
-                <Mail className="h-5 w-5 text-timelexx-red" />
-                <div>
-                  <p className="font-semibold text-foreground">Follow us on TikTok</p>
+                  <br />
                   <a 
-                    href="https://www.tiktok.com/@timelexxinn" 
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="tel:+233548323423" 
                     className="text-timelexx-red hover:underline"
                   >
-                    TimelexxInn on TikTok
+                    0548 323 423
                   </a>
                 </div>
               </div>

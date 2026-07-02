@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Home, Mail, Phone, ChevronDown, UtensilsCrossed, Info, Menu, Download } from 'lucide-react';
+import { Home, Mail, Phone, ChevronDown, UtensilsCrossed, Download } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
@@ -128,15 +128,6 @@ export const LandingNav = () => {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => navigate('/?tab=info')}
-              className="border-timelexx-red text-timelexx-red hover:bg-timelexx-red hover:text-white bg-white sm:bg-transparent shadow-lg sm:shadow-none font-semibold min-w-[44px] min-h-[44px]"
-            >
-              <Info className="h-4 w-4 sm:mr-2" />
-              <span className="hidden sm:inline">Info</span>
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
               onClick={() => setShowContactDialog(true)}
               className="border-timelexx-red text-timelexx-red hover:bg-timelexx-red hover:text-white bg-white sm:bg-transparent shadow-lg sm:shadow-none font-semibold min-w-[44px] min-h-[44px]"
             >
@@ -158,24 +149,17 @@ export const LandingNav = () => {
                 <div>
                   <p className="font-semibold text-foreground">Customer Service</p>
                   <a 
-                    href="tel:+233553695569" 
+                    href="tel:+233537481749" 
                     className="text-timelexx-red hover:underline"
                   >
-                    +233 55 369 5569
+                    0537 481 749
                   </a>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 text-base">
-                <Mail className="h-5 w-5 text-timelexx-red" />
-                <div>
-                  <p className="font-semibold text-foreground">Follow us on TikTok</p>
+                  <br />
                   <a 
-                    href="https://www.tiktok.com/@timelexxinn" 
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="tel:+233548323423" 
                     className="text-timelexx-red hover:underline"
                   >
-                    TimelexxInn on TikTok
+                    0548 323 423
                   </a>
                 </div>
               </div>
