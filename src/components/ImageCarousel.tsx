@@ -7,16 +7,22 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
-import timelexxSign from '@/assets/timelexx-sign.webp';
-import timelexxExterior from '@/assets/timelexx-exterior.webp';
-import timelexxPackaging from '@/assets/timelexx-packaging.webp';
-import timelexxInterior from '@/assets/timelexx-interior.webp';
+import food1 from '@/assets/food-1.jpg';
+import food2 from '@/assets/food-2.jpg';
+import food3 from '@/assets/food-3.jpg';
+import food4 from '@/assets/food-4.jpg';
+import food5 from '@/assets/food-5.jpg';
+import food6 from '@/assets/food-6.jpg';
+import food7 from '@/assets/food-7.jpg';
 
 const images = [
-  { src: timelexxSign, alt: 'Timelexx Inn Sign' },
-  { src: timelexxExterior, alt: 'Timelexx Restaurant Exterior' },
-  { src: timelexxPackaging, alt: 'Timelexx Packaging' },
-  { src: timelexxInterior, alt: 'Timelexx Restaurant Interior' },
+  { src: food1, alt: 'Chicken wings, fries and salad platter' },
+  { src: food2, alt: 'Grilled chicken with fried rice and vegetables' },
+  { src: food3, alt: 'Fried chicken with fries and dipping sauces' },
+  { src: food4, alt: 'Stir-fried noodles with vegetables and chicken' },
+  { src: food5, alt: 'Rice bowl with spicy stew, egg and fried plantain' },
+  { src: food6, alt: 'Jollof rice with roasted chicken and plantain' },
+  { src: food7, alt: 'Fried chicken platter with fries and sauces' },
 ];
 
 export const ImageCarousel = () => {
