@@ -16,7 +16,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 215 25% 27%;
 
-    --primary: 4 75% 52%;
+    --primary: 322 100% 54%;
     --primary-foreground: 0 0% 98%;
 
     --secondary: 22 95% 58%;
@@ -28,18 +28,18 @@
     --accent: 22 95% 58%;
     --accent-foreground: 215 25% 27%;
 
-    --destructive: 4 75% 52%;
+    --destructive: 322 100% 54%;
     --destructive-foreground: 0 0% 98%;
 
     --border: 350 40% 88%;
     --input: 350 40% 88%;
-    --ring: 4 75% 52%;
+    --ring: 322 100% 54%;
 
     --radius: 0.875rem;
 
     /* Jany's Cuisine Palette — Fuchsia */
-    --timelexx-red: 4 75% 52%;
-    --timelexx-yellow: 22 95% 58%;
+    --timelexx-red: 322 100% 54%;
+    --timelexx-yellow: 330 100% 62%;
     --timelexx-white: 322 100% 98%;
     --timelexx-dark: 322 40% 20%;
     --janys-pink: 322 100% 92%;
