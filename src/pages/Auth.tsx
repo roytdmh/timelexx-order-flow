@@ -39,7 +39,7 @@ const Auth = () => {
     setLoading(true);
     try {
       // Validate password
-      if (password !== 'TimelexxInn00233') {
+      if (password !== 'JanysCuisine00233') {
         toast({
           title: 'Invalid Credentials',
           description: 'Incorrect password',
