@@ -30,8 +30,8 @@ const deobfuscate = (obfuscated: string): string => {
 };
 
 // Pre-obfuscated access code
-// Original: TimelexxInn00233
-const OBFUSCATED_ACCESS_CODE = '66533qqL{{hohplW';
+// Original: JanysCuisine00233
+const OBFUSCATED_ACCESS_CODE = '66533hqlvlxFv|qdM';
 
 /**
  * Validate if the provided access code matches the expected code

@@ -7,7 +7,7 @@
 
 @layer base {
   :root {
-    --background: 350 100% 96%;
+    --background: 322 100% 96%;
     --foreground: 215 25% 27%;
 
     --card: 0 0% 100%;
@@ -37,12 +37,15 @@
 
     --radius: 0.875rem;
 
-    /* Jany's Cuisine Palette */
+    /* Jany's Cuisine Palette — Fuchsia */
     --timelexx-red: 4 75% 52%;
     --timelexx-yellow: 22 95% 58%;
-    --timelexx-white: 350 100% 98%;
-    --timelexx-dark: 340 30% 22%;
-    --janys-pink: 350 100% 92%;
+    --timelexx-white: 322 100% 98%;
+    --timelexx-dark: 322 40% 20%;
+    --janys-pink: 322 100% 92%;
+    --janys-fuchsia: 322 100% 54%;
+    --janys-fuchsia-hot: 330 100% 58%;
+    --janys-fuchsia-warm: 348 100% 60%;
     
     /* Status Colors */
     --status-green: 142 76% 36%;
@@ -57,10 +60,10 @@
     --shadow-xl: 0 20px 25px -5px hsl(215 25% 27% / 0.1), 0 8px 10px -6px hsl(215 25% 27% / 0.1);
     --shadow-2xl: 0 25px 50px -12px hsl(215 25% 27% / 0.25);
 
-    /* Jany's Gradients — warm red/orange over pastel pink */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--timelexx-red)) 0%, hsl(var(--timelexx-yellow)) 60%, hsl(var(--janys-pink)) 100%);
-    --gradient-subtle: linear-gradient(135deg, hsl(var(--janys-pink)) 0%, hsl(350 100% 97%) 100%);
-    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(350 100% 98%) 100%);
+    /* Jany's Gradients — fuchsia pink */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--janys-fuchsia)) 0%, hsl(var(--janys-fuchsia-hot)) 55%, hsl(var(--janys-fuchsia-warm)) 100%);
+    --gradient-subtle: linear-gradient(135deg, hsl(var(--janys-pink)) 0%, hsl(322 100% 97%) 100%);
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(322 100% 98%) 100%);
   }
 }
 
