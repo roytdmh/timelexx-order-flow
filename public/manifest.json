@@ -4,8 +4,8 @@
   "description": "Order from Jany's Cuisine — where good food is found.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#D9412E",
+  "background_color": "#FF00FF",
+  "theme_color": "#FF00FF",
   "orientation": "portrait-primary",
   "icons": [
     {
@@ -21,6 +21,7 @@
       "purpose": "any maskable"
     }
   ],
+
   "categories": ["food", "business", "productivity"],
   "lang": "en",
   "scope": "/",
