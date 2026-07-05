@@ -30,6 +30,23 @@ export const LandingNav = () => {
   const [isInstallable, setIsInstallable] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
 
+  // Swap manifest based on current route so each portal installs as its own app
+  useEffect(() => {
+    let manifestHref = '/manifest-customer.json';
+    if (currentPath.startsWith('/admin')) manifestHref = '/manifest-admin.json';
+    else if (currentPath.startsWith('/rider')) manifestHref = '/manifest-rider.json';
+
+    let link = document.querySelector<HTMLLinkElement>('link[rel="manifest"]');
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'manifest';
+      document.head.appendChild(link);
+    }
+    if (link.getAttribute('href') !== manifestHref) {
+      link.setAttribute('href', manifestHref);
+    }
+  }, [currentPath]);
+
   useEffect(() => {
     // Check if app is running in standalone mode (installed)
     const checkStandalone = () => {
