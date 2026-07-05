@@ -1,0 +1,17 @@
+{
+  "id": "/rider-auth?app=rider",
+  "name": "Jany's Cuisine - Rider Portal",
+  "short_name": "Jany's Rider",
+  "description": "Rider portal for Jany's Cuisine.",
+  "start_url": "/rider-auth?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FF00FF",
+  "theme_color": "#FF00FF",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/logo.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "lang": "en"
+}
