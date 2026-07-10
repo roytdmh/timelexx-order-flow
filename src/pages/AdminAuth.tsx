@@ -113,17 +113,14 @@ const AdminAuth = () => {
         }
 
         if (!adminRole) {
-          // Insert admin role if missing (no delete/upsert to avoid RLS conflicts)
-          const { error: roleInsertError } = await supabase
-            .from('user_roles')
-            .insert({
-              user_id: authUser.id,
-              role: 'admin',
-            });
-          
-          if (roleInsertError) {
-            console.error('Role assignment error:', roleInsertError);
-            // Don't block sign-in; continue
+          // Assign admin role via SECURITY DEFINER RPC (RLS blocks direct inserts of non-customer roles)
+          const { error: rpcError } = await supabase.rpc('assign_staff_role', {
+            _role: 'admin',
+            _code: password,
+          });
+          if (rpcError) {
+            console.error('Role assignment error:', rpcError);
+            throw new Error('Failed to assign admin role. Please try again.');
           }
         }
 

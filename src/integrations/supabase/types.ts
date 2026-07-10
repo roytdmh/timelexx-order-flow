@@ -631,6 +631,13 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      assign_staff_role: {
+        Args: {
+          _code: string
+          _role: Database["public"]["Enums"]["app_role_new"]
+        }
+        Returns: boolean
+      }
       can_update_order_for_dashboard_user: {
         Args: {
           new_row: Database["public"]["Tables"]["orders"]["Row"]
