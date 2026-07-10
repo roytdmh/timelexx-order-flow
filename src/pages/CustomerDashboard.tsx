@@ -29,6 +29,22 @@ const CustomerDashboard = () => {
   
   const { orders, addOrder } = useSupabaseOrders();
 
+  // Persist in-progress cart per user so signing out/in doesn't lose it
+  const cartKey = user ? `janys.cart.${user.id}` : null;
+  useEffect(() => {
+    if (!cartKey) return;
+    try {
+      const saved = localStorage.getItem(cartKey);
+      if (saved) setCurrentOrder(JSON.parse(saved));
+    } catch {}
+  }, [cartKey]);
+  useEffect(() => {
+    if (!cartKey) return;
+    try {
+      localStorage.setItem(cartKey, JSON.stringify(currentOrder));
+    } catch {}
+  }, [cartKey, currentOrder]);
+
   // Filter orders for current user
   const userOrders = orders.filter(order => order.customerUserId === user?.id);
 
