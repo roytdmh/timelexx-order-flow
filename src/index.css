@@ -79,10 +79,32 @@
 
   .timelexx-gradient {
     background: var(--gradient-primary);
+    position: relative;
+  }
+
+  .timelexx-gradient::before,
+  .gradient-subtle::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320' viewBox='0 0 320 320'><g opacity='0.55'><!-- tomato --><g transform='translate(40 60)'><circle cx='0' cy='0' r='14' fill='%23ff5a5f'/><path d='M-6 -12 L0 -4 L6 -12 L2 -6 L8 -8 L2 -2 Z' fill='%234ade80'/></g><!-- pepper --><g transform='translate(230 40) rotate(20)'><path d='M0 0 C -10 4 -10 22 0 30 C 10 22 10 4 0 0 Z' fill='%23ef4444'/><path d='M-2 -2 L0 -10 L2 -2 Z' fill='%2322c55e'/></g><!-- garlic --><g transform='translate(120 180)'><ellipse cx='0' cy='2' rx='12' ry='14' fill='%23fdf2f8' stroke='%23f5d0e8' stroke-width='1'/><path d='M-6 -4 Q0 6 6 -4' fill='none' stroke='%23e9b8d8' stroke-width='1'/><path d='M0 -12 L0 -16' stroke='%2384cc16' stroke-width='2'/></g><!-- spring onion --><g transform='translate(260 220) rotate(-15)'><rect x='-2' y='-30' width='4' height='36' fill='%2322c55e'/><path d='M-2 -34 L0 -46 L2 -34' stroke='%2316a34a' stroke-width='2' fill='none'/><path d='M-4 -30 L4 -30 L6 6 L-6 6 Z' fill='%23fefefe' stroke='%23e5e7eb' stroke-width='0.5'/></g><!-- second tomato --><g transform='translate(200 270)'><circle cx='0' cy='0' r='10' fill='%23fb7185'/><path d='M-4 -8 L0 -3 L4 -8 Z' fill='%2322c55e'/></g><!-- second pepper --><g transform='translate(60 250) rotate(-25)'><path d='M0 0 C -7 3 -7 16 0 22 C 7 16 7 3 0 0 Z' fill='%23f97316'/><path d='M-2 -2 L0 -8 L2 -2 Z' fill='%2316a34a'/></g><!-- extra garlic --><g transform='translate(285 140)'><ellipse cx='0' cy='0' rx='8' ry='10' fill='%23fef7fb' stroke='%23f5d0e8' stroke-width='0.8'/><path d='M0 -10 L0 -13' stroke='%2384cc16' stroke-width='1.5'/></g></g></svg>");
+    background-size: 320px 320px;
+    background-repeat: repeat;
+    opacity: 0.35;
+    mix-blend-mode: soft-light;
+    z-index: 0;
+  }
+
+  .timelexx-gradient > *,
+  .gradient-subtle > * {
+    position: relative;
+    z-index: 1;
   }
 
   .gradient-subtle {
     background: var(--gradient-subtle);
+    position: relative;
   }
 
   .gradient-card {
