@@ -1,5 +1,5 @@
 export const RIDERS = [
-  { id: 'Rider1', name: 'Rider1' }
+  { id: 'Tim', name: 'Tim' }
 ];
 
 export const getRiderDisplayName = (riderId: string): string => {
